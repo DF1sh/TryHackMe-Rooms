@@ -13,6 +13,14 @@
 - This group overlaps (slightly) with which other group?: `Winnti Group` <br />
 - How many techniques are attributed to this group?: `15` <br />
 
+### CAR Knowledge Base
+- What tactic has an ID of TA0003?: `Persistence` <br />
+- What is the name of the library that is a collection of Zeek (BRO) scripts?: `BZAR` <br />
+- What is the name of the technique for running executables with the same hash and different names?: `Masquerading` <br />
+- Examine CAR-2013-05-004, besides Implementations, what additional information is provided to analysts to ensure coverage for this technique?: `Unit Tests` <br />
+
+
+
 
 
  
