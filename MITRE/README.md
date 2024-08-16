@@ -1,4 +1,4 @@
 ## MITRE
-- Besides Blue teamers, who else will use the ATT&CK Matrix? (Red Teamers, Purpe Teamers, SOC Managers?) <br />
-   - `Red Teamers`
+- Besides Blue teamers, who else will use the ATT&CK Matrix? (Red Teamers, Purpe Teamers, SOC Managers?) <br /><br />
+  - `Red Teamers`
 -
