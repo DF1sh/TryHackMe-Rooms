@@ -47,4 +47,7 @@
 
 
 ### Privilege Escalation: NFS
-- Read the above: `No answer needed` <br /><br />
+- How many mountable shares can you identify on the target system?: `3` <br /><br />
+- How many shares have the "no_root_squash" option enabled?: `3` <br /><br />
+- Gain a root shell on the target system: `No answer needed` <br /><br />
+- What is the content of the flag7.txt file?: `THM-89384012` <br /><br />
