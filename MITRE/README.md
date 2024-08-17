@@ -29,5 +29,18 @@
 - What is the first MITRE ATT&CK technique listed in the ATT&CK Lookup dropdown?: `Data Obfuscation` <br />
 - In D3FEND Inferred Relationships, what does the ATT&CK technique from the previous question produce?: `Outbound Internet Network Traffic` <br />
 
+### ATT&CK® Emulation Plans
+- In Phase 1 for the APT3 Emulation Plan, what is listed first?: `C2 Setup` <br />
+- Under Persistence, what binary was replaced with cmd.exe?: `sethc.exe` <br />
+- Examining APT29, what  C2 frameworks are listed in Scenario 1 Infrastructure? (format: tool1,tool2): `Pupy,Metasploit Framework` <br />
+- What C2 framework is listed in Scenario 2 Infrastructure?: `PoshC2` <br />
+- Examine the emulation plan for Sandworm. What webshell is used for Scenario 1? Check MITRE ATT&CK for the Software ID for the webshell. What is the id? (format: webshell,id): `P.A.S.,S0598` <br />
+
+### ATT&CK® and Threat Intelligence
+- What is a group that targets your sector who has been in operation since at least 2013?: `APT33` <br />
+- As your organization is migrating to the cloud, is there anything attributed to this APT group that you should focus on? If so, what is it?: `Cloud Accounts` <br />
+- What tool is associated with the technique from the previous question?: `Ruler` <br />
+- Referring to the technique from question 2, what mitigation method suggests using SMS messages as an alternative for its implementation?: `Multi-factor Authentication` <br />
+- What platforms does the technique from question #2 affect?: `Azure AD, Google Workspace, IaaS, Office 365, SaaS` <br />
 
  
