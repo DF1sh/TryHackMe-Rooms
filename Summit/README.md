@@ -8,9 +8,7 @@
 - What is the first flag you receive after successfully detecting sample2.exe? <br /><br />
     The analysis of `sample2.exe` will provides with information about network activity. Specifically, the PID related to the malware attempts an HTTP request to http://154.35.10.113:4444/uvLk8YI32. 
     The IP address 154.35.10.113 might be the C2 server used by the attacker. Therefore, move to the 'Firewall Manager' section and add a new firewall rule with the following keys:
-  \begin{itemize}
-  \item test
-  \begin{itemize}
+  
         Type: Egress	
         Source: Any
         Destination: 154.35.10.113
