@@ -19,8 +19,15 @@
 - What is the name of the technique for running executables with the same hash and different names?: `Masquerading` <br />
 - Examine CAR-2013-05-004, besides Implementations, what additional information is provided to analysts to ensure coverage for this technique?: `Unit Tests` <br />
 
+### MITRE Engage
+- Under Prepare, what is ID SAC0002?: `Persona Creation` <br />
+- What is the name of the resource to aid you with the engagement activity from the previous question?: `Persona Profile Worksheet` <br />
+- Which engagement activity baits a specific response from the adversary?: `Lures` <br />
+- What is the definition of Threat Model?: `A risk assessment that models organizational strengths and weaknesses.` <br />
 
-
+### MITRE D3FEND
+- What is the first MITRE ATT&CK technique listed in the ATT&CK Lookup dropdown?: `Data Obfuscation` <br />
+- In D3FEND Inferred Relationships, what does the ATT&CK technique from the previous question produce?: `Outbound Internet Network Traffic` <br />
 
 
  
