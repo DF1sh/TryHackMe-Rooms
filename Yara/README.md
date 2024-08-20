@@ -26,6 +26,18 @@ Again, we move to `~/suspicious-files/file1` and run the command `python ../../t
 As we can see, loki detects this file as `benign`. <br /><br />
 - Inspect file 2. What is the name and version of this web shell? <br />
 Again, we want to look at the first bytes of the file. Therefore, run the command `head 1ndex.php` to see the first lines. There we can find the answer: `b374k 3.2.3`<br />
+
 ### Creating Yara rules with yarGen
+- From within the root of the suspicious files directory, what command would you run to test Yara and your Yara rule against file 2? `yara file2.yar file2/1ndex.php` <br />
+- Did Yara rule flag file 2? (Yay/Nay) `Yay` <br />
+- Copy the Yara rule you created into the Loki signatures directory. `No answer needed` <br />
+Run the following command: `cp file2.yar ../tools/Loki/signature-base/yara`<br /><br />
+- Test the Yara rule with Loki, does it flag file 2? (Yay/Nay) `Yay` <br />
+After adding this new yara rule to the list of rules used by loki, loki is now able to detect the malware. Move to /suspicious_files/file2 and run `python ../../tools/Loki/loki.py -p .`:<br />
+![image](https://github.com/user-attachments/assets/c93e4ef0-e56c-47c6-be81-539be298da4f)<br />
+- What is the name of the variable for the string that it matched on? `Zepto` <br />
+- Inspect the Yara rule, how many strings were generated? `20` <br />
+- One of the conditions to match on the Yara rule specifies file size. The file has to be less than what amount? `700KB` <br />
+![image](https://github.com/user-attachments/assets/34185e4a-a80b-4b18-aa2d-a484bba4a9f2)<br />
 
 ### Valhalla
