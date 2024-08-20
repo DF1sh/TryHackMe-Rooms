@@ -41,3 +41,11 @@ After adding this new yara rule to the list of rules used by loki, loki is now a
 ![image](https://github.com/user-attachments/assets/34185e4a-a80b-4b18-aa2d-a484bba4a9f2)<br />
 
 ### Valhalla
+- Enter the SHA256 hash of file 1 into Valhalla. Is this file attributed to an APT group? (Yay/Nay) `Yay` <br />
+- Do the same for file 2. What is the name of the first Yara rule to detect file 2? `Webshell_b374k_rule1` <br />
+- Examine the information for file 2 from Virus Total (VT). The Yara Signature Match is from what scanner? `THOR APT Scanner` <br />
+- Enter the SHA256 hash of file 2 into Virus Total. Did every AV detect this as malicious? (Yay/Nay) `Nay` <br />
+- Besides .PHP, what other extension is recorded for this file? `EXE` <br />
+- What JavaScript library is used by file 2? `Zepto` <br />
+- Is this Yara rule in the default Yara file Loki uses to detect these type of hack tools? (Yay/Nay) `Nay` <br />
+
