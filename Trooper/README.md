@@ -2,7 +2,8 @@
 
 ### Who's The Threat? 
 - What kind of phishing campaign does APT X use as part of their TTPs? <br /><br />
-- What is the name of the malware used by APT X? <br /><br />
+We are provided with an OpenCTI client and a report about APT X. Reading through the report it's easy to find the answer: `spear-phishing emails` <br />
+- What is the name of the malware used by APT X? `USBferry` <br /><br />
 - What is the malware's STIX ID? <br /><br />
 - With the use of a USB, what technique did APT X use for initial access? <br /><br />
 - What is the identity of APT X?  <br /><br />
