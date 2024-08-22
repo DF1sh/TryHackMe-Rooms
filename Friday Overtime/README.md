@@ -20,5 +20,10 @@ The malicious URL can be found in the previous website: <br />
 ![image](https://github.com/user-attachments/assets/291460ec-8dd2-48e2-88b9-27692bb0217a)<br />
 To defang it, go to CyberChef and search for the "defang" operation. <br />
 The defaged URL is `hxxp[://]update[.]browser[.]qq[.]com/qmbs/QQ/QQUrlMgr_QQ88_4296.exe` <br />
-- What is the CyberChef defanged IP address of the C&C server first detected on 2020-09-14 using these modules? <br />
+- What is the CyberChef defanged IP address of the C&C server first detected on 2020-09-14 using these modules? Similar procedure as the previous task: `122[.]10[.]90[.]12` <br />
 - What is the SHA1 hash of the spyagent family spyware hosted on the same IP targeting Android devices on November 16, 2022? <br />
+To find more detailed information about this IP address and everything related to it, a good idea is to browse the [VirusTotal](https://www.virustotal.com/) platform. <br />
+Search for the target IP address. From there we can find the file we were looking for: <br />
+![image](https://github.com/user-attachments/assets/b74bcb5c-6ca6-4f39-ac28-2e331b90bc3a) <br />
+Click on it and move to "datails" and get the SHA1 of the file: `1c1fe906e822012f6235fcc53f601d006d15d7be`.
+
