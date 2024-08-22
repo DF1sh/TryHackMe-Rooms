@@ -25,5 +25,5 @@ The defaged URL is `hxxp[://]update[.]browser[.]qq[.]com/qmbs/QQ/QQUrlMgr_QQ88_4
 To find more detailed information about this IP address and everything related to it, a good idea is to browse the [VirusTotal](https://www.virustotal.com/) platform. <br />
 Search for the target IP address. From there we can find the file we were looking for: <br />
 ![image](https://github.com/user-attachments/assets/b74bcb5c-6ca6-4f39-ac28-2e331b90bc3a) <br />
-Click on it and move to "datails" and get the SHA1 of the file: `1c1fe906e822012f6235fcc53f601d006d15d7be`. <br /><br />
+Click on it, move to "datails" and get the SHA1 hash of the file: `1c1fe906e822012f6235fcc53f601d006d15d7be`. <br /><br />
 bye :)
