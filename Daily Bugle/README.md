@@ -1,0 +1,11 @@
+# Daily Bugle
+
+### Deploy
+- Access the web server, who robbed the bank? `spiderman` <br />
+
+### Obtain user and root
+- What is the Joomla version? `3.7.0` <br />
+- What is Jonah's cracked password? `spiderman123` <br />
+- What is the user flag? `27a260fe3cba712cfdedb1c86d80442e` <br />
+- What is the root flag? `eec3d53292b1821868266858d7fa6f79` <br />
+
