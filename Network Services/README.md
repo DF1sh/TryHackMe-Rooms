@@ -39,41 +39,43 @@ Get the id_rsa file from the SMB share. Change permissions so that you can use i
 `THM{smb_is_fun_eh?}`
 
 ### Understanding Telnet
-- What is Telnet?
-- What has slowly replaced Telnet?
-- How would you connect to a Telnet server with the IP 10.10.10.3 on port 23?
-- The lack of what, means that all Telnet communication is in plaintext?
+- What is Telnet? `application protocol`
+- What has slowly replaced Telnet? `ssh`
+- How would you connect to a Telnet server with the IP 10.10.10.3 on port 23? `telnet 10.10.10.3 23`
+- The lack of what, means that all Telnet communication is in plaintext? `encryption`
 
 ### Enumerating Telnet
-- How many ports are open on the target machine?
-- What port is this?
-- This port is unassigned, but still lists the protocol it's using, what protocol is this?
-- Now re-run the nmap scan, without the -p- tag, how many ports show up as open?
+- How many ports are open on the target machine? `1`
+- What port is this? `8012`
+- This port is unassigned, but still lists the protocol it's using, what protocol is this? `tcp`
+- Now re-run the nmap scan, without the -p- tag, how many ports show up as open? `0`
 - Based on the title returned to us, what do we think this port could be used for?
-- Who could it belong to? Gathering possible usernames is an important step in enumeration.
+![image](https://github.com/user-attachments/assets/4132e180-8da1-41bb-8f66-99d97de80175)<br />
+`a backdoor`
+- Who could it belong to? Gathering possible usernames is an important step in enumeration. `Skidy`
 
 ### Exploiting Telnet
-- Great! It's an open telnet connection! What welcome message do we receive?
-- Let's try executing some commands, do we get a return on any input we enter into the telnet session? (Y/N)
-- Now, use the command "ping [local THM ip] -c 1" through the telnet session to see if we're able to execute system commands. Do we receive any pings? Note, you need to preface this with .RUN (Y/N)
-- What word does the generated payload start with?
-- What would the command look like for the listening port we selected in our payload?
-- Success! What is the contents of flag.txt?
+- Great! It's an open telnet connection! What welcome message do we receive? `SKIDY'S BACKDOOR.`
+- Let's try executing some commands, do we get a return on any input we enter into the telnet session? (Y/N) `N`
+- Now, use the command "ping [local THM ip] -c 1" through the telnet session to see if we're able to execute system commands. Do we receive any pings? Note, you need to preface this with .RUN (Y/N) `Y`
+- What word does the generated payload start with? `mkfifo`
+- What would the command look like for the listening port we selected in our payload? `nc -lvp 4444`
+- Success! What is the contents of flag.txt? `THM{y0u_g0t_th3_t3ln3t_fl4g}`
 
 ### Understanding FTP
-- What communications model does FTP use?
-- What's the standard FTP port?
-- How many modes of FTP connection are there?    
+- What communications model does FTP use? `client-server`
+- What's the standard FTP port? `21`
+- How many modes of FTP connection are there? `2`
 
 ### Enumerating FTP
-- How many ports are open on the target machine?
-- What port is ftp running on?
-- What variant of FTP is running on it?
-- What is the name of the file in the anonymous FTP directory?
-- What do we think a possible username could be?
+- How many ports are open on the target machine? `2`
+- What port is ftp running on? `21`
+- What variant of FTP is running on it? `vsftpd`
+- What is the name of the file in the anonymous FTP directory? `PUBLIC_NOTICE.txt`
+- What do we think a possible username could be? `mike`
 
 ### Exploiting FTP
-- What is the password for the user "mike"?
-- What is ftp.txt?
+- What is the password for the user "mike"? `password`
+- What is ftp.txt? `THM{y0u_g0t_th3_ftp_fl4g}`
 
 
