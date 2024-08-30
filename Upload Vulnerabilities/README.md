@@ -1,4 +1,4 @@
-# Upload Vulnerabilities
+![image](https://github.com/user-attachments/assets/7bb17b22-4c92-4396-878b-46b32062717e)# Upload Vulnerabilities
 
 ### Overwriting Existing Files
 - What is the name of the image file which can be overwritten?
@@ -168,4 +168,6 @@ beautiful. Now we need a way to find where the files are uploaded. A gobuster se
 By accessing the file, the web server executed it and we spawned a reverse shell. The flag is: `THM{MWY5ZGU4NzE0ZDlhNjE1NGM4ZThjZDJh}`
 
 ### Challenge
-- Hack the machine and grab the flag from /var/www/
+- Hack the machine and grab the flag from /var/www/ <br />  `THM{NzRlYTUwNTIzODMwMWZhMzBiY2JlZWU2}`
+
+
