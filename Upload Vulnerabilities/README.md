@@ -154,10 +154,18 @@ Apparently the web server only allows .png files. But this is just a front-end f
 Now again create a reverse shell like before and get the flag at /var/www/flag.txt: `THM{NDllZDQxNjJjOTE0YWNhZGY3YjljNmE2}`
 
 ### Bypassing Server-Side Filtering: File Extensions
-- What is the flag in /var/www/?
+- What is the flag in /var/www/? <br />
+Navigate to annex.uploadvulns.thm. The filter is built to only accept .png files. However after some trial and error, I found out that it also accepts .php2 files, if the name contains .png. Therefore I renamed the php reverse shell as `revshell.png.php2` and the upload was successful: <br />
+![image](https://github.com/user-attachments/assets/ce6a7a1e-c344-41fd-bc85-976da202115e)
+Again, spawn a reverse shell and the the flag: `THM{MGEyYzJiYmI3ODIyM2FlNTNkNjZjYjFl}`
 
 ### Bypassing Server-Side Filtering: Magic Numbers
-- Grab the flag from /var/www/
+- Grab the flag from /var/www/ <br />
+Head to `magic.uploadvulns.thm`. To successfully upload our `revshell.php`, we need to modify the magic number of the file. Search for the [file signature](https://en.wikipedia.org/wiki/List_of_file_signatures) for gifs, which is GIF87a. Simply add this string at the beginning of the file. <br />
+To check if the hexadecimal value is correct, you can check it by opening the file using `hexeditor`. Now, even the linux `file` command thinks it's a gif: <br />
+![image](https://github.com/user-attachments/assets/9b420dfd-6507-49c3-8ac2-24cf985b967a)
+beautiful. Now we need a way to find where the files are uploaded. A gobuster search finds us the "graphisc" directory. However we cannot access it. My first trivial try was to try to access the `http://magic.uploadvulns.thm/graphics/revshell.php`  and it worked, lol. If you know any method to find the locations of uploaded files please feel free to let me know, I want to learn! <br />
+By accessing the file, the web server executed it and we spawned a reverse shell. The flag is: `THM{MWY5ZGU4NzE0ZDlhNjE1NGM4ZThjZDJh}`
 
 ### Challenge
 - Hack the machine and grab the flag from /var/www/
