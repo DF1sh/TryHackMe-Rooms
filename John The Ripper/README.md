@@ -49,9 +49,27 @@ We want to use single crack mode for the user "Joker". So the first thing to do 
 `Jok3r`
 
 ### Custom Rules
+- What do custom rules allow us to exploit? `password complexity predictability`
+- What rule would we use to add all capital letters to the end of the word? `Az"[A-Z]"`
+- What flag would we use to call a custom rule called "THMRules" `--rule=THMRules`
 
 ### Cracking Password Protected Zip Files
+- What is the password for the secure.zip file? <br />
+Run the command: `zip2john secure_1605054835063.zip > zip_hash.txt`. And now crack the zip file with `john --wordlist=/usr/share/wordlists/rockyou.txt zip_hash.txt ` <br />
+![image](https://github.com/user-attachments/assets/eab52993-cea2-419f-b588-405c4695b766)<br />
+The password is: `pass123`. 
+- What is the contents of the flag inside the zip file? <br />
+Use the password to open the .zip file with the command `unzip secure_1605054835063.zip` and get the flag: `THM{w3ll_d0n3_h4sh_r0y4l}`
 
 ### Cracking Password Protected RAR Archives
-
+- What is the password for the secure.rar file? <br />
+Run `rar2john secure_1605054844670.rar > rar_hash.txt`, and then crack the hash with: `john --wordlist=/usr/share/wordlists/rockyou.txt rar_hash.txt`. The password is `password`.
+- What is the contents of the flag inside the zip file? <br />
+Now extract the .rar with the command: `unrar e secure_1605054844670.rar`, and get the flag `THM{r4r_4rch1ve5_th15_t1m3}`.
+ 
 ### Cracking SSH Keys with John 
+- What is the SSH private key password? <br />
+First run `ssh2john id_rsa_1605800988509.id_rsa > id_rsa_hash.txt`, and then `ssh2john id_rsa_1605800988509.id_rsa > id_rsa_hash.txt`: <br />
+![image](https://github.com/user-attachments/assets/d2638e6c-c03a-46b5-89fa-0a66867c163a)<br />
+`mango`
+
