@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/0777a554-8426-4210-a0e6-237572b365f7)# John The Ripper
+# John The Ripper
 
 ### Setting up John the Ripper 
 - What is the most popular extended version of John the Ripper? `Jumbo John`
