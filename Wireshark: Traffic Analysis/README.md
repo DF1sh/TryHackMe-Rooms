@@ -76,10 +76,17 @@ Take the base64 string and decode it to get the answer: `62[.]210[.]130[.]250`.
 
 
 ### Encrypted Protocol Analysis: Decrypting HTTPS
-- Use the "Desktop/exercise-pcaps/https/Exercise.pcap" file. What is the frame number of the "Client Hello" message sent to "accounts.google.com"?
-- Decrypt the traffic with the "KeysLogFile.txt" file. What is the number of HTTP2 packets?
-- Go to Frame 322. What is the authority header of the HTTP2 packet? (Enter the address in defanged format.)
-- Investigate the decrypted packets and find the flag! What is the flag?
+- Use the "Desktop/exercise-pcaps/https/Exercise.pcap" file. What is the frame number of the "Client Hello" message sent to "accounts.google.com"? <br />
+We need to look at the SNI(Server Name Indicator) of packets: <br />
+![image](https://github.com/user-attachments/assets/7d7ffa46-0595-4d4d-9506-e346a78f2e92)<br />
+`16`
+- Decrypt the traffic with the "KeysLogFile.txt" file. What is the number of HTTP2 packets? <br />
+You can use the "right-click" menu or "Edit --> Preferences --> Protocols --> TLS" menu to add/remove key log files. Then use the filter `http2`. The answer is `115`.
+- Go to Frame 322. What is the authority header of the HTTP2 packet? (Enter the address in defanged format.) <br />
+![image](https://github.com/user-attachments/assets/71d8dc7f-5091-4e5f-9b98-ec86c0af65c0)<br />
+`safebrowsing[.]googleapis[.]com`
+- Investigate the decrypted packets and find the flag! What is the flag?<br />
+I used the filter `http contains "THM"`, and it worked: `FLAG{THM-PACKETMASTER}`
 
 ### Bonus: Hunt Cleartext Credentials!
 - Use the "Desktop/exercise-pcaps/bonus/Bonus-exercise.pcap" file. What is the packet number of the credentials using "HTTP Basic Auth"?
