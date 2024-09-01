@@ -32,27 +32,48 @@ By analyzing them, we can see that POST requests on the resource `/userinfo.php`
 `Nice work!`
 
 ### Identifying Hosts: DHCP, NetBIOS and Kerberos
-- Use the "Desktop/exercise-pcaps/dhcp-netbios-kerberos/dhcp-netbios.pcap" file. What is the MAC address of the host "Galaxy A30"?
-- How many NetBIOS registration requests does the "LIVALJM" workstation have?
-- Which host requested the IP address "172.16.13.85"?
-- Use the "Desktop/exercise-pcaps/dhcp-netbios-kerberos/kerberos.pcap" file. What is the IP address of the user "u5"? (Enter the address in defanged format.)
-- What is the hostname of the available host in the Kerberos packets?
+- Use the "Desktop/exercise-pcaps/dhcp-netbios-kerberos/dhcp-netbios.pcap" file. What is the MAC address of the host "Galaxy A30"? <br />
+The filter is ` dhcp.option.hostname contains "Galaxy" && dhcp.option.hostname contains "A30"`. <br />
+![image](https://github.com/user-attachments/assets/a37bda3e-782b-4554-b96f-43f9321dbab9)<br />
+`9a:81:41:cb:96:6c`
+- How many NetBIOS registration requests does the "LIVALJM" workstation have? <br />
+Use the following filter: `nbns.name contains "LIVALJM"`, and we find some packets. We want to filter those packets for only those containing a registration. So if we look at some of them: 
+![image](https://github.com/user-attachments/assets/a46b6669-3f32-4f18-9d6a-b0ec95b4d486)<br />
+We can see that the flags related to a registration are `0x2910` and `0x2810`. So now the filter becomes: `nbns.name contains "LIVALJM" && nbns.flags in {0x2810 0x2910}`, and the final answer is `16`. 
+- Which host requested the IP address "172.16.13.85"? <br />
+The filter is `dhcp.option.requested_ip_address == 172.16.13.85`, the output will be only one packet, inspect it: <br />
+![image](https://github.com/user-attachments/assets/45d0c654-ac16-4173-bb2e-d5b52bd32cdf) <br />
+`Galaxy-A12`
+- Use the "Desktop/exercise-pcaps/dhcp-netbios-kerberos/kerberos.pcap" file. What is the IP address of the user "u5"? (Enter the address in defanged format.) <br />
+The filter is `kerberos.CNameString contains "u5`. To defang it, you can use [CyberChef](https://gchq.github.io/CyberChef/): `10[.]1[.]12[.]2`
+- What is the hostname of the available host in the Kerberos packets? <br />
+The filter is `kerberos.CNameString contains "$"`. This is because in active directory, machines are identified with their hostname + $. The answer is `xp1$`.
 
 ### Tunneling Traffic: DNS and ICMP
-- Use the "Desktop/exercise-pcaps/dns-icmp/icmp-tunnel.pcap" file. Investigate the anomalous packets. Which protocol is used in ICMP tunnelling?
-- Use the "Desktop/exercise-pcaps/dns-icmp/dns.pcap" file. Investigate the anomalous packets. What is the suspicious main domain address that receives anomalous DNS queries? (Enter the address in defanged format.)
+- Use the "Desktop/exercise-pcaps/dns-icmp/icmp-tunnel.pcap" file. Investigate the anomalous packets. Which protocol is used in ICMP tunnelling? `SSH`
+- Use the "Desktop/exercise-pcaps/dns-icmp/dns.pcap" file. Investigate the anomalous packets. What is the suspicious main domain address that receives anomalous DNS queries? (Enter the address in defanged format.) `dataexfil[.]com`
 
 ### Cleartext Protocol Analysis: FTP
-- Use the "Desktop/exercise-pcaps/ftp/ftp.pcap" file. How many incorrect login attempts are there?
-- What is the size of the file accessed by the "ftp" account?
-- The adversary uploaded a document to the FTP server. What is the filename?
-- The adversary tried to assign special flags to change the executing permissions of the uploaded file. What is the command used by the adversary?
+- Use the "Desktop/exercise-pcaps/ftp/ftp.pcap" file. How many incorrect login attempts are there? <br />
+The filter is `ftp.response.code == 530`, the answer is `737`
+- What is the size of the file accessed by the "ftp" account? <br />
+Filter for `ftp.response.code == 213`, then right click the packet and select "Follow TCP Stream", this will open the list of exchanged packets during that specific TCP session (That is so cool). <br />
+![image](https://github.com/user-attachments/assets/7fb69cd4-6780-4df6-b04d-a996b2eacd82)<br />
+`39424`
+- The adversary uploaded a document to the FTP server. What is the filename? `resume.doc`
+- The adversary tried to assign special flags to change the executing permissions of the uploaded file. What is the command used by the adversary? `CHMOD 777`
 
 ### Cleartext Protocol Analysis: HTTP
-- Use the "Desktop/exercise-pcaps/http/user-agent.cap" file. Investigate the user agents. What is the number of anomalous  "user-agent" types?
-- What is the packet number with a subtle spelling difference in the user agent field?
-- Use the "Desktop/exercise-pcaps/http/http.pcapng" file. Locate the "Log4j" attack starting phase. What is the packet number?
-- Locate the "Log4j" attack starting phase and decode the base64 command. What is the IP address contacted by the adversary? (Enter the address in defanged format and exclude "{}".)
+- Use the "Desktop/exercise-pcaps/http/user-agent.cap" file. Investigate the user agents. What is the number of anomalous  "user-agent" types? `6`
+- What is the packet number with a subtle spelling difference in the user agent field? <br /> 
+![image](https://github.com/user-attachments/assets/6da5b72a-175e-4cf5-8659-2296f8944c31)<br />
+`52`
+- Use the "Desktop/exercise-pcaps/http/http.pcapng" file. Locate the "Log4j" attack starting phase. What is the packet number? <br />
+the filter is `http.request.method == "POST" and (ip contains "jndi") or (ip contains "Exploit")`. The packet number is `444`.
+- Locate the "Log4j" attack starting phase and decode the base64 command. What is the IP address contacted by the adversary? (Enter the address in defanged format and exclude "{}".) <br />
+![image](https://github.com/user-attachments/assets/14e76819-80bd-4919-a646-d4f1f4a6ca8c) <br />
+Take the base64 string and decode it to get the answer: `62[.]210[.]130[.]250`.
+
 
 ### Encrypted Protocol Analysis: Decrypting HTTPS
 - Use the "Desktop/exercise-pcaps/https/Exercise.pcap" file. What is the frame number of the "Client Hello" message sent to "accounts.google.com"?
