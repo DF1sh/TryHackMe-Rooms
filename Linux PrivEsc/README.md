@@ -21,18 +21,27 @@ copy the root user's row and append it to the bottom of the file, changing the f
 - Run the "id" command as the newroot user. What is the result? `uid=0(root) gid=0(root) groups=0(root)`
 
 ### Sudo - Shell Escape Sequences
+- How many programs is "user" allowed to run via sudo? <br />
+![image](https://github.com/user-attachments/assets/b100cc7e-6b4e-4df8-8810-8fa82ed825f1)<br />
+`11`
+- One program on the list doesn't have a shell escape sequence on GTFOBins. Which is it? `apache2`
 
-### 
 
-### 
+### Cron Jobs - PATH Environment Variable
+- What is the value of the PATH variable in /etc/crontab? <br />
+![image](https://github.com/user-attachments/assets/4d02cfcd-373a-452e-8b6d-297e65ad4b1b)<br />
+`/home/user:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin`
 
-### 
+### Passwords & Keys - History Files
+- What is the full mysql command the user executed?<br />
+![image](https://github.com/user-attachments/assets/dd05b66d-f34d-42f3-b181-b71d372d4935)<br />
+`mysql -h somehost.local -uroot -ppassword123`
 
-### 
+### Passwords & Keys - Config Files
+- What file did you find the root user's credentials in? <br />
+![image](https://github.com/user-attachments/assets/218f0260-5165-4f00-8b8a-9f46273b6521)<br />
+`/etc/openvpn/auth.txt`
 
-### 
-
-### 
-
-### 
+### NFS
+- What is the name of the option that disables root squashing? `no_root_squash`
 
