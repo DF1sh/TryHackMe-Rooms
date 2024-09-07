@@ -27,7 +27,7 @@ Found the answer [here](https://linux.die.net/man/8/ping):
 - In Traceroute B, how many routers are between the two systems? `26`
 
 ### Telnet
-- Start the attached VM from Task 3 if it is not already started. On the AttackBox, open the terminal and use the telnet client to connect to the VM on port 80. What is the name of the running server? 
+- Start the attached VM from Task 3 if it is not already started. On the AttackBox, open the terminal and use the telnet client to connect to the VM on port 80. What is the name of the running server? <br />
 ![image](https://github.com/user-attachments/assets/29aed172-887d-45c6-9235-6d2f9080cea8)<br />
 `Apache`
 - What is the version of the running server (on port 80 of the VM)? `2.4.61`
