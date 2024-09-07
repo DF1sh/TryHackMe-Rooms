@@ -9,6 +9,7 @@ Open the given web page, inspect the source code and view the script.js, scroll 
 ### Ping
 - Which option would you use to set the size of the data carried by the ICMP echo request? `-s`
 - What is the size of the ICMP header in bytes? <br />
+Found the answer [here](https://linux.die.net/man/8/ping): 
 ![image](https://github.com/user-attachments/assets/053015c5-42ae-445f-88cb-155afca96bbc)<br />
 `8`
 - Does MS Windows Firewall block ping by default? (Y/N) `Y`
