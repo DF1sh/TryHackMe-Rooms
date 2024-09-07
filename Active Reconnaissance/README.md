@@ -1,7 +1,7 @@
 # Active Reconnaissance
 
 ### Web Browser
-- Browse to the following website and ensure that you have opened your Developer Tools on AttackBox Firefox, or the browser on your computer. Using the Developer Tools, figure out the total number of questions.
+- Browse to the following website and ensure that you have opened your Developer Tools on AttackBox Firefox, or the browser on your computer. Using the Developer Tools, figure out the total number of questions.<br />
 Open the given web page, inspect the source code and view the script.js, scroll down to find the answer: <br />
 ![image](https://github.com/user-attachments/assets/19a6b52e-0e44-4ab5-8401-4e0b01d40d7c)<br />
 `8`
