@@ -20,25 +20,16 @@ Port 80 shows nothing interesting: <br />
 ![image](https://github.com/user-attachments/assets/e504da8e-e4a8-45b9-b180-1c661e9a6a09)<br />
 Port 8080 shows a login panel: <br />
 ![image](https://github.com/user-attachments/assets/42bd93a2-81ec-45ff-a260-1f4ae3470381)<br />
-Let's run a more detailed scan on this given port:
+Searching online for the default credentials, I gained access to the panel with the credentials admin:admin. `admin:admin`
 
-      nmap -p8080 -sV -sC 10.10.128.203         
-      Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-09-11 09:15 EDT
-      Nmap scan report for 10.10.128.203
-      Host is up (0.083s latency).
-      
-      PORT     STATE SERVICE VERSION
-      8080/tcp open  http    Jetty 9.4.z-SNAPSHOT
-      | http-robots.txt: 1 disallowed entry 
-      |_/
-      |_http-server-header: Jetty(9.4.z-SNAPSHOT)
-      |_http-title: Site doesn't have a title (text/html;charset=utf-8).
-      
-      Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
-      Nmap done: 1 IP address (1 host up) scanned in 11.53 seconds
-We can see that the webserver version is "Jetty 9.4.z-SNAPSHOT".
-- What is the user.txt flag?
-  
+- What is the user.txt flag?<br />
+Playing around with the application, I found that in the "Manage Jenkins" section, there's the possibility of executing scripts: <br />
+![image](https://github.com/user-attachments/assets/a3739b3e-629b-475d-a595-27518cfae65e)<br />
+So, after some reasearch, I understood that the script must be written in groovy, which is an object oriented language that runs in the JVM, but was developed to be more concise and less verbose than Java. I found a groovy reverse shell [here](https://gist.github.com/frohoff/fed1ffaab9b9beeb1c76), the code for the reverse shell can be found in revShell.groovy inside this folder. So finally I was able to gain initial access:<br />
+![image](https://github.com/user-attachments/assets/3a615248-071f-41f6-af7e-c5e7cf7928a6)<br />
+So I was able to get the flag: <br />
+![image](https://github.com/user-attachments/assets/5afb69d9-8d50-444e-87e0-a0914bd790de)<br />
+`79007a09481963edf2e1321abd9ae2a0`  
 ### Switching Shells
 - What is the final size of the exe payload that you generated?
 
