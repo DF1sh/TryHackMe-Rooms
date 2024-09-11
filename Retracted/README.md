@@ -28,14 +28,21 @@ Again, filtering by "antivirus.exe", we find an event with ID=3, a network conne
 `10.10.8.111`
 
 ### Back to Normal
-- The threat actor logged in via RDP right after the “installer” was downloaded. What is the source IP?
-- This other person downloaded a file and ran it. When was this file run? Timezone UTC (Format YYYY-MM-DD hh:mm:ss)
+- The threat actor logged in via RDP right after the “installer” was downloaded. What is the source IP? <br />
+Look at the RDP connections to find the answer: `10.11.27.46`
+- This other person downloaded a file and ran it. When was this file run? Timezone UTC (Format YYYY-MM-DD hh:mm:ss)<br />
+From microsoft edge we know that two files have been downloaded:<br />
+![image](https://github.com/user-attachments/assets/a9203e26-df7b-4c35-846a-9cbab2a2f437)<br />
+Let's filter by "decryptor.exe":<br />
+![image](https://github.com/user-attachments/assets/98f580b5-01ea-41bf-a6a2-20ee80774b90)<br />
+`2024-01-08 14:24:18`
 
 ### Doesn't Make Sense
-- Sophie ran out and reached out to you for help.
-- Sophie downloaded the malware and ran it.
-- A note was created on the desktop telling Sophie to check her Bitcoin.
-- The intruder downloaded a decryptor and decrypted all the files.
-- The malware encrypted the files on the computer and showed a ransomware note.
-- Someone else logged into Sophie's machine via RDP and started looking around.
-- We arrive on the scene to investigate.
+Arrange the following events in sequential order from 1 to 7, based on the timeline in which they occurred.
+- Sophie ran out and reached out to you for help. `3`
+- Sophie downloaded the malware and ran it. `1`
+- A note was created on the desktop telling Sophie to check her Bitcoin. `6`
+- The intruder downloaded a decryptor and decrypted all the files. `5`
+- The malware encrypted the files on the computer and showed a ransomware note. `2`
+- Someone else logged into Sophie's machine via RDP and started looking around. `4`
+- We arrive on the scene to investigate. `7`
