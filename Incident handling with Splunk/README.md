@@ -48,9 +48,23 @@ Go on VirusTotal and submit the previous MD5 hash, then click on "Details" to ge
 `ab.exe`
 
 ### Action on Objectives
+- What is the name of the file that defaced the imreallynotbatman.com website ?
+`poisonivy-is-coming-for-you-batman.jpeg`
+- Fortigate Firewall 'fortigate_utm' detected SQL attempt from the attacker's IP 40.80.148.42. What is the name of the rule that was triggered during the SQL Injection attempt?<br />
+The rule that helped me is: `index=botsv1 sourcetype="fortigate_utm" src_ip=40.80.148.42 *SQL*`<br />
+![image](https://github.com/user-attachments/assets/370e5fd8-cbc0-4e6c-a2b3-2811abff86e6)<br />
+`HTTP.URI.SQL.Injection`
 
 ### Command and Control Phase
+- This attack used dynamic DNS to resolve to the malicious IP. What fully qualified domain name (FQDN) is associated with this attack?<br />
+Use this filter: `index=botsv1 sourcetype=stream:http dest_ip=23.22.63.114 "poisonivy-is-coming-for-you-batman.jpeg" src_ip=192.168.250.70`<br />
+![image](https://github.com/user-attachments/assets/73505270-fedb-4530-9656-aadcc0379d1c)<br />
+`prankglassinebracket.jumpingcrab.com`
 
 ### Weaponization Phase
+- What IP address has P01s0n1vy tied to domains that are pre-staged to attack Wayne Enterprises? `23.22.63.114`
+- Based on the data gathered from this attack and common open-source intelligence sources for domain names, what is the email address that is most likely associated with the P01s0n1vy APT group? `lillian.rose@po1s0nvy.com`
 
 ### Delivery Phase
+- What is the HASH of the Malware associated with the APT group? `c99131e0169171935c5ac32615ed6261`
+- What is the name of the Malware associated with the Poison Ivy Infrastructure? `MirandaTateScreensaver.scr.exe`
