@@ -34,6 +34,18 @@ One request came from a mozilla browser, and not a python script:<br />
 - After finding the correct password, which IP did the attacker use to log in to the admin panel?
 
 ### Installation Phase
+- Sysmon also collects the Hash value of the processes being created. What is the MD5 HASH of the program 3791.exe? <br />
+The filter that helped me is `index=botsv1 "3791.exe" source="WinEventLog:Microsoft-Windows-Sysmon/Operational" EventCode=1 *MD5*`<br />
+![image](https://github.com/user-attachments/assets/d3b9e771-c2d7-4ec6-bbd0-c1dcee8b78ae)<br />
+`AAE3F5A29935E6ABCC2C2754D12A9AF0`
+- Looking at the logs, which user executed the program 3791.exe on the server? <br />
+The filter that helped me is `index=botsv1 "3791.exe" source="WinEventLog:Security"`<br />
+![image](https://github.com/user-attachments/assets/67d61d46-ccae-4c09-b209-c9788788c016)<br />
+`NT AUTHORITY\IUSR`
+- Search hash on the virustotal. What other name is associated with this file 3791.exe? 
+Go on VirusTotal and submit the previous MD5 hash, then click on "Details" to get the answer:<br />
+![image](https://github.com/user-attachments/assets/032ff099-1a71-4061-af4b-10ac4f33569a)<br />
+`ab.exe`
 
 ### Action on Objectives
 
