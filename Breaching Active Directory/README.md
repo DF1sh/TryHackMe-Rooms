@@ -36,20 +36,32 @@ Now click on "test settings", so that the printer will send us the credentials: 
 The password is `tryhackmeldappass1@`.
 
 ### Authentication Relays
-- What is the name of the tool we can use to poison and capture authentication requests on the network?
-- What is the username associated with the challenge that was captured?
-- What is the value of the cracked password associated with the challenge that was captured?
+- What is the name of the tool we can use to poison and capture authentication requests on the network? `svcFileCopy`
+- What is the username associated with the challenge that was captured?<br />
+Run responder with the following command: `sudo responder -I breachad`. Now we have to wait some time in order to successfully poison some authentication request. After some time we successfully perform a MITM and capture a set of credentials: <br />
+![image](https://github.com/user-attachments/assets/dc2fc284-0ea3-4a07-ad09-236288cbd956)<br />
+As we can see, the username is `svcFileCopy`
+- What is the value of the cracked password associated with the challenge that was captured?<br />
+To crack the hash, we are going to use `hashcat` using the provided wordlist from the task. Move the hash into a text file, like so: <br />
+![image](https://github.com/user-attachments/assets/54559753-6650-4417-a5af-ae68799ce89f)<br />
+The command to use is `hashcat -m 5600 <hash file> <password file> --force`: <br />
+After a minute hashcat should crack it successfully: `FPassword1!`
+
 
 ### Microsoft Deployment Toolkit
-- What Microsoft tool is used to create and host PXE Boot images in organisations?
-- What network protocol is used for recovery of files from the MDT server?
-- What is the username associated with the account that was stored in the PXE Boot image?
-- What is the password associated with the account that was stored in the PXE Boot image?
+- What Microsoft tool is used to create and host PXE Boot images in organisations? `Microsoft Deployment Toolkit`
+- What network protocol is used for recovery of files from the MDT server? `TFTP`
+- What is the username associated with the account that was stored in the PXE Boot image? `svcMDT`
+- What is the password associated with the account that was stored in the PXE Boot image? `PXEBootSecure1@`
 
 ### Configuration Files
-- What type of files often contain stored credentials on hosts?
-- What is the name of the McAfee database that stores configuration including credentials used to connect to the orchestrator?
-- What table in this database stores the credentials of the orchestrator?
-- What is the username of the AD account associated with the McAfee service?
-- What is the password of the AD account associated with the McAfee service?
-
+- What type of files often contain stored credentials on hosts? `Configuration Files`
+- What is the name of the McAfee database that stores configuration including credentials used to connect to the orchestrator? `ma.db`
+- What table in this database stores the credentials of the orchestrator? `AGENT_REPOSITORIES`
+- What is the username of the AD account associated with the McAfee service? `svcAV`
+- What is the password of the AD account associated with the McAfee service? <br />
+Run this command to get the McAfee configuration file: `scp thm@THMJMP1.za.tryhackme.com:C:/ProgramData/McAfee/Agent/DB/ma.db .`, the password is `Password1@`. <br />
+Now use `sqlitebrowser ma.db` to read the contents of the DB. Select the Browse Data option and focus on the AGENT_REPOSITORIES table: <br />
+![image](https://github.com/user-attachments/assets/1c179076-5815-4a1e-81a4-9a0175e7c351)<br />
+Now download the given python script provided in the task, and execute it: `python2 mcafee_sitelist_pwd_decrypt.py jWbTyS7BL1Hj7PkO5Di/QhhYmcGj5cOoZ2OkDTrFXsR/abAFPM9B3Q==` (this works in the attackbox, not in my kali machine, since it's having troubles with a crypto library).<br />
+The cracked password is `MyStrongPassword!`
