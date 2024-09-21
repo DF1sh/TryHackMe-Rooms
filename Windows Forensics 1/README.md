@@ -43,17 +43,23 @@
 - When was this file opened?<br /> `2021-11-30 10:56:19`
 
 ### Evidence of Execution
-- How many times was the File Explorer launched?
-- What is another name for ShimCache?
-- Which of the artifacts also saves SHA1 hashes of the executed programs?
-- Which of the artifacts saves the full path of the executed programs?
+- How many times was the File Explorer launched? `26`
+- What is another name for ShimCache? `AppCompatCache`
+- Which of the artifacts also saves SHA1 hashes of the executed programs? `AmCache`
+- Which of the artifacts saves the full path of the executed programs? `BAM/DAM`
 
 ### External Devices/USB device forensics
-- What is the serial number of the device from the manufacturer 'Kingston'?
-- What is the name of this device?
-- What is the friendly name of the device from the manufacturer 'Kingston'?
+- What is the serial number of the device from the manufacturer 'Kingston'? `1C6f654E59A3B0C179D366AE&0`
+- What is the name of this device? `Kingston Data Traveler 2.0 USB Device`
+- What is the friendly name of the device from the manufacturer 'Kingston'? `USB`
 
 ### Hands-on Challenge
+First of all we want to access the registry files. To do that, open the Registry Explorer application provided in the machine. Then click on files -> load hive, and select triage -> C -> Windows -> System 32 -> config to access the registry files. <br />
+Load the following files: <br />
+![image](https://github.com/user-attachments/assets/b3455a91-ced1-47c9-9ba4-a60cc6e48bca)<br />
+You should have something like this: <br />
+![image](https://github.com/user-attachments/assets/e60573ad-df93-4855-90b0-035eaecd604f)<br />
+
 - How many user created accounts are present on the system? 
 - What is the username of the account that has never been logged in?
 - What's the password hint for the user THM-4n6?
