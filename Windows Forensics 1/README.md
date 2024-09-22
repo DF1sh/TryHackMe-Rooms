@@ -55,14 +55,30 @@
 
 ### Hands-on Challenge
 First of all we want to access the registry files. To do that, open the Registry Explorer application provided in the machine. Then click on files -> load hive, and select triage -> C -> Windows -> System 32 -> config to access the registry files. <br />
-Load the following files: <br />
-![image](https://github.com/user-attachments/assets/b3455a91-ced1-47c9-9ba4-a60cc6e48bca)<br />
-You should have something like this: <br />
-![image](https://github.com/user-attachments/assets/e60573ad-df93-4855-90b0-035eaecd604f)<br />
-
-- How many user created accounts are present on the system? 
-- What is the username of the account that has never been logged in?
-- What's the password hint for the user THM-4n6?
-- When was the file 'Changelog.txt' accessed?
-- What is the complete path from where the python 3.8.2 installer was run?
-- When was the USB device with the friendly name 'USB' last connected?
+Load the following files(one at a time): <br />
+![image](https://github.com/user-attachments/assets/8baf5409-0626-4f42-bf4b-2ad1739d0e95)<br />
+A warning should pop up about sequence numbers not matching. Do not worry. Just press Yes. Next, it says select transaction logs. For the DEFAULT hive, select both DEFAULT.LOG1 and DEFAULT.LOG2 files. To select more than one file, you can click on the first file, then hold CTRL and click on the second file. You should get a pop up saying to select a location for our new and updated hive. I just saved it at the default location, which should be our Desktop. Also load NTUSER.DAT at triage -> C -> Users -> THM-4n6 -> NTUSER.DAT. In the end you should end up with something like this: <br />
+![image](https://github.com/user-attachments/assets/e959564c-bc1e-4d61-b3df-f57e8fcc20e1)<br />
+- How many user created accounts are present on the system?<br />
+Check the SAM: <br />
+![image](https://github.com/user-attachments/assets/a9fc67df-227d-44ca-9f52-930ac144ec17)<br />
+Users with RID 50X are system accounts, users with RID 10XX are user accounts, therefore the answer is `3`
+- What is the username of the account that has never been logged in?<br /> 
+We can see that one of these users never logged in: <br />
+![image](https://github.com/user-attachments/assets/7939ddb1-85be-41bd-94f8-b458f535cbb2)<br />
+`thm-user2`
+- What's the password hint for the user THM-4n6? Check the picture above: `count`
+- When was the file 'Changelog.txt' accessed? <br />
+Recently accessed files can be found at `NTUSER.DAT\Software\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs`: <br />
+![image](https://github.com/user-attachments/assets/bd096424-dc9f-4c8a-b880-b9bb49d1f13e)<br /
+`2021-11-21 18:18:48`
+- What is the complete path from where the python 3.8.2 installer was run?<br />
+Evidence of execution can be found at `NTUSER.DAT\Software\Microsoft\Windows\Currentversion\Explorer\UserAssist\{GUID}\Count`. I found the answer by looking at every GUID, luckily there weren't too many: <br />
+![image](https://github.com/user-attachments/assets/f521cf77-c9ec-43b9-a97d-d6729724891c)<br />
+`Z:\setups\python-3.8.2.exe`
+- When was the USB device with the friendly name 'USB' last connected?<br />
+Under `SOFTWARE\Microsoft\Windows Portable Devices\Devices` there's a device with friendly name "USB". I took not of the Disk-ID of that device: <br />
+![image](https://github.com/user-attachments/assets/7f9a822f-d385-49c7-8f18-a12e1d879bff)<br />
+Then I moved on `SYSTEM\CurrentControlSet\Enum\USBSTOR` and found the data I needed: <br />
+![image](https://github.com/user-attachments/assets/e326dd09-77d6-4c1b-8b9d-d514bb4c60d9)<br />
+`2021-11-24 18:40:06`
