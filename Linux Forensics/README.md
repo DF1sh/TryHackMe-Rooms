@@ -26,11 +26,22 @@
 `/usr/bin/Xtigervnc`
 
 ### Persistence mechanisms
-- In the bashrc file, the size of the history file is defined. What is the size of the history file that is set for the user Ubuntu in the attached machine?
+- In the bashrc file, the size of the history file is defined. What is the size of the history file that is set for the user Ubuntu in the attached machine?<br />
+Run `cat .bashrc` and read through the output to find the answer: <br />
+![image](https://github.com/user-attachments/assets/3396e969-4487-4962-92ca-033b58391135)<br />
+`2000`
 
 ### Evidence of Execution
-- The user tryhackme used apt-get to install a package. What was the command that was issued?
-- What was the current working directory when the command to install net-tools was issued?
+- The user tryhackme used apt-get to install a package. What was the command that was issued?<br />
+Move to `/home/tryhackme/` and run `sudo cat .bash_history`:<br />
+![image](https://github.com/user-attachments/assets/4970b960-e7b4-458c-bebe-2d2f89c94f68)<br />
+`sudo apt-get install apache2`
+- What was the current working directory when the command to install net-tools was issued?<br />
+Move to `/home/ubuntu` and read through the .bash_history file. There are no `cd` commands, so the directory working directory didn't change.<br />
+`/home/ubuntu`
 
 ### Log files
-- Though the machine's current hostname is the one we identified in Task 4. The machine earlier had a different hostname. What was the previous hostname of the machine?
+- Though the machine's current hostname is the one we identified in Task 4. The machine earlier had a different hostname. What was the previous hostname of the machine?<br />
+The command that I used is `cat /var/log/syslog | head`:<br />
+![image](https://github.com/user-attachments/assets/06b8adb9-686a-497c-9a37-17f8908c2a59)<br />
+`tryhackme`
