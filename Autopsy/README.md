@@ -42,10 +42,23 @@ Search for "secret": <br />
 `10.11.11.128`
 - What web search term has the most entries?<br />
 Select Results -> Extracted Content -> Web search to find the answer: `information leakage cases`
-- What was the web search conducted on 3/25/2015 21:46:44?
-- What MD5 hash value of the binary is listed as an Interesting File?
-- What self-assuring message did the 'Informant' write for himself on a Sticky Note? (no spaces)
+- What was the web search conducted on 3/25/2015 21:46:44? <br />
+![image](https://github.com/user-attachments/assets/cbd0deb9-dd3a-4a35-a2f1-c2dcf436ee03)<br />
+`anti-forensic tools`
+- What MD5 hash value of the binary is listed as an Interesting File?<br />
+The answer can be found inside the "Interesting files" section:<br />
+![image](https://github.com/user-attachments/assets/5f03fda7-b137-4a52-85e3-954eb8426da7)<br />
+`fe18b02e890f7a789c576be8abccdc99`
+- What self-assuring message did the 'Informant' write for himself on a Sticky Note? (no spaces) <br />
+Had a hard time with this: <br />
+![image](https://github.com/user-attachments/assets/7c0c121a-a3d2-4b2d-9f16-c15c529e4231)<br />
+`Tomorrow...Everything will be OK...`
 
 ### Visualisation Tools
-- Using the Timeline, how many results were there on 2015-01-12?
-- The majority of file events occurred on what date? (MONTH DD, YYYY)
+- Using the Timeline, how many results were there on 2015-01-12?<br />
+Filter for the given date to find the answer: <br />
+![image](https://github.com/user-attachments/assets/3922ebfe-8593-4bf6-adaa-6758d320822d)<br />
+`46`
+
+- The majority of file events occurred on what date? (MONTH DD, YYYY)<br />
+`March 25, 2015`
