@@ -1,17 +1,22 @@
 # Redline
 
 ### Introduction
-- Who created Redline?
+- Who created Redline? `FireEye `
 
 ### Data Collection
-- What data collection method takes the least amount of time?
-- You are reading a research paper on a new strain of ransomware. You want to run the data collection on your computer based on the patterns provided, such as domains, hashes, IP addresses, filenames, etc. What method would you choose to run a granular data collection against the known indicators?
-- What script would you run to initiate the data collection process? Please include the file extension.
-- If you want to collect the data on Disks and Volumes, under which option can you find it?
-- What cache does Windows use to maintain a preference for recently executed code? 
+- What data collection method takes the least amount of time? `Standard Collector`
+- You are reading a research paper on a new strain of ransomware. You want to run the data collection on your computer based on the patterns provided, such as domains, hashes, IP addresses, filenames, etc. What method would you choose to run a granular data collection against the known indicators? `IOC Search Collector`
+- What script would you run to initiate the data collection process? Please include the file extension. `RunRedlineAudit.bat`
+- If you want to collect the data on Disks and Volumes, under which option can you find it?<br />
+![image](https://github.com/user-attachments/assets/e00e77ff-0ee0-4160-96e6-ae2f6967cdc5)<br />
+`Disk Enumeration`
+- What cache does Windows use to maintain a preference for recently executed code? <br />
+Found the answer in the Redline user guide :<br />
+![image](https://github.com/user-attachments/assets/98bd0bf6-3d72-45fd-9237-1c795bcce8ae)<br />
+`Prefetch`
 
 ### The Redline Interface
-- Where in the Redline UI can you view information about the Logged in User?
+- Where in the Redline UI can you view information about the Logged in User? `System Information`
 
 ### Standard Collector Analysis
 - Provide the Operating System detected for the workstation.
