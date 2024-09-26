@@ -21,4 +21,6 @@
 - Which Memory section contains information related to the program's control flow? `Stack`
 
 ### Stack Layout
-- Follow the instructions in the attached static site and find the flag. What is the flag? `THM{SMASHED_THE_STACK}`
+- Follow the instructions in the attached static site and find the flag. What is the flag? <br />
+![image](https://github.com/user-attachments/assets/67a2fcae-f2d7-4746-9786-2a2efdfef177)<br />
+`THM{SMASHED_THE_STACK}`
