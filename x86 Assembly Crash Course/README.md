@@ -33,12 +33,22 @@ mov eax, 0<br />
 - Which instruction is used to push all registers to the stack? `pusha`
 
 ### Practice Time
-- While running the MOV instructions, what is the value of [eax] after running the 4th instruction? (in hex)
-- What error is displayed after running the 6th instruction from the MOV instruction section?
-- Run the instructions from the stack section. What is the value of eax after the 9th instruction? (in hex)
-- Run the instructions from the stack section. What is the value of edx after the 12th instruction? (in hex)
-- Run the instructions from the stack section. After POP ecx, what is the value left at the top of the stack? (in hex)
-- Run the cmp and test instructions. Which flags are triggered after the 3rd instruction? (Note: Use these abbreviations in alphabetical order with no spaces: CF,PF,SF,ZF)
-- Run the test and the cmp instructions. Which flags are triggered after the 11th instruction? (Note: Use these abbreviations in alphabetical order with no spaces: CF,PF,SF,ZF)
-- Run the instructions from the lea section. What is the value of eax after running the 9th instruction? (in hex)
-- Run the instructions from the lea section. What is the final value found in the ECX register? (in hex)
+- While running the MOV instructions, what is the value of [eax] after running the 4th instruction? (in hex)<br />
+![image](https://github.com/user-attachments/assets/0210a6f2-1277-4476-8d97-cf988d33efbf)<br />
+`0x00000040`
+- What error is displayed after running the 6th instruction from the MOV instruction section?<br />
+![image](https://github.com/user-attachments/assets/663ef6d3-75d6-4e1a-b223-892c438cfe17)<br />
+`Memory to memory data movement is not allowed.`
+- Run the instructions from the stack section. What is the value of eax after the 9th instruction? (in hex)<br />
+![image](https://github.com/user-attachments/assets/3377bd27-4162-47a0-9134-0fab176a5521)<br />
+`0x00000025`
+- Run the instructions from the stack section. What is the value of edx after the 12th instruction? (in hex) `0x00000010`
+- Run the instructions from the stack section. After POP ecx, what is the value left at the top of the stack? (in hex) `0x00000010`
+- Run the cmp and test instructions. Which flags are triggered after the 3rd instruction? (Note: Use these abbreviations in alphabetical order with no spaces: CF,PF,SF,ZF)<br />
+![image](https://github.com/user-attachments/assets/753871d6-f2c2-43c8-ab00-a1550c67491a)<br />
+`PF,ZF`
+- Run the test and the cmp instructions. Which flags are triggered after the 11th instruction? (Note: Use these abbreviations in alphabetical order with no spaces: CF,PF,SF,ZF) `CF,SF`
+- Run the instructions from the lea section. What is the value of eax after running the 9th instruction? (in hex) `0x0000004B`
+- Run the instructions from the lea section. What is the final value found in the ECX register? (in hex)<br />
+![image](https://github.com/user-attachments/assets/c7fc30b4-6ae7-4efa-83fb-0c7c311e98a7)<br />
+`0x00000045`
