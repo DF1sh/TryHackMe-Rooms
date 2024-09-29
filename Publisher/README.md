@@ -22,7 +22,9 @@ The website seems to be a magazine about SPIP, which is a content management sys
 ![image](https://github.com/user-attachments/assets/3585d3d3-4012-498c-8ef6-d19183aa252c)<br />
 Directory enumeration gives some results:<br />
 ![image](https://github.com/user-attachments/assets/968f056c-f9f0-40df-a0da-9edf2a8d864a)<br />
-But really nothing interesting.
+Moving to /spip, wappalyzer shows us that the server is running SPIP 4.2.0.<br />
+![image](https://github.com/user-attachments/assets/53ff1363-7149-4f70-89e5-970d7776838e)<br />
+
 
 - What is the user flag?
 - What is the root flag?
