@@ -54,7 +54,7 @@ Jetty is simply a web server. So I visited `cyberlens.thm:61777` to see what com
 Apache Tika is an open source library used to detect and extract metadata from files. This page is apparently showing us the endpoints that we can use to interact with it. And here's an interesting endpoint: <br />
 ![image](https://github.com/user-attachments/assets/a6891ab3-01c4-4961-8bfe-6fd97d766fe6)<br />
 ![image](https://github.com/user-attachments/assets/7afb34cb-bc52-433f-80e1-b765a422ad8c)<br />
-That endpoint gave me the version of the Tika software that's being used. After some enumeration, I found out that this Tika version is vulnerable to command injection, and the exploit is available on metasploit. The module name is `windows/http/apache_tika_jp2_jscript)`. 
+That endpoint gave me the version of the Tika software that's being used(PS, I just realized that this information was also given by the scan on port 61777, but I'm stupid). After some enumeration, I found out that this Tika version is vulnerable to command injection, and the exploit is available on metasploit. The module name is `windows/http/apache_tika_jp2_jscript)`. 
 Correctly set up the options, in my case: 
 
     set LHOST 10.11.85.53
