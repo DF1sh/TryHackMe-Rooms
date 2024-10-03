@@ -25,7 +25,34 @@ Now let's stabilize the shell:
     CTRL+Z
     stty raw -echo; fg
     export TERM=xterm
+I'm still not able to get the user flag:<br />
+![image](https://github.com/user-attachments/assets/1f5bb354-80df-432c-bad4-5932ddba24cb)<br />
+However, enumerating comte's home directory, I found that I have write access to his `.ssh/authorized_keys` file. Therefore, what I can do is: 
+1) generate a new key pair: `ssh-keygen -t rsa -b 4096 -f mykey`
+2) copy the newly generated public key inside `.ssh/authorized_keys`: `echo "ssh-rsa PUB_KEY" >> /home/comte/.ssh/authorized_keys`
+3) copy the private key inside the attacker's machine and change its permissions: `chmod 600 mykey`
+4) Now log into comte's account via ssh: `ssh -i mykey comte@target_IP` <br />
+![image](https://github.com/user-attachments/assets/2c93d5fc-013d-4996-809c-4499d00c71cf)<br />
+After using linpeas to enumerate the system, this is what comes out: <br />
+![image](https://github.com/user-attachments/assets/5dcce2a5-06a3-4cc5-b1ea-381a1fcdcd32)<br />
+Just like cron jobs, systemd timers can be used to execute commands or scripts at specified time intervals. Also if I run `sudo -l`, this is what I get: <br />
+![image](https://github.com/user-attachments/assets/128b651b-b23e-459a-94d8-c699db08b670)<br />
+If we run `cat /etc/systemd/system/exploit.service` we can see what's the task made by this service:<br />
+![image](https://github.com/user-attachments/assets/adbe6605-ef83-4204-8aa1-1cd574838405)<br />
+It's apparently adding the SUID bit to a binary called `xxd`. However the .timer files has a misconfigured option which I corrected: to `OnBootSec=10sec`<br />
+![image](https://github.com/user-attachments/assets/5b887301-5d29-45f3-8ad5-aae480224144)<br />
+After that, I run:
 
+        sudo /bin/systemctl daemon-reload
+        sudo systemctl enable exploit.timer
+        sudo systemctl start exploit.timer
+If I now run `find / -perm -04000 2>/dev/null`, I get a new suid binary:<br />
+![image](https://github.com/user-attachments/assets/556dc4f9-815f-4aa5-9135-ac751c1c20dd)<br />
+The exploitation for this binary can be easily found on [GTFObins](https://gtfobins.github.io/gtfobins/xxd/#suid):<br />
+![image](https://github.com/user-attachments/assets/992fc8bb-bdd2-4553-a9eb-58dbaa12c40e)<br />
+So we can exploit this SUID to read any file we want. Here's how to read root.txt:<br />
+![image](https://github.com/user-attachments/assets/2fa9466e-3399-4beb-bcf9-8bc0e32e9fd4)<br />
+gg wp
 
-- What is the user.txt flag? 
-- What is the root.txt flag?
+- What is the user.txt flag? `THM{9f2ce3df1beeecaf695b3a8560c682704c31b17a}`
+- What is the root.txt flag? `THM{dca75486094810807faf4b7b0a929b11e5e0167c}`
