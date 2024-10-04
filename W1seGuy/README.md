@@ -1,5 +1,7 @@
 # W1seGuy
 
+I would like to thanks my friend [Simone](https://github.com/SimoneCiferri), he basically did the entire challenge 🖤
+
 ### Get those flags!
 If we connect to the target machine on port 1337 with netcat, this is what we get:<br />
 ![image](https://github.com/user-attachments/assets/2448a3eb-8ccd-45aa-9300-d7bb80916439)<br />
@@ -75,10 +77,6 @@ One thing that came to my mind is to try a bruteforce attack on the netcat conne
 Instead the solution is to take the hexadecimal value given from the netcat connection, and create a separate script that bruteforces this value by doing the opposite of the encryption funcion, setup.<br />
 The final script that does correctly bruteforces the XORed string can be found in the `decrypt.py` file (Thank you Simone 🖤). 
 Simply run the script using the encrypted text provided by the target machine, and get the encryption key :p
-
-
-  
-
 
 - What is the first flag? `THM{p1alntExtAtt4ckcAnr3alLyhUrty0urxOr}`
 - What is the second and final flag? `THM{BrUt3_ForC1nG_XOR_cAn_B3_FuN_nO?}`
