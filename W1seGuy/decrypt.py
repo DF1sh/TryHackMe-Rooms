@@ -11,18 +11,7 @@ def decrypt(hex_encoded, key):
     
     return decrypted_flag
 
-def setup(flag, key):
-    # XOR operation with the given flag and key
-    xored = ""
-    for i in range(0, len(flag)):
-        xored += chr(ord(flag[i]) ^ ord(key[i % len(key)]))
-    
-    # Hex encode the result of the XOR operation
-    hex_encoded = xored.encode().hex()
-    return hex_encoded
-
 def brute_force_key(keyNoHex, hexAndXorredFlag1):
-    flag = 'THM{thisisafakeflag}'  # The same flag used in encryption
     # Step 1: Take the first 4 characters of the key
     base_key = keyNoHex[:4]
 
@@ -50,9 +39,6 @@ def first(hexAndXorredFlag1):
 
     unhexed_xorredFlag1 = ''.join(chr(b) for b in xorredFlag1)
 
-    # Print the unhexadecimaled xorredFlag1
-    print("UNHEX:", xorredFlag1)
-
 
     
     # Step 2: Perform XOR between xorredFlag1 and plainFlag1NoHex, save in keyNoHex
@@ -69,22 +55,12 @@ def first(hexAndXorredFlag1):
         # Convert XOR result back to a character and add to keyNoHex
         keyNoHex += chr(xor_result)
 
-        # Print values at each step for debugging
-        # print(f"Step {i + 1}:")
-        #print(f"  Plain character: '{plain_char}' (ord: {plain_ord})")
-        #print(f"  XORed value from hex: {xorred_byte} (byte)")
-        #print(f"  XOR result: '{chr(xor_result)}'")
 
     # Step 3: Convert keyNoHex to hexadecimal
     keyHex = keyNoHex.encode().hex()
-
-    # Print the resulting key in both plain and hex format
-    print("\nkeyNoHex (XOR result, plain):", keyNoHex)
-    print("keyHex (XOR result, hex):", keyHex)
-
+    
     # Print the first 5 characters of keyNoHex and keyHex
     print("\nFirst 4 characters of keyNoHex (plain):", keyNoHex[:4])
-    print("First 4 characters of keyHex (hex):", keyHex[:8])
     return keyNoHex
 
 if __name__ == '__main__':
