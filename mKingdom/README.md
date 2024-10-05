@@ -30,8 +30,18 @@ Nice(flags are at the end of this writeup): <br />
 Now [stabilize the shell](https://maxat-akbanov.com/how-to-stabilize-a-simple-reverse-shell-to-a-fully-interactive-terminal) so that you can keep you mental sanity. 
 Next, I run linpeas.sh on the target system to check any privesc paths. First thing I noticed is that /bin/cat has the SUID bit set, but I wasn't able to exploit it. Next, I found credentials for a mysql DB running on the target machine: <br />
 ![image](https://github.com/user-attachments/assets/c8c7a145-edeb-4acd-afe7-3cf3baec3c5a)<br />
-To log inside the DB, the command is `mysql -u toad -p -h localhost`, and then input the discovered password. However, before logging in the DB, I wanted to try if that password also worked for toad's accout, so I run `su toad`, provided the password, and it worked: <br />
+To log inside the DB, the command is `mysql -u toad -p -h localhost`, and then input the discovered password. However, before logging in the DB, I wanted to try if that password also worked for toad's accout, so I run `su toad`, provided the password, and it worked. However I wasn't able to find anything from toad's account besides one thing: the .mysql_history file showed me a hint: <br />
+![image](https://github.com/user-attachments/assets/03679186-b90b-47d0-a07c-3bcf08de7a60)<br />
+There must be a `user` table with some data in it. Inside the mKingdom database I was able to find a `Users` table, only to find that the password of the admin account is `password`, which I already knew. What I'm looking for is a way to access root. Instead I found a `user` table inside the `mysql` database. <br />
+![image](https://github.com/user-attachments/assets/3370c5f4-0cb0-4f07-ad3d-8e3f132d96b7)<br />
+I already know toad's password.  Let's try to break debian-sys-maint password. Nope, nothing. I can't do it. Whatching again linpeas output I found a weird environment variable: <br />
+![image](https://github.com/user-attachments/assets/42f38c36-b3fc-455b-9616-b7e7b43e0c38)<br />
+This base64 encoded value is `ikaTeNTANtES`, and it turns out to be the password for Mario. Thus I finally got the first flag(with nano, cat doens't work). <br />
+Running `sudo -l` on mario, this is what we find: <br />
+![image](https://github.com/user-attachments/assets/e10985e1-2b31-4e6b-a960-c80797e58921)<br />
 
 
-- What is user.txt?
-- What is root.txt?
+To be continued
+
+- What is user.txt? `thm{030a769febb1b3291da1375234b84283}`
+- What is root.txt? 
