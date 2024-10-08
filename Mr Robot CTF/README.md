@@ -23,8 +23,8 @@ The other file, `fsocity.dic` contains a wordlist. This wordlist can be used to 
 ![image](https://github.com/user-attachments/assets/81509d1f-7c5c-4e55-b063-21ff9500bb93)<br />
 And "incorrect password" if the username is correct, but the password is not:<br />
 ![image](https://github.com/user-attachments/assets/09f241e2-f05f-4d40-a9de-dc5ff079bf4d)<br />
-`Elliot` is a valid username. 
-
-
+`Elliot` is a valid username. Moreover, when exploring directories with gobuster, `/license` exposed a base64 encoded password: <br />
+![image](https://github.com/user-attachments/assets/effd9274-62b0-4a1f-ab49-e5f844b991dd)<br />
+The decoded value is `elliot:ER28-0652`. These are the credentials to log in the admin panel of wordpress 4.3.1! 
 
 - What is key 3? <br />
