@@ -11,7 +11,12 @@ Next, the following command ` wpscan --url http://10.10.75.11/wordpress/ -e u,p,
 ![image](https://github.com/user-attachments/assets/f0e43a3a-36df-478b-909e-cc0009e989f0)<br />
 So now try bruteforce bob: `wpscan --url http://10.10.122.80/wordpress/wp-login.php -U bob -P /usr/share/wordlists/rockyou.txt`. <br />
 ![image](https://github.com/user-attachments/assets/1e20d13e-626c-495e-a5e1-dbe040bd3060)<br />
-His credentials are `bob:soccer`
+His credentials are `bob:soccer`. 
+The previous wpscan showed that the website is using an older version of `WP data access`, which is 5.3.8. Searching online, I found [here](https://www.wordfence.com/blog/2023/04/privilege-escalation-vulnerability-patched-promptly-in-wp-data-access-wordpress-plugin/) that this version is vulnerable to privilege escalation from subscriber+ to administrator. There's no explicit POC, but the exploit works as follows: 
+1) On bob's account, click on `Update Profile`, and intercept the request with Burp Suite
+2) Add a parameter to the request: `wpda_role[]=administrator`
+3) Forward the request and become admin!
+![image](https://github.com/user-attachments/assets/7f6f9ea6-e2b3-447e-8ae7-4b05392e9664)<br />
 
 
 - What is the first flag?
