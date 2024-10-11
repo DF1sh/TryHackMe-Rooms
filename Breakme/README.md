@@ -25,7 +25,12 @@ Running linpaeas, it founds a set of credentials inside wordpress configuration 
 So use the given credentials(`econor:SuP3rS3cR37#DB#P@55wd`) to log into the database `mysql -u econor -p`. In the database there are a couple of hashed passwords: <br />
 ![image](https://github.com/user-attachments/assets/a7d76b78-4539-4024-a637-343439d24388)<br />
 We already know bob's password, let's try to crack the admin's password. The hash starts with `$P$`, this means that it is a `Phpass` hash format. I doesn't work, there must be something else. <br />
-TO BE CONTINUED
+Linpeas also shows a local service at 127.0.0.1:9999. With `curl` I was able to see that it's a web service. In order to access the web page from the attacker's machine, we need to perform something called `port forwarding`:
+1) In the target machine: run `socat TCP-LISTEN:8888,fork TCP:127.0.0.1:9999`
+2) In the attacker machine: run `socat TCP4-LISTEN:9998,reuseaddr,fork TCP4:target_ip:8888`
+So we are opening port 9998 on the attacker machine and redirecting everything coming in that port to target IP port 8888. Similarly, from the target machine, we redirect everything coming in port 8888 to localhost port 9999, thus accessing the web service. <br />
+![image](https://github.com/user-attachments/assets/8d881702-0350-444b-85ed-06f9f0affb30)<br />
+
 
 
 - What is the first flag?
