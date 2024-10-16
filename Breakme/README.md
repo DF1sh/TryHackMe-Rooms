@@ -40,6 +40,7 @@ Again, [stabilize the shell](https://maxat-akbanov.com/how-to-stabilize-a-simple
 TO BE CONTINUED...
 
 
-- What is the first flag?
+
+- What is the first flag? 
 - What is the second flag?
 - What is the root flag?
