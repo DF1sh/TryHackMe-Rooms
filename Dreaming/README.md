@@ -26,7 +26,7 @@ I quickly tried basic passwords like "admin" and "password", and I logged in usi
 ![image](https://github.com/user-attachments/assets/699153ef-fab1-44c3-9347-0255335aa95a)<br />
 And I now have a (really pretty) web shell: <br />
 ![image](https://github.com/user-attachments/assets/134acc85-9aba-4613-937b-286c09b4d589)<br />
-After enumerating the machine, i found interesting files inside `/opt`. In particular: <br />
+But I really prefer a classic stabilized shell so i spawned one. After enumerating the machine, i found interesting files inside `/opt`. In particular: <br />
 ![image](https://github.com/user-attachments/assets/a7fce910-faf0-40a2-af07-edf37218746c)<br />
 So I tried to log in as lucien using this password, with `su lucien`, `HeyLucien#@1999!`, and it worked. <br />
 Inside lucien's home directory, I have access to his bash history and found something interesting:<br />
@@ -51,11 +51,11 @@ On the attacker's machine:
 On the target machine: 
 
     mkdir /home/death/.ssh
-    echo "PUBKEY" > home/death/.ssh/authorized_keys
+    echo "PUB_KEY" > home/death/.ssh/authorized_keys
 
 Finally, on the attacker's machine:<br />
 
-    ssh -i keys death@10.10.1.99
+    ssh -i Priv_key death@10.10.1.99
 And we have our interactive shell: <br />
 ![image](https://github.com/user-attachments/assets/e0153745-d255-49c2-ae7a-76ee2bf6a6bd)<br />
 As death, we can now read his password from the `getDream.py` file:<br />
