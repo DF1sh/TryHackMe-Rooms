@@ -68,9 +68,12 @@ This directory contains a git project. Enumerating a bit the files inside this d
 ![image](https://github.com/user-attachments/assets/b5941b57-9cd2-4775-95a8-dabd28f959a4)<br />
 So probably this RAT(Remote Administration Tool) the project contained in the /opt directory. However there's only a `.git` folder, which doesn't contain the code. In order to find the code, we need to restore the project to an older version, like in the figure below:<br />
 ![image](https://github.com/user-attachments/assets/48fbbf7a-c7de-4e91-be04-9f318edc9540)<br />
+At this point I was stuck for a while, and decided to go back to the initial netcat connection on port 8000. Initially I saw that typing "admin" on the netcat connection, the server responded with "password:". So I created a python script to bruteforce the login (it can be found inside this folder). The password is `abc123`. And it gave me access to a full root shell:<br />
+![image](https://github.com/user-attachments/assets/7cfbcc1d-1609-46d4-a529-4ef4b0f75b85)<br />
+
 
 
 
 
 - What is the user flag? `996bdb1f619a68361417cabca5454705`
-- What is the root flag?
+- What is the root flag? `ba5ed03e9e74bb98054438480165e221`
