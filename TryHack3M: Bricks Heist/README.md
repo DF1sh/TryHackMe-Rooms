@@ -1,6 +1,7 @@
 # TryHack3M: Bricks Heist
 (answers can be found at the end of this writeup)
 ### Challenge
+- What is the content of the hidden .txt file in the web folder?<br />
 Initial scan shows port 22,80,443 and 3306 open:
 
       nmap -p22,80,443,3306 -sV -sC -Pn 10.10.180.110 -oN scan
@@ -115,26 +116,26 @@ Port 3306 is open but there must be some sort of ACL:<br />
 Nmap finds robots.txt inside the https server:<br />
 ![image](https://github.com/user-attachments/assets/f8aab5bc-73ac-4e11-a79f-faf78f607a36)<br />
 `/wp-admin` is a wordpress login page, but we don't have any credential. I tried stuff like `admin` or `root`, but these usernames are not even valid. I need to at least find a valid username. <br />
-After a while I decided to use wpscan `wpscan --url https://bricks.thm --passwords /usr/share/wordlists/rockyou.txt --usernames administrator --force`. The output of wpscan, among other things, showed me that the web site is using a theme called `bricks`, version 1.9.5. I found an anauthenticated RCE [here](https://github.com/Chocapikk/CVE-2024-25600). Just follow the steps provided in this github page to get a shell!
-
-![image](https://github.com/user-attachments/assets/9da38855-2089-4f40-9113-3d239a7694da)
-![image](https://github.com/user-attachments/assets/87d64d6c-a55d-4096-bae2-12ec8fb72197)
-![image](https://github.com/user-attachments/assets/32ae52b1-fd02-4c8c-a004-a97f4852faa5)
-![image](https://github.com/user-attachments/assets/8c31c231-90ff-4600-a172-47a8e5167de9)
-![image](https://github.com/user-attachments/assets/6be2dd9b-5104-403d-9002-597c233f965b)
-![image](https://github.com/user-attachments/assets/af1fdc66-7599-41a0-8c32-dd2b20a2fda6)
-![image](https://github.com/user-attachments/assets/bd5a45cc-6a96-42a0-b5f0-59fce4d4ea3c)
-![image](https://github.com/user-attachments/assets/4a810103-0667-4360-9ce7-960eb24d88f6)
-![image](https://github.com/user-attachments/assets/71d7eb79-ec1e-4c86-afaa-bc3f8609bf28)
-DB credentials found: `root:lamp.sh`
-![image](https://github.com/user-attachments/assets/e275b024-6b85-4f43-9b11-6714fb44d58a)
-
-
-
-
-- What is the content of the hidden .txt file in the web folder?<br />
+After a while I decided to use wpscan `wpscan --url https://bricks.thm --passwords /usr/share/wordlists/rockyou.txt --usernames administrator --force`. The output of wpscan, among other things, showed me that the web site is using a theme called `bricks`, version 1.9.5. I found an anauthenticated RCE [here](https://github.com/Chocapikk/CVE-2024-25600). Just follow the steps provided in this github page to get a shell!<br />
+`THM{fl46_650c844110baced87e1606453b93f22a}`
 - What is the name of the suspicious process?<br />
-- What is the service name affiliated with the suspicious process?<br />
+Run `systemctl --type=service --state=running` to list .service. Find the TRYHACK3M service:<br />
+![image](https://github.com/user-attachments/assets/99a08d0d-e61a-4690-ace9-1a3ea2974fb0)<br />
+`nm-inet-dialog`
+- What is the service name affiliated with the suspicious process?<br /> `ubuntu.service`
 - What is the log file name of the miner instance?<br />
+![image](https://github.com/user-attachments/assets/b35c5c46-97e8-413d-9188-065e27f64fd7)<br />
+`inet.conf`
 - What is the wallet address of the miner instance?<br />
+![image](https://github.com/user-attachments/assets/5c03d45d-7dd8-4748-be4e-b612a6faa9f7)<br />
+Take this ID, hex decode it, and double base64-decode it and you get two bitcoin addresses(starting with "bc1"): `bc1qyk79fcp9hd5kreprce89tkh4wrtl8avt4l67qabc1qyk79fcp9had5kreprce89tkh4wrtl8avt4l67qa`. The answer is the first address only:<br />
+`bc1qyk79fcp9hd5kreprce89tkh4wrtl8avt4l67qa`
+
 - The wallet address used has been involved in transactions between wallets belonging to which threat group?<br />
+Compute the hash of the miner binary and submit it on virustotal: <br />
+`LockBit`
+
+
+
+
+
