@@ -116,5 +116,12 @@ Teamcity is a CI/CD (continuous integration/delivery) server that supports code 
 
 ### Blue: Let's Investigate
 - What is the name of the backdoor user which was created on the server after exploitation?<br />
+![image](https://github.com/user-attachments/assets/0409b302-854f-4c39-a119-098649d0a753)<br />
+`eviluser`
 - What is the name of the malicious-looking package installed on the server?<br />
+![image](https://github.com/user-attachments/assets/90f94f9b-6d74-409a-873d-77ec69b9ded3)<br />
+`datacollector`
 - What is the name of the plugin installed on the server after successful exploitation?<br />
+Search `index=weblogs`
+![image](https://github.com/user-attachments/assets/fdbed84c-5da2-47df-99d0-2542edcb6263)<br />
+`AyzzbuXY.zip`
