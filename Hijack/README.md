@@ -34,7 +34,7 @@ Running `sudo -l` we get the following:<br />
 ![image](https://github.com/user-attachments/assets/a55d25fe-2c56-4435-8deb-e636213e3087)<br />
 We can execute a binary called `apache2` and have also access to the LD_LIBRARY_PATH. LD_LIBRARY_PATH allows us to specify where the program should go look for shared libraries/objects first. So the idea is to take the name of any of the libraries used by the `apache2` binary, and create a malicious script with that exact name inside a folder that we have access to. <br />
 ![image](https://github.com/user-attachments/assets/b773529e-1c80-48a9-94b5-35e06b3946a8)<br />
-I'm gonna take `libpcre.so.3`. So, first of all, create the malicious .c file; you can find it inside this folder, called `exploit.c`
+I'm gonna take `libpcre.so.3`. So, first of all, create the malicious .c file; you can find it inside this folder, called `exploit.c`. Then, compile it using the following command: `gcc -o /tmp/libcre.so.3 -shared -fPIC exploit.c`.
 
 
 
