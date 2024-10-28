@@ -53,7 +53,7 @@ And also some possible DB users:<br />
 ![image](https://github.com/user-attachments/assets/45e07072-d472-4625-b038-65f3f2b8a9ae)<br />
 After enumerating the machine, I run `sudo -l`, when it prompts for the password, I used `MyStrongestPasswordYet$4291`<br />
 ![image](https://github.com/user-attachments/assets/ba605223-c8ed-4096-959e-a97842749146)<br />
-There's no way to escalate to root using `ping`. But we can do it thanks to the LDPRELOAD. LDPRELOAD is an environment variable that let's you specify a shared library to load BEFORE executing the binary it self. Since we have sudo on the ping command, we can run it with root privileges, and use it to execute a shared library that we create. Create the exploit.c file(it's inside this folder)
+There's no way to escalate to root using `ping`. But we can do it thanks to the LDPRELOAD. LDPRELOAD is an environment variable that let's you specify a shared library to load BEFORE executing the binary it self. Since we have sudo on the ping command, we can run it with root privileges, and use it to execute a shared library that we create. Create the exploit.c file(it's inside this folder), then compile it as a shared object using the following command: `gcc -fPIC -shared -o exploit.so exploit.c -nostartfiles`
 
 
 
@@ -61,6 +61,6 @@ There's no way to escalate to root using `ping`. But we can do it thanks to the 
 
 
 
-- What is user.txt?
+- What is user.txt? `9a1ce90a7653d74ab98630b47b8b4a84`
 - What is root.txt?
 
