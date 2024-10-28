@@ -2,11 +2,7 @@
 (Flags are at the end of the writeup)
 
 ### Deploy the machine and get the flags!
-Initial scan finds ports 21,22,80,111,2049,35287,41763,47944,49228 open:
-
-
-OpenSSH 7.2p2 is vulnerable to [username enumeration](https://www.exploit-db.com/exploits/40136):
-Accessing the website, if I create a new account I get a cookie:<br />
+Initial scan finds ports 21,22,80,111,2049,35287,41763,47944,49228 open.<br />
 ![image](https://github.com/user-attachments/assets/07cd2b1c-3a67-4fa3-998b-3555af60dce1)<br />
 After further enumeration, I found that the `username` parameter is vulnerable to XSS. To prove it, I tried using `"><script>alert(1)</script>`, and it worked:<br />
 ![image](https://github.com/user-attachments/assets/556f544c-3bd3-4857-a0cf-f4aa1832e42e)<br />
@@ -32,17 +28,11 @@ I immediately found credentials inside `confing.php`:<br />
 They look like mysql credentials, and I think they are, but I used them to access rick's account through ssh and get the first flag. <br />
 Running `sudo -l` we get the following:<br />
 ![image](https://github.com/user-attachments/assets/a55d25fe-2c56-4435-8deb-e636213e3087)<br />
-We can execute a binary called `apache2` and have also access to the LD_LIBRARY_PATH. LD_LIBRARY_PATH allows us to specify where the program should go look for shared libraries/objects first. So the idea is to take the name of any of the libraries used by the `apache2` binary, and create a malicious script with that exact name inside a folder that we have access to. <br />
-![image](https://github.com/user-attachments/assets/b773529e-1c80-48a9-94b5-35e06b3946a8)<br />
-I'm gonna take `libpcre.so.3`. So, first of all, create the malicious .c file; you can find it inside this folder, called `exploit.c`. Then, compile it using the following command: `gcc -o /tmp/libcre.so.3 -shared -fPIC exploit.c`.
+We can execute a binary called `apache2` and have also access to the LD_LIBRARY_PATH. LD_LIBRARY_PATH allows us to specify where the program should go look for shared libraries/objects first. So the idea is to take the name of any of the libraries used by the `apache2` binary, and create a malicious script with that exact name inside a folder that we have access to. <br /> Run `ldd /usr/sbin/apache2` to see the shared object used by the binary.
+I'm gonna take `libdl.so.2`. So, first of all, create the malicious .c file; you can find it inside this folder, called `exploit.c`. Then, compile it using the following command: `gcc -o /tmp/libdl.so.2 -shared -fPIC exploit.c`. Then, run the binary after setting the evnvironment variable, with the following command: `sudo LD_LIBRARY_PATH=/tmp /usr/sbin/apache2 -f /etc/apache2/apache2.conf -d /etc/apache2`:<br />
+![image](https://github.com/user-attachments/assets/b32556c3-a386-4c53-92b7-c6a704b5e511)<br />
 
 
-
-
-
-rick:N3v3rG0nn4G1v3Y0uUp
-admin:uDh3jCQsdcuLhjVkAy5x
-ftpuser:W3stV1rg1n14M0un741nM4m4
 
 - What is the user flag? `THM{fdc8cd4cff2c19e0d1022e78481ddf36}`
-- What is the root flag?
+- What is the root flag? `THM{b91ea3e8285157eaf173d88d0a73ed5a}`
