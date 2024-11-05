@@ -30,7 +30,7 @@ and this is the URL of the chat: `http://admin.cyprusbank.thm/messages/?c=5`, by
 ![image](https://github.com/user-attachments/assets/0595a1d7-82ba-4396-a24d-95a08d3870d6)<br />
 So the `c` parameters stands for the number of chat messages that I can view. And here's what I found: <br />
 ![image](https://github.com/user-attachments/assets/5310d82f-f08e-4a39-9c9c-ae2787f1d859)<br />
-`Gayle Bev:p~]P@5!6;rs558:q`. So now I can log with his account, and can now view people's phone numbers! (Tyrell Wellick's phone number is at the end of the write up).
+`Gayle Bev:p~]P@5!6;rs558:q`. So now I can log with his account, and can view people's phone numbers! (Tyrell Wellick's phone number is at the end of the write up).
 
 
 
