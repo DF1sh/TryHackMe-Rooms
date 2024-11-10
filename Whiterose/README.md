@@ -44,9 +44,8 @@ So I searched online how to exploit sudo on `sudoedit`, and found [this](https:/
 ![image](https://github.com/user-attachments/assets/c5aa4abd-800b-4b5a-8ea4-874acfae5ac4)<br />
 Let's check if my sudo is vulnerable:<br />
 ![image](https://github.com/user-attachments/assets/aa2b3866-33bd-457e-9351-9af16cd6ac63)<br />
-It is! Let's run the exploit:<br />
-
-
+It is! I slightly modified the script, you can find it inside this folder named `exploit.sh`. After executing the script with `./exploit.sh`, add the following line to the /etc/sudoers file: `web ALL=(ALL:ALL) NOPASSWD: ALL`, and exit from the editor. And you should find yourself with a root shell: <br />
+![image](https://github.com/user-attachments/assets/f4137250-e837-4e8f-a419-c8901f02d61a)<br />
 
 
 
@@ -56,4 +55,4 @@ It is! Let's run the exploit:<br />
 
 - What's Tyrell Wellick's phone number? `842-029-5701`
 - What is the user.txt flag? `THM{4lways_upd4te_uR_d3p3nd3nc!3s}`
-- What is the root.txt flag?
+- What is the root.txt flag? `THM{4nd_uR_p4ck4g3s}`
