@@ -23,9 +23,9 @@ If I try to access the webpage, I get redirected to `lookup.thm`:<br />
 ![image](https://github.com/user-attachments/assets/084acc68-fc20-4967-b497-99d031da7a78)<br />
 So add the following line `10.10.65.102 lookup.thm` to the `/etc/hosts` file. It seems like a basic login page. If I try to access with basic credentials such as `admin:password`, I get the following response:<br />
 ![image](https://github.com/user-attachments/assets/c71eabe3-d2be-4cca-8991-91672308e8a7)<br />
-Which is a weird way of handling errors. I tried `sqlmap` but nothig. I have to dig somewhere else.<br />
+Which is a weird way of handling errors. I tried `sqlmap` but nothing. I have to dig somewhere else.<br />
 Next thing I try is to enumerate directories using gobuster: `gobuster dir -u lookup.thm -w /usr/share/wordlists/dirbuster/directory-list-lowercase-2.3-medium.txt` but nothing was found. <br />
-Now I try to enumerate subdomains. I found the subdomain `www.lookup.thm` but it's the same as `lookup.thm` so nothing there. Next, I noticed that if I tried looking with user `admin`, I get the reponse "Wrong password". But if I try to log in with, for example, "john", I get "Wrong username or password." This means that admin should be a valid user. So I try to login into the admin's account using bruteforce with hdyra: `hydra -l admin -P /usr/share/wordlists/rockyou.txt.gz lookup.thm http-post-form "/login.php:username=^USER^&password=^PASS^:Wrong password"` and it finds something!<br />
+Now I try to enumerate subdomains. I found the subdomain `www.lookup.thm` but it's the same as `lookup.thm` so nothing there. Next, I noticed that if I tried logging with user `admin`, I get the reponse "Wrong password". But if I try to log in with, for example, "john", I get "Wrong username or password." This means that admin should be a valid user. So I try to login into the admin's account using bruteforce with hdyra: `hydra -l admin -P /usr/share/wordlists/rockyou.txt.gz lookup.thm http-post-form "/login.php:username=^USER^&password=^PASS^:Wrong password"` and it finds something!<br />
 ![image](https://github.com/user-attachments/assets/d3a9e3c4-b445-4844-bbc6-d38ed1491c6b)<br />
 Login fails.. but something strange happens, look:<br />
 ![image](https://github.com/user-attachments/assets/cec66cdd-cebc-4e4f-8685-5639592ea325)<br />
