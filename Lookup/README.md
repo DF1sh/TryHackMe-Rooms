@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/8c3377e0-2f44-473a-b0e1-640f0f3d9efd)# Lookup
+# Lookup
 (flags are at the end of the writeup)
 
 ### Lookup
@@ -65,16 +65,16 @@ The binary takes the stdoutput of the `id` command, and then ignores the user-ID
 This binary will only consider the string underlined in red, which is `www-data`.<br />
 At this point it tries to read the .passwords file, just like I guessed earlier:<br />
 ![image](https://github.com/user-attachments/assets/c9b61b17-9bc3-4016-a479-07e23c67c7b0)<br />
-So I think I know where the vunlnerability lies. The binary is calling the `id` command, but not `/usr/bin/id` or whatever; the path is relative, not absolute. This means that I can create a custom `id` command on any directory, for example /tmp/, and then change the `PATH` environment variable to search for binaries inside /tmp/ first. So let's try it. I created the custom `id` command inside /tmp/, and it prints echos a string on stdoutput, built to fool the `pwm` binary that I'm actually the user `think`. The code can be found in this folder in the file `fake_id`. Remember to make it executable with `chmod +x id`. Now we want to change the PATH environment variable: run `export PATH=/tmp:$PATH`. Now if I run `id`:<br />
+So I think I know where the vunlnerability lies. The binary is calling the `id` command, but not `/usr/bin/id` or whatever; the path is relative, not absolute. This means that I can create a custom `id` command on any directory, for example /tmp/, and then change the `PATH` environment variable to search for binaries inside /tmp/ first. So let's try it. I created the custom `id` command inside /tmp/, and it prints echos a string on stdoutput, built to fool the `pwm` binary that I'm actually the user `think`. The code can be found in this folder in the file `fake_id`. Remember to call it `id` and to make it executable with `chmod +x id`. Now we want to change the PATH environment variable: run `export PATH=/tmp:$PATH`. Now if I run `id`:<br />
 ![image](https://github.com/user-attachments/assets/6cbecb52-7293-410e-8376-a33ac0de5a40)<br />
 It executes my `fake_id`. The setup is ready, let's run the vulnerable binary: <br/ >
 ![image](https://github.com/user-attachments/assets/1c753f57-ae4f-4d84-a83c-e1c1700bf7ba)<br />
-It worked! We have a list of passwords! I will now copy this wordlists in a file, and then will use it to bruteforce an ssh login as the user `think`. The command is `hydra -l think -P passwords ssh://10.10.124.210`. And the credentials are `think:josemario.AKA(think)`.
-
-
-
-
-
+It worked! We have a list of passwords! I will now copy this wordlists in a file, and then will use it to bruteforce an ssh login as the user `think`. The command is `hydra -l think -P passwords ssh://10.10.124.210`. And the credentials are `think:josemario.AKA(think)`.<br />
+Time to become root. If I run `sudo -l` and prompt the password, I can see that I have sudo privileges on the following binary: <br />
+![image](https://github.com/user-attachments/assets/ef14348a-3b6d-4978-b727-99cbcc82607f)<br />
+I didn't know this binary. But apparently is a well known binary that will show you all the words (taken from a dictionary in the file system) that start with the input that you provide. I found on [GTFObins](https://gtfobins.github.io/gtfobins/look/#sudo) a way to exploit it to read any files we want, so I used it to read the root flag: <br />
+![image](https://github.com/user-attachments/assets/1a95beda-001c-4c3f-9497-8a209979f0ad)<br />
+If I wanted to used it to become root, one possible way is to read the private rsa key with `sudo /usr/bin/look '' /root/.ssh/id_rsa`, and then use it to login with ssh. Have a nice rest of your day :)
 
 - What is the user flag? `38375fb4dd8baa2b2039ac03d92b820e`
-- What is the root flag?
+- What is the root flag? `5a285a9f257e45c68bb6c9f9f57d18e8`
