@@ -1,4 +1,4 @@
-# Lookup
+![image](https://github.com/user-attachments/assets/8c3377e0-2f44-473a-b0e1-640f0f3d9efd)# Lookup
 (flags are at the end of the writeup)
 
 ### Lookup
@@ -51,8 +51,30 @@ And it should open a meterpreter session. Now, I can't use metasploit, so I used
 First thing I notice: the user `think` has the user flag, and inside his home directory I see a `.passwords` file that I can't read. So my guess is that I need to find a way to read that file. <br />
 Using linpeas on the target system, I found an interesting binary that might be exploited:<br />
 ![image](https://github.com/user-attachments/assets/883cfbee-381e-4cee-953c-747b15f65b58)<br />
+This is how it behaves: <br />
+![image](https://github.com/user-attachments/assets/5122c223-5870-418f-bfa3-8e5f482aa70d)<br />
+So it runs the `id` command to find out the user, and then looks for `/home/%user%/.passwords`. I think that my goal is to somehow fool this binary into believing that I'm actually the user `think`.<br /><br />
+I decided to analyze this binary using IDA. Here's the main structure: <br />
+![image](https://github.com/user-attachments/assets/20a4cbee-8f1d-47d6-882d-74d6eac5f44a)<br />
+I'm used to work with the CDECL or STDCALL calling conventions from university, because we only analyzed 32 bit windows executables. This is the first time I'm trying to analyze an ELF file, but it seems very similar. The main diffence I need to know is that the arguments of functions are not pushed on the stack, but are stored on registers. Specifically `rdi`, `rsi`, `rdx` and `rcx`.<br /><br />
+From this first block we can see that the binary is calling `popen` with `id` as parameter, so it wants to execute the `id` system command. <br />
+This is another interesting block: <br />
+![image](https://github.com/user-attachments/assets/7657b367-a033-4068-bd89-6c77f12c19f8)<br />
+The binary takes the stdoutput of the `id` command, and then ignores the user-ID (the integer) and only considers the username. Here "uid=%u(%[^)])" is a paramenter of `fscanf` which specifies to ignore the UID, and only take the string that is inside the first two parenthesis. For example, if I now run `id`:<br />
+![image](https://github.com/user-attachments/assets/913cb855-f12b-4eb4-aa56-401d2b9031e9)<br />
+This binary will only consider the string underlined in red, which is `www-data`.<br />
+At this point it tries to read the .passwords file, just like I guessed earlier:<br />
+![image](https://github.com/user-attachments/assets/c9b61b17-9bc3-4016-a479-07e23c67c7b0)<br />
+So I think I know where the vunlnerability lies. The binary is calling the `id` command, but not `/usr/bin/id` or whatever; the path is relative, not absolute. This means that I can create a custom `id` command on any directory, for example /tmp/, and then change the `PATH` environment variable to search for binaries inside /tmp/ first. So let's try it. I created the custom `id` command inside /tmp/, and it prints echos a string on stdoutput, built to fool the `pwm` binary that I'm actually the user `think`. The code can be found in this folder in the file `fake_id`. Remember to make it executable with `chmod +x id`. Now we want to change the PATH environment variable: run `export PATH=/tmp:$PATH`. Now if I run `id`:<br />
+![image](https://github.com/user-attachments/assets/6cbecb52-7293-410e-8376-a33ac0de5a40)<br />
+It executes my `fake_id`. The setup is ready, let's run the vulnerable binary: <br/ >
+![image](https://github.com/user-attachments/assets/1c753f57-ae4f-4d84-a83c-e1c1700bf7ba)<br />
+It worked! We have a list of passwords! I will now copy this wordlists in a file, and then will use it to bruteforce an ssh login as the user `think`. The command is `hydra -l think -P passwords ssh://10.10.124.210`. And the credentials are `think:josemario.AKA(think)`.
 
 
 
-- What is the user flag?
+
+
+
+- What is the user flag? `38375fb4dd8baa2b2039ac03d92b820e`
 - What is the root flag?
