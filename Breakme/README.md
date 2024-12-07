@@ -50,13 +50,40 @@ And the program stops. If we pass all the checks, then the program goes here: <b
 Here it's opening the file with the function `_open`, and if the the function fails, it will call `__assert_fail` and the program will stop. <br />
 Instead, if the file is opened correctly, the program goes here: <br />
 ![image](https://github.com/user-attachments/assets/40be8666-5de7-407f-8b3a-4d4f171e9874)<br />
-Here the program is calling the `_read` function every 1024 bytes. It then sets the file descriptor to 1 (sdtoutput) and calls `_write`, so that the user can read the file. It then checks if the number of written bytes is zero: if it is, then the program stops; if it isn't, then it will read the next 1024 bytes.  
+Here the program is calling the `_read` function every 1024 bytes. It then sets the file descriptor to 1 (sdtoutput) and calls `_write`, so that the user can read the file. It then checks if the number of written bytes is zero: if it is, then the program stops; if it isn't, then it will read the next 1024 bytes.  <br /><br />
 
+I was stuck here for a long time and couldn't make progress. So I decided to look at an external writeup to see the solution and try to learn something from it. The solution was **race condition**. That's a first to me. <br />
+Basically the idea is that since the outcome of the binary depends, among other things, on whether the file is a symlink or not, and since the checks are sequencial, I can try to change the state of the file **between the checks and the read**. From my understanding, the steps of this attack are the following:
 
+    step 1: create a normal file (using the `touch` command). 
+    step 2: run the binary in order to read the new file
+    step 3: the binary checks that all the conditions are met, including that it is not a symlink
+    step 4: in the timeframe right after the checks but right before the file read, make that file a symlink to `.ssh/id_rsa`
+    step 5: the binary reads `.ssh/id_rsa`
 
+Of course I don't have the control to stop the program and change the state of the file just as I please. The attack is called **race condition** because "whoever comes first wins", meaning that I have to run a script that makes the normal file and changes it to symlink, and at the same time I have to run the `readfile` binary, hoping that the events will happen in the order listed above. <br />
+Of course there's a very low chance that it will happen. That's why the idea is to run the script and the `readfile` binary at the same time and multiple times, hoping that at some point the right conditions will happen and I win the race. 
+The first command I need to run is:
 
+    while true; do ln -sf /home/youcef/.ssh/id_rsa symlink; rm symlink; touch symlink; done &
+This command creates an infinite loop that creates and destroys a file and makes it into a symlink, constantly changing the state of the target file for the `readfile` binary. <br />
+The next command: 
+
+    for i in {1..30}; do /home/youcef/readfile symlink; done
+tries to read from the symlink 30 times. <br />
+After executing these two commands, I got a bunch of errors, but I also got the `id_rsa` file, so I won the race! Now I copy it in my attacker's machine, I change the permissions with `chmod 600 id_rsa`. Before using it, we need to crack the passphrase. To do it, run `ssh2john id_rsa > id_rsa_hash` and then run `john --wordlist=/usr/share/wordlists/rockyou.txt id_rsa_hash`:<br />
+![image](https://github.com/user-attachments/assets/64e2672d-90b6-4c35-8869-8ac360bcd8bb)<br />
+Now we can log into youcef's account with `ssh youcef@ip_addr -i id_rsa` and prompt the passphrase and get the second flag. <br />
+I now need to become root. If I run `sudo -l` I get the following sudo permission: <br />
+![image](https://github.com/user-attachments/assets/b4a260cd-a772-4fab-aaff-611e5a185787)<br />
+This is a python jail. After searching online for a bit, I found that the solution is in using `𝘣𝘳𝘦𝘢𝘬𝘱𝘰𝘪𝘯𝘵()`. <br />
+A breakpoint in Python is a debugging tool introduced in Python 3.7 that allows developers to pause program execution and inspect its state interactively. The default implementation of breakpoint() launches the Python Debugger (`pdb`), and `pdb` accepts and executes Python input directly! This means that if I'm able to run the `breakpoint()` command, I could spawn a root shell or directly read the last flag. However the filter blocks the string `breakpoint()`, but it does not block `𝘣𝘳𝘦𝘢𝘬𝘱𝘰𝘪𝘯𝘵()`! This string is not composed of ASCII characters. Instead, it uses Unicode characters that look visually identical to the ASCII ones but are fundamentally different.<br />
+Filters in this Python Jail were likely configured to block literal ASCII strings like breakpoint, but they failed to account for visually similar Unicode variants. Since Python treats Unicode identifiers as valid names, the Jail couldn't recognize or filter the Unicode version of breakpoint:<br />
+![image](https://github.com/user-attachments/assets/e4c5988f-bc18-40e9-a7b9-fbdf56976c8f)<br /><br />
+
+This room was really hard for me and I'm not going to lie, I cheated a little. But it's been really informative.
 
 
 - What is the first flag? `5c3ea0d312568c7ac68d213785b26677`
-- What is the second flag?
-- What is the root flag?
+- What is the second flag? `df5b1b7f4f74a416ae27673b22633c1b`
+- What is the root flag? `e257d58481412f8772e9fb9fd47d8ca4`
