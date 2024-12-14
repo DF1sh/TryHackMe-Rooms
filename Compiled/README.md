@@ -18,7 +18,7 @@ As a test, I prompted the password `DoYouEvenciaoCTF`. At this point I expected 
 ![image](https://github.com/user-attachments/assets/d844cc1a-d479-4a01-8a8c-c6c0a16c5b95)<br />
 Then run `x/s 0x7fffffffdcc0`:<br />
 ![image](https://github.com/user-attachments/assets/424d7cce-c6f3-4618-8cd2-a8c74e820fb6)<br />
-This is where I found out what the problem was. The function `scanf("DoYouEven%sCTF, &s1)` expects the string to start with "DoYouEven", but then saves in the `s1` variable the string provided as input AND everything AFTER that. <br /> Why, you ask? I have no idea.<br />
+This is where I found out what the problem was. The function `scanf("DoYouEven%sCTF, &s1)` expects the string to start with "DoYouEven", but then saves in the `s1` variable the string provided as input AND everything AFTER that. That's why it it not "ciao", but "ciaoCTF". <br /> Why, you ask? I have no idea.<br />
 So to pass the second `cmp` instruction(meaning s1="_init"), the right password is `DoYouEven_init`. 
 
 
