@@ -49,11 +49,34 @@ There are two hashes inside this database:<br />
 These passwords are respectively:<br />
 `masterpassword`<br />
 `dontaskdonttell`<br />
-TO BE CONTINUED...
+For now these passwords don't seem to be useful. I then found another local web server on port 9001, hosted in `/var/www/files` and found a hint inside `/var/www/files/hacker.php`:<br />
+![image](https://github.com/user-attachments/assets/2e4dfbf7-70ee-4017-8f5d-883fb86204fc)<br />
+So I thought that maybe some hidden information might be inside one of these two files inside `/images/`:<br />
+![image](https://github.com/user-attachments/assets/a48a280d-0120-4f19-878f-68f9f7a0a0cb)<br />
+So I transfered the hacker image to my kali machine using netcat, and called it `hacker.jpg`. Then I downloaded [this tool](https://www.kali.org/tools/steghide/) to extract information embedded inside images.<br />
+![image](https://github.com/user-attachments/assets/5314d775-fe76-49a4-be0e-02359554a817)<br />
+Providing an empty passphrase was enough to extract a `backup.zip` file. However this zip file is encrypted:<br />
+![image](https://github.com/user-attachments/assets/cc198342-05dd-4e07-b0a3-11b5ac097d32)<br />
+To try and crack it, I use john:<br />
+![image](https://github.com/user-attachments/assets/d6471bf0-11eb-41d1-8531-521a8ba382aa)<br />
+So I unzipped the file and got a file called `source_code.php`. It contains a base64 encoded password:<br />
+![image](https://github.com/user-attachments/assets/6fed5429-1360-42a0-8b46-b74e29c1149b)<br />
+The decoded password is `!d0ntKn0wmYp@ssw0rd`. <br />
+With this password, I was able to log into `anurodh`'s account using ssh. <br />
+Linpeas gives me this output:<br />
+![image](https://github.com/user-attachments/assets/fd331ba9-fcba-4e1e-b09c-1482d36182a2)<br />
+This means that anurodh is part of the `docker` group. The docker group can obtain root privileges on the machine. This is because the daemon `dockerd` requires root privileges to execute. The docker user(and group) can execute the `docker` command, which can be used to run containers that can access the entire file system. <br />
+To exploit this, run `docker run -v /:/mnt --rm -it alpine chroot /mnt sh`. This will spawn a shell as root.
+![image](https://github.com/user-attachments/assets/e8da73d7-65a1-4540-8c26-942a54763a2f)<br />
+I asked chatGPT to generate a command to exploit this,but let's break down this command:<br />
+- `docker run`: It creates a temporary environment using an image (in this case, alpine). Alpine is a minimal Linux distribution that is very lightweight
+- `-v /:/mnt`: This mounts the entire root filesystem of the host (/) into the container at /mnt
+- `--rm`: This flag ensures that the container is automatically removed after it stops.
+- `-it`: -i: Keeps the container's standard input open so you can interact with it. -t: Allocates a pseudo-terminal for the container, making it behave like an interactive shell.
+- `alpine`: This specifies the Docker image to use.
+- `chroot /mnt sh`: This is the command executed inside the container. `chroot`: Changes the apparent root directory (/) for the container to the directory `/mnt`.
+Since `/mnt` is mounted to the host's root filesystem, this effectively means the container's root environment now "becomes" the host's filesystem.
+`sh`: Starts a shell session within the new root environment.<br />
 
-
-
-
-
-- User flag:
-- Root flag:
+- User flag: `{USER-FLAG: e8vpd3323cfvlp0qpxxx9qtr5iq37oww}`
+- Root flag: `{ROOT-FLAG: w18gfpn9xehsgd3tovhk0hby4gdp89bg}`
