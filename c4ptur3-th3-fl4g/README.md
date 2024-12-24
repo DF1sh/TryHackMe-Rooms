@@ -38,6 +38,6 @@ To answer theese questions I run the strings command and got both the answers: <
 - Download and get 'inside' the file. What is the first filename & extension? `hackerchat.png`
 - Get inside the archive and inspect the file carefully. Find the hidden text. `AHH_YOU_FOUND_ME`
 
-To actually extract the `hackerchag.png` file and view it, we can use `binwalk -e meme_1559010886025.jpg`. (binwalk, among other things, can also extract embedded data)<br />
+To actually extract the `hackerchag.png` file and view it, we can use `binwalk -e meme_1559010886025.jpg`. Binwalk is a tool for searching a given binary image for embedded files and executable code. Specifically, it is designed for identifying files and code embedded inside of firmware images. <br />
 ![image](https://github.com/user-attachments/assets/b5bce594-07de-4262-a67c-13c985d4ed0e)<br />
 
