@@ -53,6 +53,3 @@ The exploitation for this binary can be easily found on [GTFObins](https://gtfob
 So we can exploit this SUID to read any file we want. Here's how to read root.txt:<br />
 ![image](https://github.com/user-attachments/assets/2fa9466e-3399-4beb-bcf9-8bc0e32e9fd4)<br />
 gg wp
-
-- What is the user.txt flag? `THM{9f2ce3df1beeecaf695b3a8560c682704c31b17a}`
-- What is the root.txt flag? `THM{dca75486094810807faf4b7b0a929b11e5e0167c}`
