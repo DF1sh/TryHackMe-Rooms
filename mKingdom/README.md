@@ -39,9 +39,3 @@ I already know toad's password.  Let's try to break debian-sys-maint password. N
 This base64 encoded value is `ikaTeNTANtES`, and it turns out to be the password for Mario. Thus I finally got the first flag(with nano, cat doens't work). <br />
 Running `sudo -l` on mario, this is what we find: <br />
 ![image](https://github.com/user-attachments/assets/e10985e1-2b31-4e6b-a960-c80797e58921)<br />
-
-
-To be continued
-
-- What is user.txt? `thm{030a769febb1b3291da1375234b84283}`
-- What is root.txt? 
