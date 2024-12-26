@@ -1,5 +1,4 @@
 # Hijack
-(Flags are at the end of the writeup)
 
 ### Deploy the machine and get the flags!
 Initial scan finds ports 21,22,80,111,2049,35287,41763,47944,49228 open.<br />
@@ -31,7 +30,3 @@ We can execute a binary called `apache2` and have also access to the LD_LIBRARY_
 I'm gonna take `libdl.so.2`. So, first of all, create the malicious .c file; you can find it inside this folder, called `exploit.c`. Then, compile it using the following command: `gcc -o /tmp/libdl.so.2 -shared -fPIC exploit.c`. Then, run the binary after setting the evnvironment variable, with the following command: `sudo LD_LIBRARY_PATH=/tmp /usr/sbin/apache2 -f /etc/apache2/apache2.conf -d /etc/apache2`:<br />
 ![image](https://github.com/user-attachments/assets/b32556c3-a386-4c53-92b7-c6a704b5e511)<br />
 
-
-
-- What is the user flag? `THM{fdc8cd4cff2c19e0d1022e78481ddf36}`
-- What is the root flag? `THM{b91ea3e8285157eaf173d88d0a73ed5a}`
