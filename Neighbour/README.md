@@ -12,8 +12,6 @@ When I log in with guest account, I get to this page: <br />
 ![image](https://github.com/user-attachments/assets/570e3c13-0d02-44ed-b93c-9f0035aeba8a)<br />
 To go in the admin account, just change the URL to perform ad IDOR(Insecure Direct Object Reference) attack. An IDOR is a security vulnerability that occurs when an application provides direct access to objects based on user-supplied input. As a result, unauthorized users can access data or perform actions pertaining to other users simply by modifying a parameter value in a request:<br />
 ![image](https://github.com/user-attachments/assets/1af47104-db24-489c-9aff-99fbbd4620d0)<br />
-`flag{66be95c478473d91a5358f2440c7af1f}`
-
 
 
 
