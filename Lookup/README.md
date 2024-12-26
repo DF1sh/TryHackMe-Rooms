@@ -1,5 +1,4 @@
 # Lookup
-(flags are at the end of the writeup)
 
 ### Lookup
 Initial scan shows port 22 and 80 open: 
@@ -75,6 +74,3 @@ Time to become root. If I run `sudo -l` and prompt the password, I can see that 
 I didn't know this binary. But apparently is a well known binary that will show you all the words (taken from a dictionary in the file system) that start with the input that you provide. I found on [GTFObins](https://gtfobins.github.io/gtfobins/look/#sudo) a way to exploit it to read any files we want, so I used it to read the root flag: <br />
 ![image](https://github.com/user-attachments/assets/1a95beda-001c-4c3f-9497-8a209979f0ad)<br />
 If I wanted to used it to become root, one possible way is to read the private rsa key with `sudo /usr/bin/look '' /root/.ssh/id_rsa`, and then use it to login with ssh. Have a nice rest of your day :)
-
-- What is the user flag? `38375fb4dd8baa2b2039ac03d92b820e`
-- What is the root flag? `5a285a9f257e45c68bb6c9f9f57d18e8`
