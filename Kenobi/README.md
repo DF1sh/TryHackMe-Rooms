@@ -107,7 +107,6 @@ We can now use it to log into kenobi's account:
     chmod 600 id_rsa
     ssh -i id_rsa kenobi@10.10.93.61
 ![image](https://github.com/user-attachments/assets/b07caa29-f1a6-4601-ab98-d30e4b2f4e0e) <br />
-The user flag is: `d0b0f3f53b6caa532a83915e19224899`
 
 
 
@@ -154,5 +153,5 @@ We can exploit this by creating a file named "curl" inside another folder, for e
       export PATH=/tmp:$PATH
 
   ![image](https://github.com/user-attachments/assets/c61791fd-abf9-42cc-83e9-bfe6041e065c)<br />
-  Run `cat /root/root.txt` to get the root flag: `177b3cd8562289f37382721c28381f02`
+  Run `cat /root/root.txt` to get the root flag
 
