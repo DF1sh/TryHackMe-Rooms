@@ -1,5 +1,4 @@
 # Creative
-(flags are at the end of the writeup)
 
 ### boot2root
 Initial scan shows port 22 and 80 open.
@@ -58,10 +57,4 @@ There's no way to escalate to root using `ping`. But we can do it thanks to the 
 
 
 
-
-
-
-
-- What is user.txt? `9a1ce90a7653d74ab98630b47b8b4a84`
-- What is root.txt? `992bfd94b90da48634aed182aae7b99f`
 
