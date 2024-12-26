@@ -1,7 +1,7 @@
 # Publisher
 
 ### Publisher
-(Flags can be found at the end of this writeup)<br />
+
 Initial scan: 
 
     nmap -n -Pn -v --min-rate=1000 -p- 10.10.99.134                        
@@ -41,8 +41,4 @@ The configuration of apparmor for the "ash" shell is the following:<br />
 ![image](https://github.com/user-attachments/assets/b34e1773-e569-4055-9ec3-10a4fd8c3f0b)<br />
 ![image](https://github.com/user-attachments/assets/2502575c-3574-4180-853f-5bcc57a7c352)<br />
 
-
-
-- What is the user flag? `fa229046d44eda6a3598c73ad96f4ca5 `
-- What is the root flag? `3a4225cc9e85709adda6ef55d6a4f2ca`
 
