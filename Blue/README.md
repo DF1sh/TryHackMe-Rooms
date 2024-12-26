@@ -82,8 +82,8 @@ To crack the password I'm going to use John the Ripper. Copy the line relative t
 
 ### Find flags!
 - Flag1? This flag can be found at the system root. <br />
-Move to `C:\` and run `cat flag1.txt`: `flag{access_the_machine}`
+Move to `C:\` and run `cat flag1.txt`.
 - Flag2? This flag can be found at the location where passwords are stored within Windows. <br />
-Passwords are store in the SAM(Security Account Manager) directory, which is located at `C:\Windows\System32\config`. The flag is: `flag{sam_database_elevated_access}`
+Passwords are store in the SAM(Security Account Manager) directory, which is located at `C:\Windows\System32\config`.
 - flag3? This flag can be found in an excellent location to loot. After all, Administrators usually have pretty interesting things saved. <br />
-I honestly didn't know where to look at, since this is my first windows machine. So I run `search -f flag3.txt` to find the flag, which was in c:\Users\Jon\Documents\flag3.txt. The flag is: `flag{admin_documents_can_be_valuable}`. I was actually looking for some sort of administrator account but actually Jon is an administrator, my bad.
+I honestly didn't know where to look at, since this is my first windows machine. So I run `search -f flag3.txt` to find the flag, which was in c:\Users\Jon\Documents\flag3.txt. I was actually looking for some sort of administrator account but actually Jon is an administrator, my bad.
