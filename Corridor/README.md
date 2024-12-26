@@ -13,6 +13,5 @@ Since the hash used is MD5, I run `echo -n "0" | md5sum`:<br />
 ![image](https://github.com/user-attachments/assets/2bf9de41-c2c8-4b74-bc88-e99dc3fddfa4)<br />
 Now If I access `/cfcd208495d565ef66e7dff9f98764da`: <br />
 ![image](https://github.com/user-attachments/assets/c3789172-1a50-46d9-9ae9-48f8f9c0371b)<br />
-`flag{2477ef02448ad9156661ac40a6b8862e}`
 
 
