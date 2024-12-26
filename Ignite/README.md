@@ -15,9 +15,3 @@ These are the credentials to log into root's mysql account. But, funny enough, `
 Lesson learned: I spent an hour trying to figure out how to perform privesc, running linpeas, trying some CVE's, checking vulnerable software versions, manually enumerating configuration files...<br />
 At the end the path was much simpler than that, and I learned that some times a misconfigured system can use the same password for multiple purposes. Next time I should save every possible set of credentials I can find and use them on every service that requires authentication. 
 
-
-
-
-
-- User.txt `6470e394cbf6dab6a91682cc8585059b`
-- Root.txt `b9bbcb33e11b80be759c4e844862482d`
