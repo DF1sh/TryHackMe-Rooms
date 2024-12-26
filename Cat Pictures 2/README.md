@@ -119,8 +119,3 @@ Now on the target machine, run `tar xf exp.tar` (-x stands for extract, -f speci
 ![image](https://github.com/user-attachments/assets/9b9770eb-3770-4c95-a3eb-acd0b34b96d6)<br />
 Now I can run the exploit on the target machine and get the last flag: <br />
 ![image](https://github.com/user-attachments/assets/063563ea-54b5-4ffc-b6ef-62181f519176)<br />
-
-
-- What is Flag 1? `10d916eaea54bb5ebe36b59538146bb5`
-- What is Flag 2? `5e2cafbbf180351702651c09cd797920`
-- What is Flag 3? `6d2a9f8f8174e86e27d565087a28a971`
