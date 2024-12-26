@@ -1,5 +1,4 @@
 # Expose
-(flags are at the end of the writeup)
 
 ### Expose
 Initial scan shows ports 21,22,53,1337,1883 open:
@@ -115,9 +114,3 @@ Inside zeamkish's home directory, there are his ssh credentials:<br />
 I then run linpeas to enumerate possible privesc vectors and found this:<br />
 ![image](https://github.com/user-attachments/assets/72bcffe6-ae94-4359-b3f2-6f474fbb0f00)<br />
 GTFObins is very good with this kind of SUID. Just run `find . -exec /bin/sh -p \; -quit` and get root flag! 
-
-
-
-
-- What is the user flag? `THM{USER_FLAG_1231_EXPOSE}`
-- What is the root flag? `THM{ROOT_EXPOSED_1001}`
