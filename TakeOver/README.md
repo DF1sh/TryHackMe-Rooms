@@ -11,4 +11,3 @@ The **SAN** field of this last certificate specifies that the same certificate i
 
 So now if I visit `http://secrethelpdesk934752.support.futurevera.thm`, I get the flag:<br />
 ![image](https://github.com/user-attachments/assets/4941eb13-300c-4d43-a5fe-02ec5acb2839)<br />
-`flag{beea0d6edfcee06a59b83fb50ae81b2f}`
