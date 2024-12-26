@@ -1,5 +1,5 @@
 # Pyrat
-(Flags can be found at the end of this writeup)
+
 ### Pyrat
 Initial scan shows port 22 and 8000 open
 
@@ -72,8 +72,3 @@ At this point I was stuck for a while, and decided to go back to the initial net
 ![image](https://github.com/user-attachments/assets/7cfbcc1d-1609-46d4-a529-4ef4b0f75b85)<br />
 
 
-
-
-
-- What is the user flag? `996bdb1f619a68361417cabca5454705`
-- What is the root flag? `ba5ed03e9e74bb98054438480165e221`
