@@ -50,9 +50,3 @@ It is! I slightly modified the script, you can find it inside this folder named 
 
 
 
-
-
-
-- What's Tyrell Wellick's phone number? `842-029-5701`
-- What is the user.txt flag? `THM{4lways_upd4te_uR_d3p3nd3nc!3s}`
-- What is the root.txt flag? `THM{4nd_uR_p4ck4g3s}`
