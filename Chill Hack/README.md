@@ -1,5 +1,4 @@
 # Chill Hack
-(Flags are at the end of this write up)
 
 ### Investigate!
 Initial scan shows port 21,22 and 80 open: 
@@ -77,6 +76,3 @@ I asked chatGPT to generate a command to exploit this,but let's break down this 
 - `chroot /mnt sh`: This is the command executed inside the container. `chroot`: Changes the apparent root directory (/) for the container to the directory `/mnt`.
 Since `/mnt` is mounted to the host's root filesystem, this effectively means the container's root environment now "becomes" the host's filesystem.
 `sh`: Starts a shell session within the new root environment.<br />
-
-- User flag: `{USER-FLAG: e8vpd3323cfvlp0qpxxx9qtr5iq37oww}`
-- Root flag: `{ROOT-FLAG: w18gfpn9xehsgd3tovhk0hby4gdp89bg}`
