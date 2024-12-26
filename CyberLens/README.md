@@ -79,8 +79,3 @@ So I tried to use the first one:
     set session 2
 And I'm now the system user, and can locate the admin flag:
 ![image](https://github.com/user-attachments/assets/fce9e244-3653-4423-bdaa-15c8f22017aa)<br />
-
-
-
-- What is the user flag?  `THM{T1k4-CV3-f0r-7h3-w1n}`
-- What is the admin flag? `THM{3lev@t3D-4-pr1v35c!}`
