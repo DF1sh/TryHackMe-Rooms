@@ -111,7 +111,6 @@ Teamcity is a CI/CD (continuous integration/delivery) server that supports code 
     set set lhost YOUR_IP
     run
 ![image](https://github.com/user-attachments/assets/5779c2bb-663c-4745-a848-fba55a520139)<br />
-`THM{faa9bac345709b6620a6200b484c7594}`
 
 
 ### Blue: Let's Investigate
