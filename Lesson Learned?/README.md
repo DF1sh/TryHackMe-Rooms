@@ -23,7 +23,7 @@ So apparently this is an SQLi vulnerability, but I can't use sqlmap because it s
       username: kelly'#
       password: asd
 ![image](https://github.com/user-attachments/assets/9b2688b8-17b6-4896-9ea5-4d958f0372e5)<br />
-`THM{aab02c6b76bb752456a54c80c2d6fb1e}`
+
 
 
 
