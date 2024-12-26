@@ -9,7 +9,6 @@ Looking at the webpage, there's a page to send customer feedback:<br />
 Since the room is suggesting that the developers use the same computer for hosting the website and for looking at customer feedback, my first guess is that I need to do XSS. <br />
 After some time of trying payloads, the correct one to get the flag is provided in the file named `payload` in this folder. Remember to change the script to adapt to your IP address and to first open a web server with `python3 -m http.server PORT`<br />
 ![image](https://github.com/user-attachments/assets/92871c0f-5ccf-454a-a8ce-392bd540f844)<br />
-`THM{83789a69074f636f64a38879cfcabe8b62305ee6}`
 
 ### What I've learned
 I honestly thought that the right payload could also be the following: 
