@@ -8,9 +8,9 @@
 - What is the hidden directory? `/panel/` <br />
 
 ### Getting a shell
-- user.txt `THM{y0u_g0t_a_sh3ll}` <br />
+- user.txt `redacted` <br />
 
 ### Privilege escalation
 - Search for files with SUID permission, which file is weird? `/usr/bin/python` <br />
 - Find a form to escalate your privileges. `No answer needed` <br />
-- root.txt `THM{pr1v1l3g3_3sc4l4t10n}` <br />
+- root.txt `redacted` <br />
