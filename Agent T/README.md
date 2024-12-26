@@ -16,5 +16,4 @@ This website is running a vulnerable version of PHP, that contains a backdoor fo
 <br />
 I used [this](https://github.com/flast101/php-8.1.0-dev-backdoor-rce/blob/main/revshell_php_8.1.0-dev.py) exploit to get a reverse shell and the flag:<br />
 ![image](https://github.com/user-attachments/assets/b2005e31-4a39-44e8-ae24-b7a69c71f8ce)<br />
-`flag{4127d0530abf16d6d23973e3df8dbecb}`
 
