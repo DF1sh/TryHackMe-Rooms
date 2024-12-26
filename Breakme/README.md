@@ -1,7 +1,7 @@
 # Breakme
 
 ### Break the system
-(Flags can be found at the end of this writeup)<br />
+
 Initial nmap scan only shows port 22 and 80 open. The webserver seems just an empty apache webserver, however, a gobuster directory enumeration shows other resources:<br />
 ![image](https://github.com/user-attachments/assets/1862c187-c3be-4bfc-91f8-f10a88751816)<br />
 Movin around on the webserver, I found a login page at `/wordpress/wp-login`. If I try to login with `admin`, I get back a response that the password for that user is wrong. This means that the `admin` user actually exists:<br  />
@@ -22,7 +22,7 @@ Now, to upload a reverse shell, we need to upload it in the theme's code, which 
 Next, I [stabilized the shell](https://maxat-akbanov.com/how-to-stabilize-a-simple-reverse-shell-to-a-fully-interactive-terminal) so that i could maintain my mental integrity.<br />
 Running linpaeas, it founds a set of credentials inside wordpress configuration file:<br />
 ![image](https://github.com/user-attachments/assets/f8e6b88d-9549-4d6b-bf3f-bd73830d8f1f)
-So use the given credentials(`econor:SuP3rS3cR37#DB#P@55wd`) to log into the database `mysql -u econor -p`. In the database there are a couple of hashed passwords: <br />
+So use the given credentials to log into the database `mysql -u econor -p`. In the database there are a couple of hashed passwords: <br />
 ![image](https://github.com/user-attachments/assets/a7d76b78-4539-4024-a637-343439d24388)<br />
 We already know bob's password, let's try to crack the admin's password. The hash starts with `$P$`, this means that it is a `Phpass` hash format. I doesn't work, there must be something else. <br />
 Linpeas also shows a local service at 127.0.0.1:9999. With `curl` I was able to see that it's a web service. In order to access the web page from the attacker's machine, we need to perform something called `port forwarding`:
@@ -83,7 +83,3 @@ Filters in this Python Jail were likely configured to block literal ASCII string
 
 This room was really hard for me and I'm not going to lie, I cheated a little. But it's been really informative.
 
-
-- What is the first flag? `5c3ea0d312568c7ac68d213785b26677`
-- What is the second flag? `df5b1b7f4f74a416ae27673b22633c1b`
-- What is the root flag? `e257d58481412f8772e9fb9fd47d8ca4`
