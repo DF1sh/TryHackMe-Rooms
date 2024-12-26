@@ -1,5 +1,5 @@
 # Opacity
-(flags are at the end of the writeup)
+
 
 ### Opacity
 Initial scan shows ports 22,80,139 and 445 open, and ports 9485, 11972 and 15370 filtered:
@@ -68,9 +68,3 @@ The script is now owned by sysadmin! We can now modify it to spawn a reverse she
 ![image](https://github.com/user-attachments/assets/1e06f2f3-978f-4bb2-84d7-eedc94de6e0a)<br />
 Now open a netcat listener and wait for the reverse shell: <br />
 ![image](https://github.com/user-attachments/assets/967cbbb5-5a8d-4388-978e-fc1155204dbc)<br />
-
-
-
-
-- What is the  local.txt flag? `6661b61b44d234d230d06bf5b3c075e2`
-- What is the proof.txt flag? `ac0d56f93202dd57dcb2498c739fd20e`
