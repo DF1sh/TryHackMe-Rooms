@@ -20,7 +20,7 @@ For privesc, linpeas shows me, among other things, the sudo version: <br />
 ![image](https://github.com/user-attachments/assets/7158b262-45d6-4bce-b9cd-de956309f908)<br />
 Searching online, this version might be vulnerable to CVE-2021-3156. I also checked [this script](https://github.com/lypd0/CVE-2021-3156-checker/blob/main/CVE-2021-3156-checker.py) and it confirms it: <br />
 ![image](https://github.com/user-attachments/assets/006fbaf6-117b-4c82-a14c-546a3593c01a)<br />
-So I found this exploit on github and it worked correctly and spawned me a root shell. 
+So I found [this exploit](https://github.com/worawit/CVE-2021-3156/blob/main/exploit_nss.py) on github and it worked correctly and spawned me a root shell. 
 
 
 
