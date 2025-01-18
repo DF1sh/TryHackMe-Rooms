@@ -10,8 +10,12 @@ Apparently it also filters `UNION`. Also `SELECT` gets filtered. After A LOT of 
 If I mix uppercases and lower cases, I can bypass the filter and the server responds to me with the output of the SQL query, which in this case is an error because no `usernames` table exists. Now I'm having troubles trying to find a correct table name. Also something weird happens: <br />
 If I use this payload which should bypass the filter: `' or 1=1 limit 1;` <br />
 ![image](https://github.com/user-attachments/assets/5f15f610-1c0f-4ac9-8a83-a9eb802247ee)<br />
-Instead of responding with the output of the query, it just closes the connection. I don't know how to go on, I'll take a break and continue another time. <br />
-TO BE CONTINUED...
+Instead of responding with the output of the query, it just closes the connection. <br />
+Finally I found something, apparently he doesn't like `;` at the end: <br />
+![image](https://github.com/user-attachments/assets/9d2a0943-eb2e-4217-909f-53906530a1c3)<br />
+The table is called `admintable`. The query to retrieve the admin username is `' Union Select username from admintable where username like '%`. <br />
+The one to retrieve the flag is `' Union Select password from admintable where username like '%`.
+
 
 
 
