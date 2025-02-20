@@ -41,7 +41,7 @@ Now compile the encoder program:
                 }
             }
         }
-Rembember to replace your shellcode inside the variable "buf". Now copy it into the windows machine and compile it using CMD: `csc.exe challenge.c`.
+Rembember to replace your shellcode inside the variable "buf". Now copy it into the windows machine and compile it using CMD: `csc.exe challenge.c`.<br />
 ![image](https://github.com/user-attachments/assets/695c3ea7-8523-43d7-a7b9-b03edc78c316)<br />
 Now run the encryptor to get the encrypted shellcode. The encryptor first XORs the shellcode with a given key and then encodes it in base64: <br />
 ![image](https://github.com/user-attachments/assets/0547a87f-6634-407a-9c94-1996274f4c21)<br />
