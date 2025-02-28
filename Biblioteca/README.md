@@ -5,11 +5,11 @@ Nmap scan shows ports 22 and 8000. Port 8000 contains an http server. It contain
 ![image](https://github.com/user-attachments/assets/9886dba5-4753-4cf1-a549-109e4fe69a65)<br />
 I found an sql injection using sqlmap: `sqlmap -r request -p username --risk 3 --level 5  --dbs --batch --dbms=mysql`<br />
 ![image](https://github.com/user-attachments/assets/a88d089b-0179-4424-b8b2-5692455d019e)<br />
-So I know that there's a database called `website`. I know want to enumerate what are the tables of this DB. `sqlmap -r request -p username --risk 3 --level 5 --batch --dbms=mysql -D website --tables`:<br />
+So I know that there's a database called `website`. I now want to enumerate what are the tables of this DB. `sqlmap -r request -p username --risk 3 --level 5 --batch --dbms=mysql -D website --tables`:<br />
 ![image](https://github.com/user-attachments/assets/62b0eb62-243c-48e4-82e7-a71774210feb)<br />
 Good, now I want to know what's inside this table `users`. So I run `sqlmap -r request -p username --risk 3 --level 5 --batch --dbms=mysql -D website -T users --dump`. This retrieves a set of credentials for the user `smokey`.
 <br />
-I use them to access smokey's ssh account. At this point I was stuck for about two hours... but then my friend [Simone](https://github.com/SimoneCiferri) enlighted me. He told me: "why don't you try `hazel:hazel`. It worked. LOL.<br />
+I use them to access smokey's ssh account. At this point I was stuck for about two hours... I needed to access `hazel`'s account but didn't find anything. Then my friend [Simone](https://github.com/SimoneCiferri) enlighted me. He told me: "why don't you try `hazel:hazel`. It worked. LOL.<br />
 Now If I run `sudo -l` I get this:<br />
 ![image](https://github.com/user-attachments/assets/7e773375-8d5e-4601-a874-b3f25b5c621c)<br />
 And this is the code of the python file:
