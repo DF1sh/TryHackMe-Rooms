@@ -39,7 +39,12 @@ I now need to do some lateral movement. Inside magna's home directory there's a 
 Also, if I check the cronjobs, I get: <br />
 ![image](https://github.com/user-attachments/assets/e23a9977-82a5-46fc-ace3-f39124a301d8)<br />
 To exploit this cronjob I need write permissions inside `spooky`'s home directory, which I don't have. So I first need to become spooky, probably by exploiting that SUID binary. <br />
-TO BE CONTINUED....
+If I try to dissassemble it, I see that there's a function called `call_bash`. But it is never called inside the main. This function executes `system(/bin/sh)'` with the privileges of spooky. Also, the main function calls `gets()`, which is vulnerable to buffer overflow. So I need to overflow the buffer with the address of `call_bash`. I check what is the address of the `call_bash` function:<br />
+![image](https://github.com/user-attachments/assets/4dc93c61-34ee-43f0-9b30-748d834e345b)<br />
+And it is at `0x400657`. So my final payload is `python -c "print('A' * 72 + '\x57\x06\x40\x00\x00\x00\x00\x00')" | ./hacktheworld`:<br />
+![image](https://github.com/user-attachments/assets/b57bacec-72db-48ca-bf8b-509fa6b750fd)<br />
+
+
 
 ![image](https://github.com/user-attachments/assets/f9bdcd55-aff3-41f9-bed1-9eed55320126)
 ![image](https://github.com/user-attachments/assets/70ca7f69-5092-49da-bd6c-9d69811c902b)
