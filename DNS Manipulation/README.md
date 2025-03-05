@@ -16,17 +16,21 @@ DNS exfiltration is a way of exfiltrating data from a compromised network. Openi
 
 ### DNS Exfiltration - Practice
 - What is the Transaction name? (Type it as you see it)<br />
-<br />
-
-- How much was the Firewall? (Without the $)
-- Which file contains suspicious DNS queries?
-- Enter the plain-text after you have decoded the data using packetyGrabber.py found in ~/dns-exfil-infil/ folder.
+![image](https://github.com/user-attachments/assets/0e7355a0-242b-4c24-b2e8-bba4ee44bf0e)<br />
+`Network Equip.`
+- How much was the Firewall? (Without the $) `2500`
+- Which file contains suspicious DNS queries?<br />
+![Screenshot 2025-03-05 143452](https://github.com/user-attachments/assets/1f4931c8-b8a1-4fe8-bfbf-65e52e6029d4)<br />
+`cap3.pcap`
+- Enter the plain-text after you have decoded the data using packetyGrabber.py found in ~/dns-exfil-infil/ folder.<br />
+![Screenshot 2025-03-05 143726](https://github.com/user-attachments/assets/72758a05-847a-4cf9-be6a-9d3f761570b0)<br />
+`administrator:s3cre7P@ssword`
 
 ### What is DNS Infiltration?
-- What type of DNS Record is usually used to infiltrate data into a network?
+- What type of DNS Record is usually used to infiltrate data into a network? `TXT`
 
 ### DNS Infiltration - Practice
-- Enter the output from the executed python file
+- Enter the output from the executed python file `4.4.0-186-generic`
 
 ### DNS Tunneling
-- What program was used to Tunnel HTTP over DNS?
+- What program was used to Tunnel HTTP over DNS? `iodine`
