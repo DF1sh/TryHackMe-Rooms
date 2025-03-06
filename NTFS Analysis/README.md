@@ -41,5 +41,9 @@ Just search for `secret_code.txt` and find the parent sequence number: `2`
 Take the last log (deleted event) and get the timestamp (3rd field): `2025-01-15 08:10:04`
 
 ### Index Allocation Attribute ($I30) Overview
-- How many deleted files or folders are present in the $I30 attribute file that was extracted in this task?
-- What is the parent MFT entry of the nmap directory?
+![image](https://github.com/user-attachments/assets/3ffa729c-3dc2-4df7-be6a-ddc75ef076ba)<br />
+- How many deleted files or folders are present in the $I30 attribute file that was extracted in this task?<br />
+`52`
+- What is the parent MFT entry of the nmap directory?<br />
+![image](https://github.com/user-attachments/assets/4cda6b2f-badd-48ff-8973-6d2f65ae7cc2)<br />
+`512386`
