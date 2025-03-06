@@ -81,16 +81,45 @@ Use [this website](https://soundcloud.com/user-86667759/thm-ctf-vol1) to hear th
 Sometimes we need a 'machine' to dig the past <br />
 Targetted website: https://www.embeddedhacker.com/ <br />
 Targetted time: 2 January 2020 <br />
-
-Use the [wayback machine](https://web.archive.org/web/20200102131252/https://www.embeddedhacker.com):
+Use the [wayback machine](https://web.archive.org/web/20200102131252/https://www.embeddedhacker.com).
 
 ### Uncrackable!
 Can you solve the following? By the way, I lost the key. Sorry >.< MYKAHODTQ{RVG_YVGGK_FAL_WXF}<br />
 I use [this website](https://www.guballa.de/vigenere-solver) to break this vigenere code and get the flag.
 
 ### Small bases
+Decode the following text. 581695969015253365094191591547859387620042736036246486373595515576333693<br />
+Dec -> hex -> ascii.
+
+### Read the packet
+
+      GET /flag.txt HTTP/1.1
+      Host: 192.168.247.140
+      User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/60.0
+      Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+      Accept-Language: en-US,en;q=0.5
+      Accept-Encoding: gzip, deflate
+      Connection: keep-alive
+      Upgrade-Insecure-Requests: 1
+      If-Modified-Since: Fri, 03 Jan 2020 04:36:45 GMT
+      If-None-Match: "e1bb7-15-59b34db67925a"
+      Cache-Control: max-age=0
+      
+      HTTP/1.1 200 OK
+      Date: Fri, 03 Jan 2020 04:43:14 GMT
+      Server: Apache/2.2.22 (Ubuntu)
+      Last-Modified: Fri, 03 Jan 2020 04:42:12 GMT
+      ETag: "e1bb7-20-59b34eee33e0c"
+      Accept-Ranges: bytes
+      Vary: Accept-Encoding
+      Content-Encoding: gzip
+      Content-Length: 52
+      Keep-Alive: timeout=5, max=100
+      Connection: Keep-Alive
+      Content-Type: text/plain
+      
+      THM{***********}
+      
+      Found me!
 
 
-### 
-
-### 
