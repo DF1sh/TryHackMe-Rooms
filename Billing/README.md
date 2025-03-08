@@ -38,6 +38,6 @@ Having sudo privileges on fail2ban can lead to privilege escalation. Basically w
 
     sudo /usr/bin/fail2ban-client set sshd action iptables-multiport actionban "cp /bin/bash /tmp && chmod 4755 /tmp/bash"
 An "actionban" can be specified to execute a system command whenever an event happens. So basically we're saying: everytime you detect a bruteforce attack on ssh and you perform the action "iptables-multiport"(which means to ban an IP address on multiple ports), also execute the following command, which creates a SUID copy of /bin/bash.<br />
-Now I run `hydra 10.10.196.108 -l root -P /usr/share/wordlists/rockyou.txt ssh`, so that this rule will be triggered.<br />
+Now I run `hydra 10.10.196.108 -l root -P /usr/share/wordlists/rockyou.txt ssh`, so that this rule will be triggered, and the SUID `bash` gets created in side `/tmp/bash`.<br />
 ![image](https://github.com/user-attachments/assets/cc14a930-2dee-43b2-96aa-3d051d94f67f)<br />
 
