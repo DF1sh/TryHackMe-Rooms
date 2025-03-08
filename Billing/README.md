@@ -31,12 +31,13 @@ This opens a reverse shell! Moving around the system, I found a configuration fi
 ![image](https://github.com/user-attachments/assets/9514e13a-e182-4f19-b21a-73589dc75bea)<br />
 I use this credentials to log into the database. Looking around the DB I found a password: <br />
 ![image](https://github.com/user-attachments/assets/2ca1144d-1641-482e-924d-381b54baf72d)<br />
-I'm having difficulties trying to crack this hash... TO BE CONTINUED...
-![image](https://github.com/user-attachments/assets/831652bb-701c-421a-988b-8b54366f8652)
-![image](https://github.com/user-attachments/assets/968e51b7-0ccd-44b0-8adf-fd2909a42452)
-![image](https://github.com/user-attachments/assets/0ba82b85-6b0a-4c2f-8651-93303e189085)
-![image](https://github.com/user-attachments/assets/9f1f540d-dbd7-4d38-ad2d-fb8d9a419036)
+I'm trying to crack this hash but it doesn't work. Next, my user has sudo privileges on fail2ban:<br />
+![image](https://github.com/user-attachments/assets/831652bb-701c-421a-988b-8b54366f8652)<br />
+Fail2ban is an IDS. It is able to detect bruteforce attempts, and can ban IP addresses using iptables rules. <br />
+Having sudo privileges on fail2ban can lead to privilege escalation. Basically we can configure fail2ban to execute a specific command on the system whenever it detects bruteforce attempts on a specific service. The format of the command is this: `get <JAIL> action <ACT> actionban`, where JAIL is essentially a service from which it detects a bruteforce, such as ssh, http, etc.. and ACT is the action to perform, for example banning an IP. I'm going to exploit this with the following command: 
 
-![image](https://github.com/user-attachments/assets/ef192e87-76be-413f-8392-2df98978bed1)
-![image](https://github.com/user-attachments/assets/a08a6555-26a9-45b8-9769-10888100474e)
+    sudo /usr/bin/fail2ban-client set sshd action iptables-multiport actionban "cp /bin/bash /tmp && chmod 4755 /tmp/bash"
+An "actionban" can be specified to execute a system command whenever an event happens. So basically we're saying: everytime you detect a bruteforce attack on ssh and you perform the action "iptables-multiport"(which means to ban an IP address on multiple ports), also execute the following command, which creates a SUID copy of /bin/bash.<br />
+Now I run `hydra 10.10.196.108 -l root -P /usr/share/wordlists/rockyou.txt ssh`, so that this rule will be triggered.<br />
+![image](https://github.com/user-attachments/assets/cc14a930-2dee-43b2-96aa-3d051d94f67f)<br />
 
