@@ -17,6 +17,10 @@ To summerize, you need to execute: `/usr/bin/python3.7 -c 'import os; os.setuid(
 ![image](https://github.com/user-attachments/assets/d5dc1bda-53f5-4ed9-bb04-4dc83de866d2)<br />
 Thus, become root! The user.txt file is inside /root:<br />
 ![image](https://github.com/user-attachments/assets/544be2ca-4d8e-4826-934f-5cb791d6b0ad)<br />
+This is where I understood that I'm actually in a docker container. Furthermore: <br />
+![image](https://github.com/user-attachments/assets/2ea2ae71-7f37-4785-9961-ea39375eef17)<br />
+The address of the machine is `172.17.0.2`. This is typical of a docker container. The default gateway is instead `172.17.0.1`, and it's the address of the host machine that contains the container.
+
 
 
 
