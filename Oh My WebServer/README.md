@@ -19,8 +19,12 @@ Thus, become root! The user.txt file is inside /root:<br />
 ![image](https://github.com/user-attachments/assets/544be2ca-4d8e-4826-934f-5cb791d6b0ad)<br />
 This is where I understood that I'm actually in a docker container. Furthermore: <br />
 ![image](https://github.com/user-attachments/assets/2ea2ae71-7f37-4785-9961-ea39375eef17)<br />
-The address of the machine is `172.17.0.2`. This is typical of a docker container. The default gateway is instead `172.17.0.1`, and it's the address of the host machine that contains the container.
-
+The address of the machine is `172.17.0.2`. This is typical of a docker container. The default gateway is instead `172.17.0.1`, and it's the address of the host machine that contains the container. After enumerating the machine A LOT, I tried to check if there are any other machines in this IP subnet, maybe the docker container uses `172.17.0.1`, the default gateway, to communicate with the host.
+And the ports it finds are: <br />
+![image](https://github.com/user-attachments/assets/d548b00d-b93c-413c-8c08-d6e86e04f2ab)<br />
+Searching online on how to pentest port 5986 I found [this CVE](https://github.com/CyberMonitor/CVE-2021-38648), that allows for remote code execution.<br />
+So I transfer the exploit on the target machine and execute: `python3 out.py -t 172.17.0.1 -c 'whoami;pwd;id;hostname;uname -a;cat /root/root.txt;'`
+![image](https://github.com/user-attachments/assets/d0acf199-3a8e-482e-a5f5-e6b88ecd5eeb)<br />
 
 
 
