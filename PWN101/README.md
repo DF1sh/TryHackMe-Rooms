@@ -328,6 +328,8 @@ At the stack value number 10, it starts to write hex values of `%` and `%p`. On 
     p.interactive()
 
 ![image](https://github.com/user-attachments/assets/cc63b353-475b-4f43-9da1-e14e1656275e)<br />
+Note that this exploit can only be done because the binary is only PARTIAL RELRO, meaning that the GOT can be changed during execution.
+
 
 ### Challenge 8 - pwn101
 
