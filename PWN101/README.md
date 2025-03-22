@@ -566,8 +566,8 @@ As you can see, the binary is statically linked, this means that the libc is har
     proc.sendline(p)
     proc.interactive()
 
-<br />
-![Screenshot 2025-03-22 191917](https://github.com/user-attachments/assets/187d7d79-29c0-4ed4-bb98-f69355a3692a)
+![image](https://github.com/user-attachments/assets/dfb21b58-0706-41a8-a259-f645430b4862)
+
 
 
 
