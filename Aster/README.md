@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/1f87dccf-0135-41b2-aec0-e70865574e1e)# Aster
+# Aster
 
 ### Aster
 Nmap scan shows ports 22,80, 1720, 2000 and 5038 open, in particular `5038/tcp open  asterisk    Asterisk Call Manager 5.0.2` is a remote administration utility for VOIP servers. But I first need a set of valid credentials to access it. The website allows me to download a python script which is already byte-compiled. I decompiled it using a tool called `uncompyle6`, but it seems obfuscated so I asked chatGPT to make it look prettier, and this is the result: <br />
