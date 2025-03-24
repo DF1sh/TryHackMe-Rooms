@@ -1,4 +1,4 @@
-# Aster
+![image](https://github.com/user-attachments/assets/1f87dccf-0135-41b2-aec0-e70865574e1e)# Aster
 
 ### Aster
 Nmap scan shows ports 22,80, 1720, 2000 and 5038 open, in particular `5038/tcp open  asterisk    Asterisk Call Manager 5.0.2` is a remote administration utility for VOIP servers. But I first need a set of valid credentials to access it. The website allows me to download a python script which is already byte-compiled. I decompiled it using a tool called `uncompyle6`, but it seems obfuscated so I asked chatGPT to make it look prettier, and this is the result: <br />
@@ -51,7 +51,43 @@ With this credentials I can interact with the asterisk server using netcat:
     
     Action: Login
     Username: admin
-    Secret: abc123
+    Secret: <redacted>
 I got stuck here for a long time because after entering the secret I did not press the ‘ENTER’ button 2 times(...).<br />
 ![image](https://github.com/user-attachments/assets/e47fe79a-0239-4488-9877-dadb244d5a98)<br />
+After some research, I find out that after login I can execute asterisk commands, in particular this command retrieves information about a SIP user:<br />
+![Screenshot 2025-03-24 093612](https://github.com/user-attachments/assets/05497f73-c2ce-4606-98a4-f6a27755fbec)<br />
+With this set of credentials I login into harry's ssh account and get the user flag. Now inside harry's home directory there's a file called `Example_Root.jar`. I unzip it and get a java file already compiled in bytecode, similar concept of the python script already compiled that I saw before. To decompile it, first I download cfr (which is a command line java decompiler) from [this website](https://www.benf.org/other/cfr/), transfer the .class file on my machine and then run `java -jar cfr-0.151.jar Example_Root.class`. And this is the compiled code:
+
+    /*
+     * Decompiled with CFR 0.151.
+     */
+    import java.io.File;
+    import java.io.FileWriter;
+    import java.io.IOException;
+    
+    public class Example_Root {
+        public static boolean isFileExists(File file) {
+            return file.isFile();
+        }
+    
+        public static void main(String[] stringArray) {
+            String string = "/tmp/flag.dat";
+            File file = new File(string);
+            try {
+                if (Example_Root.isFileExists(file)) {
+                    FileWriter fileWriter = new FileWriter("/home/harry/root.txt");
+                    fileWriter.write("my secret <3 baby");
+                    fileWriter.close();
+                    System.out.println("Successfully wrote to the file.");
+                }
+            }
+            catch (IOException iOException) {
+                System.out.println("An error occurred.");
+                iOException.printStackTrace();
+            }
+        }
+    }
+It's not doing anything interesting really, it just checks for the esistence of a file inside `/tmp/`, and if yes, it creates a file inside harry's home directory with "My secret <3 baby". I keep enumerating the system and find an interesting cronjob:<br />
+![image](https://github.com/user-attachments/assets/9addc65f-a06f-42db-a7d7-61e0532332e2)<br />
+So since we are provided with a java file called `Example_Root.class`, I suppose this is just an example. Maybe root is running the real java code that would put the root flag inside harry's home directory. So just create a file in `/tmp/` and call it `flag.dat`, then wait a few seconds and the root flag actually appears on harry's home directory!
 
