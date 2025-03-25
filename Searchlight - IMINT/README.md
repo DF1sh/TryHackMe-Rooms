@@ -49,12 +49,28 @@ Keep doing some research and find the shop's website.
 `sl{cochrane}`
 
 ### Reverse your thinking
-
+- Which restaurant was this picture taken at?<br />
+I used [this website](https://www.duplichecker.com/reverse-image-search.php) to reverse engineer the image and get the name of the place.<br />
+![image](https://github.com/user-attachments/assets/3c6bc691-4e8b-4e2b-a8ba-22558e74250f)<br />
 `sl{katz's deli}`
+- What is the name of the Bon Appétit editor that worked 24 hours at this restaurant?<br />
+![image](https://github.com/user-attachments/assets/9f0b3392-ea9b-471d-8104-274caaa8d6ef)<br />
 
 ### Locate this sculpture
+- What is the name of this statue?<br />
+I found it!<br />
+![image](https://github.com/user-attachments/assets/e5cb67d0-7b85-4dfc-b457-55a80eeefb9f)<br />
+`sl{rudolph the chrome nosed reindeer}`
+- Who took this image?<br />
+`sl{kjersti stensrud}`
 
 ### ...and justice for all
+- What is the name of the character that the statue depicts?<br />
+![image](https://github.com/user-attachments/assets/b0bfb4de-3e1b-456c-b9fe-d48c0a5901cf)<br />
+`sl{lady justice}`
+- where is this statue located?
+- What is the name of the building opposite from this statue?
 
 ### The view from my hotel room
+- What is the name of the hotel that my friend stayed in a few years ago?
 
