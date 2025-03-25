@@ -68,9 +68,10 @@ I found it!<br />
 - What is the name of the character that the statue depicts?<br />
 ![image](https://github.com/user-attachments/assets/b0bfb4de-3e1b-456c-b9fe-d48c0a5901cf)<br />
 `sl{lady justice}`
-- where is this statue located?
-- What is the name of the building opposite from this statue?
+- where is this statue located? <br />
+Found [this link](https://www.gettyimages.de/detail/foto/blind-justice-statue-outside-albert-v-bryan-u-s-lizenzfreies-bild/528113264): `sl{Alexandria, Virginia}`
+- What is the name of the building opposite from this statue? `sl{The Westin Alexandria Old Town}`
 
 ### The view from my hotel room
 - What is the name of the hotel that my friend stayed in a few years ago?
-
+ `sl{Novotel Singapore Clarke Quay}`
