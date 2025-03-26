@@ -33,7 +33,10 @@ There's the ID of her access point on the posts, use [wigle](https://wigle.net/)
 `84:af:ec:34:fc:f8`
 
 ### HOMEBOUND
-- What airport is closest to the location the attacker shared a photo from prior to getting on their flight?
+- What airport is closest to the location the attacker shared a photo from prior to getting on their flight?<br />
+Use [this website](https://www.duplichecker.com/reverse-image-search.php) to perform a reverse image search:<br />
+![image](https://github.com/user-attachments/assets/03d99e34-4f0b-4b69-be79-3c2c2b9b0a26)<br />
+
 - What airport did the attacker have their last layover in?
 - What lake can be seen in the map shared by the attacker as they were on their final flight home?
 - What city does the attacker likely consider "home"?
