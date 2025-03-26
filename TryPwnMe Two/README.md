@@ -49,7 +49,26 @@ Checksec shows the following defense measures:<br />
 This is how IDA disassembles the binary:<br />
 ![image](https://github.com/user-attachments/assets/bb63c6a3-058c-4e67-9c91-652318ae4808)<br />
 As you can see, the stack is 528 bytes long, but the `read` function only takes 512 bytes in input. This means that technically I can't do any buffer overflow. What I can do though is a format string exploit. <br />
-TO BE CONTINUED....
+How can a format string vulnerability lead to a full shell on the target system? The lack of defense mechanisms can allow it:
+- Partial RELRO --> the GOT is writable during execution.
+- No PIE --> the code of the binary ALWAYS starts at `0x3fe000`.
+- Not Stripped --> easier to find GOT entries.
+<br /><br />
+The main idea of this attack is:
+1) use format string to leak addresses from the stack. Inside the stack I want to find an address of a function from the libc library. Notice that I don't need to do all of this in a single execution. The stack layout is going to be the same at every execution, so I can just execute the program multiple times until I find at which offset the stack contains a libc function.
+2) Once I know the offset, I can dinamically compute the base of the libc library by subtracting the known offset of the leaked function from the leaked address.
+3) Since the binary is not PIE, the address of the GOT table is well known, and I can use the format string vulnerability to overwrite the entry of the `exit` function in the GOT with the address of `main`, so that I have another execution to send a second payload, while the base of the libc is still the same! you know where this is going..
+4) Now I compute the addresses of `system` and and perform a ret2libc attack by overwriting the entry point of `exit` in the GOT with the address of `system`, and sending `/bin/sh` as an argument.
+<br />
+So let's start with the first step. After some trial end error, you'll find out that the third element of the stack contains an address from the libc:<br />
+![Screenshot 2025-03-26 111122](https://github.com/user-attachments/assets/eff6f398-d4fe-4fee-bd8a-8ddb07241a09)<br />
+![Screenshot 2025-03-26 111252](https://github.com/user-attachments/assets/9396ae16-db6a-4f46-8df3-84f8f1de2eae)<br />
+This means that the third address of the stack is 23 bytes away from the `write()` fucntion of the libc library. Good, so now I know how to compute the address of libc.
+
+
+Now I want to do a test. I want to see if I can overwrite the entrypoint of the `exit` fucntion with the address `main`, so that I can execute the program again and drop the second payload. The following script seems to do the job.
+
+
 
 ### Try a Note
 
