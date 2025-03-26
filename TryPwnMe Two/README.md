@@ -61,10 +61,11 @@ The main idea of this attack is:
 4) Now I compute the addresses of `system` and and perform a ret2libc attack by overwriting the entry point of `exit` in the GOT with the address of `system`, and sending `/bin/sh` as an argument.
 <br />
 So let's start with the first step. After some trial end error, you'll find out that the third element of the stack contains an address from the libc:<br />
-![Screenshot 2025-03-26 111122](https://github.com/user-attachments/assets/eff6f398-d4fe-4fee-bd8a-8ddb07241a09)<br />
-![Screenshot 2025-03-26 111252](https://github.com/user-attachments/assets/9396ae16-db6a-4f46-8df3-84f8f1de2eae)<br />
+![Screenshot 2025-03-26 111122](https://github.com/user-attachments/assets/6dc73b23-e408-49b1-bd79-9373f2bb9884)<br />
+![Screenshot 2025-03-26 111252](https://github.com/user-attachments/assets/ee3875ef-fcf8-424d-88cf-9767935731c0)<br />
 This means that the third address of the stack is 23 bytes away from the `write()` fucntion of the libc library. Good, so now I know how to compute the address of libc.
 
+....
 
 Now I want to do a test. I want to see if I can overwrite the entrypoint of the `exit` fucntion with the address `main`, so that I can execute the program again and drop the second payload. The following script seems to do the job.
 
