@@ -10,7 +10,9 @@ And now I have access to the `/admin` panel and got the first flag:<br />
 ![image](https://github.com/user-attachments/assets/4d42d3c0-14ca-4f8f-ad9a-eef41e8c8612)<br />
 Now I need to get foothold on the machine. In the admin panel, I can select the "profile" of a user, and the URL becomes, for example, `/admin?user=1`. If I try to perform some SQL injection, I get this error: <br />
 ![image](https://github.com/user-attachments/assets/c53068ec-cd09-4f2e-b39f-6d4802b06d51)<br />
-
+SQLMAP doesn't work, probably because there's some WAF that periodically changes michael's cookie. I need to exploit this SQL injection manually. First of all I need to know the number of columns of the table this query is about. After some enumeration the number of columns is `4`, because the payload that doesn't trigger an error is `?user=0 union select 1,2,3,4 -- -`:<br />
+![Screenshot 2025-04-10 130639](https://github.com/user-attachments/assets/b250b695-0529-4b38-833b-a39a6eea8abf)<br />
+As you can see the second column is reflected in the field `User`. This means that I can use it to enumerate the database.
 sqlmap -r request.txt --batch --level 5 --risk 3 --dbs
 
 
