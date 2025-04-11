@@ -12,15 +12,36 @@ Now I need to get foothold on the machine. In the admin panel, I can select the 
 ![image](https://github.com/user-attachments/assets/c53068ec-cd09-4f2e-b39f-6d4802b06d51)<br />
 SQLMAP doesn't work, probably because there's some WAF that periodically changes michael's cookie. I need to exploit this SQL injection manually. First of all I need to know the number of columns of the table this query is about. After some enumeration the number of columns is `4`, because the payload that doesn't trigger an error is `?user=0 union select 1,2,3,4 -- -`:<br />
 ![Screenshot 2025-04-10 130639](https://github.com/user-attachments/assets/b250b695-0529-4b38-833b-a39a6eea8abf)<br />
-As you can see the second column is reflected in the field `User`. This means that I can use it to enumerate the database.
-sqlmap -r request.txt --batch --level 5 --risk 3 --dbs
+The user `0` doesn't exist, so it should give an error, however it doesn't because it returns the output of the second select we injected. The fact that this second select doesn't trigger any error means that the number of columns is exactly 4, and the web app was wrongly developed to show the output of the query, no metter what query. Now, how can I exploit this to get more information? I can use the table `information_schema`. This is a table that contains information about databases saved in this DB. To get the name of the other database besides `information_schema`, I used the following payload
+
+    http://10.10.2.204/admin?user=0%20union%20select%20schema_name,schema_name,3,4%20from%20information_schema.schemata%20WHERE%20schema_name%20!=%20%27information_schema%27--%20-
+
+![image](https://github.com/user-attachments/assets/72936a1b-2721-41a1-9d28-0fa58ee91be2)<br />
+So now I know that the DB is called `marketplace`. Now I want to know what tables are in this database, to do that I'll use the following payload: 
+
+    10.10.2.204/admin?user=0 UNION SELECT table_name, table_name, null, null FROM information_schema.tables WHERE table_schema = 'marketplace' LIMIT 1 OFFSET 0-- -
+This will print the first table only:<br />
+![image](https://github.com/user-attachments/assets/de96fc29-46b6-40b8-a1f3-2ee235ced79d)<br />
+So one table is `items`. Let's find another table:
+
+    http://10.10.2.204/admin?user=0%20UNION%20SELECT%20table_name,%20table_name,%20null,%20null%20FROM%20information_schema.tables%20WHERE%20table_schema%20=%20%27marketplace%27%20LIMIT%201%20OFFSET%201--%20-
+The offset is now 1, and I get a different table name: <br />
+![image](https://github.com/user-attachments/assets/7186b438-c1f6-49c0-9935-55f293da9b6c)<br />
+So the second table is `messages`. I keep doing this just incrementing the offset and find also the table `users`.
+Now I want to drop the contents of the tables. For example I'll take the table `messages`. I need to first find the names of the columns, and I'll use a similar technique as before, using LIMIT and OFFSET: <br />
+
+    http://10.10.2.204/admin?user=0%20UNION%20SELECT%20column_name,%20null,%20null,%20null%20FROM%20information_schema.columns%20WHERE%20table_name%20=%20%27messages%27%20AND%20table_schema%20=%20%27marketplace%27%20LIMIT%201%20OFFSET%202--%20-
+![image](https://github.com/user-attachments/assets/caf30a59-e011-44ff-8d59-6c3a5d57d59f)<br />
+By using this payload and just changing the offset, I find the following column names: `user_from`, `user_to`, `message_content`, `is_read`, `id`. Finally, the following payload shows all the `message_content`s in the DB, and I find a password: 
+
+    http://10.10.2.204/admin?user=0%20UNION%20SELECT%20NULL,%20message_content,%20NULL,%20NULL%20FROM%20messages%20--
+![image](https://github.com/user-attachments/assets/101a956e-2237-47e0-b78a-e2cf14fed096)<br />
+Now I can log into jake's ssh account and get the first flag.
+Now if I run `sudo -l` I get this: <br />
+![image](https://github.com/user-attachments/assets/b05f403e-9d07-4c9f-a6d1-98cc8cbec752)<br />
 
 
 
 
-and I think I need to work with the file upload. It is technically disabled, but it is just a front end filter. I can re-enable it by just deleting the `disabled` keyword from the html code in the developer's tools:<br />
-![image](https://github.com/user-attachments/assets/44b21ce2-dad6-4bbc-8ec5-6e44b5fcde5f)<br />
-Now, wappalyzer tells me that the web server is `express` and that the backup language is `node.js`:<br />
-![image](https://github.com/user-attachments/assets/0f77507a-72d4-4946-b2ad-fe72eac83c74)<br />
-This means that if I have to inject some kind of code to spawn a reverse shell it needs to be in `node.js`.
+
 
